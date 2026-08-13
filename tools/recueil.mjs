@@ -98,6 +98,7 @@ function document(titre, accroche, duree, contenus) {
   if (chapeau.pourquoi) l.push(`\\pourquoi{${echapper(chapeau.pourquoi)}}`);
   l.push(`\\duree{${echapper(duree)}}`);
   l.push(`\\domaine{${echapper(chapeau.domaine)}}`);
+  l.push(`\\nomcourt{${echapper(titre)}}`);
   l.push('', '\\begin{document}', '\\entetefiche', '');
   l.push(...contenus);
   l.push('', '\\end{document}');

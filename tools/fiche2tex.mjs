@@ -223,6 +223,16 @@ pousser(`\\priorite{${meta.priorite ?? 2}}`);
 if (meta.pourquoi) pousser(`\\pourquoi{${enLigne(meta.pourquoi)}}`);
 pousser(`\\duree{${enLigne(meta.duree)}}`);
 pousser(`\\domaine{${enLigne(meta.domaine)}}`);
+
+// Nom court du pied de page. À défaut d'être donné, on le fabrique à partir
+// du surtitre : « Fiche 1 · Nombres et calculs » donne l'étiquette « Fiche 1 »,
+// qu'on recolle au titre réel de la fiche.
+const nomcourt =
+  meta.nomcourt ??
+  (meta.surtitre?.includes('·')
+    ? `${meta.surtitre.split('·')[0].trim()} · ${meta.titre}`
+    : meta.titre);
+pousser(`\\nomcourt{${enLigne(nomcourt)}}`);
 pousser('', '\\begin{document}', '\\entetefiche', '');
 
 if (meta.automatismes?.items?.length) {

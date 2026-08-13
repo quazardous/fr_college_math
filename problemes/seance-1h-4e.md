@@ -11,6 +11,7 @@ pourquoi: >-
   Une heure suffit à repérer les deux ou trois points qui bloquent vraiment.
 duree: 60 min
 domaine: Révision générale
+nomcourt: Séance 1 h · 4e
 ---
 
 ## Relatifs et priorités

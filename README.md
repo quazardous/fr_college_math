@@ -61,6 +61,11 @@ YAML et relancer `./build.sh`.
 De même, `pdf/00-sommaire.pdf` est **engendré** depuis les en-têtes des fiches :
 modifier la priorité d'une fiche met la carte des révisions à jour toute seule.
 
+À partir de la page 2, le pied de page porte le **nom court** du document, pour
+qu'une feuille détachée reste identifiable. Il se déduit du surtitre
+(`Fiche 1 · Nombres et calculs` donne l'étiquette `Fiche 1`), ou se fixe
+explicitement avec `nomcourt:` dans l'en-tête YAML.
+
 ## Écrire une fiche
 
 Un fichier `fiches/NN-nom.md`, avec un en-tête YAML puis du Markdown étendu.
@@ -72,6 +77,7 @@ surtitre: Fiche 4 · Nombres et calculs
 accroche: La grande nouveauté de la 5e.
 niveaux: [5e]
 priorite: 2          # 3 incontournable · 2 important · 1 complément
+nomcourt: Fiche 4 · Relatifs   # pied de page dès la page 2 (facultatif)
 pourquoi: Notion neuve, sans laquelle rien ne fonctionne en 4e.
 duree: 25 min
 domaine: Nombres et calculs

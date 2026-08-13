@@ -64,6 +64,8 @@
 \newcommand{\@domaine}{}    \newcommand{\domaine}[1]{\renewcommand{\@domaine}{#1}}
 \newcommand{\@duree}{}      \newcommand{\duree}[1]{\renewcommand{\@duree}{#1}}
 \newcommand{\@priorite}{2}  \newcommand{\priorite}[1]{\renewcommand{\@priorite}{#1}}
+% Nom court du document, porté par le pied de page de toutes les pages.
+\newcommand{\@nomcourt}{}  \newcommand{\nomcourt}[1]{\renewcommand{\@nomcourt}{#1}}
 
 \newcommand{\couleurpriorite}{%
   \ifnum\@priorite=3 prioritetrois\else\ifnum\@priorite=2 prioritedeux\else prioriteun\fi\fi}
@@ -96,21 +98,30 @@
   \ifnum#1>3 prioritetrois\else\ifnum#1>1 prioritedeux\else prioriteun\fi\fi}
 
 % ---------------------------------------------------------------- en-tête / pied
-\newcommand{\mentionsource}{Révisions maths — 6\ieme{}, 5\ieme{} et 4\ieme{}}
+% Le nom du document est en pied de page, donc présent dès la page 1 —
+% qui n'a pas d'en-tête. L'en-tête des pages suivantes ne reprend donc que
+% la jauge de priorité et le niveau, pour ne rien afficher deux fois.
+\newcommand{\piedgauche}{%
+  \sffamily\fsPiedPage\color{encredouce}%
+  \ifx\@nomcourt\empty\@titrefiche\else\@nomcourt\fi}
+\newcommand{\pieddroit}{%
+  \sffamily\fsPiedPage\color{encredouce}\thepage\,/\,\pageref{LastPage}}
 
 \pagestyle{fancy}
 \fancyhf{}
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}
-\fancyhead[L]{\sffamily\fsEntetePage\color{encredouce}\jauge\hspace{1.8mm}\@titrefiche}
+\fancyhead[L]{\sffamily\fsEntetePage\color{encredouce}\jauge}
 \fancyhead[R]{\sffamily\fsEntetePage\color{encredouce}\@niveaux}
-\fancyfoot[L]{\sffamily\fsPiedPage\color{encredouce}\mentionsource}
-\fancyfoot[R]{\sffamily\fsPiedPage\color{encredouce}\thepage\,/\,\pageref{LastPage}}
+\fancyfoot[L]{\piedgauche}
+\fancyfoot[R]{\pieddroit}
 
+% Page 1 : le titre s'affiche déjà en grand dans le cartouche, inutile de le
+% répéter en pied. Le nom court sert à identifier une feuille détachée, donc
+% seulement à partir de la page 2.
 \fancypagestyle{premiere}{%
   \fancyhf{}\renewcommand{\headrulewidth}{0pt}%
-  \fancyfoot[L]{\sffamily\fsPiedPage\color{encredouce}\mentionsource}%
-  \fancyfoot[R]{\sffamily\fsPiedPage\color{encredouce}\thepage\,/\,\pageref{LastPage}}}
+  \fancyfoot[R]{\pieddroit}}
 
 % ---------------------------------------------------------------- cartouche de tête
 \newcommand{\etiquette}[1]{%

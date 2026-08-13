@@ -10,6 +10,7 @@ pourquoi: >-
   À lire après avoir cherché, jamais avant.
 duree: 60 min
 domaine: Révision générale
+nomcourt: Séance 1 h · 4e — corrigé
 ---
 
 ## Relatifs et priorités
