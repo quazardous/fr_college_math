@@ -111,12 +111,17 @@ ${pdf ? `<p><a class="impression" href="${pdf}">⬇ Version imprimable (PDF)</a>
 chaîne de production sous licence MIT · <a href="${DEPOT}">sources sur GitHub</a></p>
 </footer>
 <script>
-// Le seul script du site, et il ne sert qu'à une chose : rendre les pages
-// déjà visitées lisibles sans réseau.
-//
-// Pas en développement : un cache qui sert obstinément la version précédente
-// transforme chaque retouche de style en énigme. La production est en https,
-// le serveur local en http — la distinction suffit.
+// Un lien du menu referme le menu : en écran étroit il couvre toute la page,
+// et le laisser ouvert masquerait justement ce qu'on vient d'atteindre.
+document.addEventListener('click', (e) => {
+  const a = e.target.closest('.menu a');
+  if (a) a.closest('.menu').open = false;
+});
+
+// Le hors ligne, et rien d'autre. Pas en développement : un cache qui sert
+// obstinément la version précédente transforme chaque retouche de style en
+// énigme. La production est en https, le serveur local en http — la
+// distinction suffit.
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   navigator.serviceWorker.register('sw.js');
 }
@@ -472,10 +477,13 @@ const styles =
 // La page unique reprend la structure du site — bandeau collant, plan latéral,
 // grille adaptative — et hérite donc du même CSS. Son plan liste les documents
 // plutôt que les sections : à vingt-neuf documents, c'est la bonne échelle.
-const itemsUnique = documents.map((d) => ({
-  id: `doc-${d.base}`,
-  texte: `${d.numero ? `${d.numero}. ` : ''}${enLigne(d.titre)}`,
-}));
+const itemsUnique = [
+  { id: 'haut', texte: 'Sommaire' },
+  ...documents.map((d) => ({
+    id: `doc-${d.base}`,
+    texte: `${d.numero ? `${d.numero}. ` : ''}${enLigne(d.titre)}`,
+  })),
+];
 const planUnique = barreLaterale('Les documents', itemsUnique);
 const menuUnique = menuDeroulant('Les documents', itemsUnique);
 
@@ -532,6 +540,14 @@ ${unique.join('\n')}
 <footer class="page">
 <p>Contenu sous licence CC BY-SA 4.0 · sources : ${DEPOT}</p>
 </footer>
+<script>
+// Un lien du menu referme le menu : en écran étroit il couvre toute la page,
+// et le laisser ouvert masquerait justement ce qu'on vient d'atteindre.
+document.addEventListener('click', (e) => {
+  const a = e.target.closest('.menu a');
+  if (a) a.closest('.menu').open = false;
+});
+</script>
 </body>
 </html>
 `

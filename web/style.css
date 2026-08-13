@@ -482,6 +482,9 @@ nav::before {
   z-index: 10;
   background: #fff;
   border-bottom: 1px solid var(--c-traitfin);
+  /* Une ombre courte : sans elle, le texte qui glisse dessous donne
+     l'impression d'être coupé plutôt que recouvert. */
+  box-shadow: 0 2px 6px -3px rgba(26, 36, 48, 0.35);
 }
 nav > *:not(.menu),
 .menu > summary {
@@ -506,6 +509,8 @@ nav > *:not(.menu),
   counter-reset: menu;
 }
 .menu li { counter-increment: menu; }
+.menu li:first-child { counter-increment: none; }
+.menu li:first-child a::before { content: '↑ '; }
 .menu a {
   display: block;
   padding: 0.75rem 0;
