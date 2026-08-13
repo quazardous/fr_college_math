@@ -174,28 +174,47 @@ export function corpsSommaire({ fiches, problemes, recueil, niveaux }, { avecPag
   // Rien n'est nommé à la main : le plan se recalcule quand une fiche change
   // de priorité ou de niveau, et quand une séance apparaît.
   p('\\section{Par où commencer selon ta classe}');
-  p('\\begin{tableaufiche}{@{}G{13mm} Y G{40mm}@{}}');
+  p(`\\begin{tableaufiche}{@{}G{13mm} Y G{15mm} G{38mm}@{}}`);
   p(
     '\\ligneentete \\entetecell{Classe} & \\entetecell{Fiches à revoir en premier} & ' +
-      '\\entetecell{Séance chronométrée}\\\\'
+      '\\entetecell{Temps} & \\entetecell{Séance chronométrée}\\\\'
   );
+  // Le temps annoncé est la somme des durées déclarées par ces fiches-là :
+  // aucun chiffre rond posé à la main, qui vieillirait à la fiche suivante.
+  const tempsParNiveau = {};
   for (const n of niveaux) {
-    const nums = fiches
-      .filter((f) => porte(f, n) && (f.priorite ?? 2) === 3)
-      .map((f) => f.fichier.slice(0, 2));
+    const lot = fiches.filter((f) => porte(f, n) && (f.priorite ?? 2) === 3);
+    const minutes = lot.reduce((s, f) => s + (parseInt(f.duree) || 0), 0);
+    tempsParNiveau[n] = minutes;
     const seance = enonces.find((d) => porte(d, n));
     p(
-      `${niv([n])} & ${nums.length ? nums.join(' · ') : '\\emph{aucune}'} & ` +
-        `${seance ? ech(seance.titre) : '—'}\\\\`
+      `${niv([n])} & ${lot.length ? lot.map((f) => f.fichier.slice(0, 2)).join(' · ') : '\\emph{aucune}'} & ` +
+        `${lot.length ? enHeures(minutes) : '—'} & ${seance ? ech(seance.titre) : '—'}\\\\`
     );
   }
   p('\\end{tableaufiche}', '');
 
-  p('\\begin{methode}[Si tu ne disposes que de trois heures]');
+  // Le plan ne promet pas un budget d'heures : il donne un ordre. Les durées
+  // réelles — deux heures de fiches, une heure de séance, plus de quatre
+  // heures de problèmes — ne tiennent dans aucune soirée unique.
+  const minSeance = enonces.length ? parseInt(enonces[0].duree) || 60 : 60;
+  p('\\begin{methode}[Dans quel ordre, et à quoi t\'attendre]');
   p('\\begin{enumerate}[leftmargin=6mm,label=\\textbf{\\arabic*.}]');
-  p("  \\item \\textbf{Soir 1} — les fiches de ta ligne dans le tableau ci-dessus. Sans elles, le reste ne tient pas.");
-  p("  \\item \\textbf{Soir 2} — la séance chronométrée de ton niveau, puis, pour chaque série qui a coincé, la fiche correspondante.");
-  p("  \\item \\textbf{Soir 3} — le recueil de problèmes, en commençant par la partie qui correspond à ton aisance.");
+  p(
+    "  \\item \\textbf{D'abord} — les fiches de ta ligne dans le tableau ci-dessus : " +
+      `compte le temps qu'il y est annoncé, et prévois large. Sans elles, le reste ne tient pas.`
+  );
+  p(
+    `  \\item \\textbf{Ensuite} — la séance chronométrée de ton niveau (${enHeures(minSeance)}), ` +
+      'en une fois et sans interruption. Puis, pour chaque série qui a coincé, la fiche correspondante.'
+  );
+  if (recueil) {
+    p(
+      `  \\item \\textbf{Enfin} — le recueil de problèmes. Il pèse ${ech(formaterDuree(recueil.duree))} : ` +
+        "c'est un travail à étaler sur plusieurs séances, pas une soirée. Commence par la partie qui " +
+        'correspond à ton aisance.'
+    );
+  }
   p('\\end{enumerate}');
   p('\\end{methode}', '');
 
@@ -225,7 +244,7 @@ if (appeleDirectement) {
   p("\\accroche{Toutes les leçons ne se valent pas. Cette page dit lesquelles rapportent le plus, et dans quel ordre les reprendre quand le temps manque.}");
   p(`\\niveaux{${niv(ctx.niveaux)}}`);
   p('\\priorite{3}');
-  p("\\pourquoi{Réviser dans le désordre coûte du temps : trois leçons portent tout le reste.}");
+  p("\\pourquoi{Réviser dans le désordre coûte du temps : quelques leçons portent tout le reste.}");
   p(`\\duree{${dureeTotale(ctx.fiches)}}`);
   p('\\domaine{Toutes les fiches}');
   p('\\nomcourt{Carte des révisions}');
