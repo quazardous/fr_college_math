@@ -80,8 +80,12 @@ const glisse = (s) =>
  */
 export function nomFigure({ contenu, origine }, s) {
   const doc = glisse(path.basename(origine, '.md'));
-  const macro = contenu.match(/\\([a-zA-Z]+)/)?.[1];
-  const quoi = glisse(macro ?? 'tikz');
+  // Un appel « !fig \macro{…} » se nomme d'après sa macro. Un bloc écrit à la
+  // main n'a pas de nom parlant — \begin, \coordinate, \draw ne disent rien
+  // de ce qu'on voit — et s'appelle donc « tikz », l'empreinte distinguant les
+  // blocs d'un même document.
+  const brut = /^\s*\\begin\{tikzpicture\}/.test(contenu);
+  const quoi = brut ? 'tikz' : glisse(contenu.match(/\\([a-zA-Z]+)/)?.[1] ?? 'tikz');
   return `${doc}-${quoi}-${condense(s + '\0' + contenu).slice(0, 8)}`;
 }
 
@@ -117,7 +121,7 @@ const echapperXml = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
  */
 function signer(svg, fig) {
   const entete =
-    `<title>${echapperXml(fig.origine)} — ${echapperXml(fig.contenu.match(/\\([a-zA-Z]+)/)?.[1] ?? 'tikz')}</title>\n` +
+    `<title>${echapperXml(fig.origine)}</title>\n` +
     `<desc>Figure engendrée par tools/figures.mjs — ne pas modifier à la main.\n` +
     `Employée par : ${echapperXml(fig.employee.join(', '))}\n\n` +
     `Source LaTeX :\n${echapperXml(fig.contenu)}\n</desc>\n`;
@@ -134,10 +138,22 @@ export function produire(figures, dossier, { tectonic } = {}) {
   const s = socle();
   const table = new Map(figures.map((f) => [f.contenu, nomFigure(f, s)]));
 
+  // Purge des SVG dont plus aucune source ne correspond. Sans elle, corriger
+  // une figure laisse l'ancienne sur le disque, sous son ancienne empreinte :
+  // on croit regarder la figure courante et on ouvre celle d'avant.
+  const attendus = new Set([...table.values()].map((n) => `${n}.svg`));
+  let purges = 0;
+  for (const f of fs.readdirSync(dossier)) {
+    if (f.endsWith('.svg') && !attendus.has(f)) {
+      fs.rmSync(path.join(dossier, f));
+      purges++;
+    }
+  }
+
   const manquantes = figures.filter(
     (f) => !fs.existsSync(path.join(dossier, `${table.get(f.contenu)}.svg`))
   );
-  if (!manquantes.length) return { table, produites: 0, reprises: figures.length };
+  if (!manquantes.length) return { table, produites: 0, reprises: figures.length, purges };
 
   const tex = [
     '% Fichier engendré par tools/figures.mjs — ne pas modifier à la main.',
@@ -185,5 +201,5 @@ export function produire(figures, dossier, { tectonic } = {}) {
   });
 
   fs.rmSync(tmp, { recursive: true, force: true });
-  return { table, produites: manquantes.length, reprises: figures.length - manquantes.length };
+  return { table, produites: manquantes.length, reprises: figures.length - manquantes.length, purges };
 }

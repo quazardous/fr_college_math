@@ -177,17 +177,25 @@
 \newcommand{\prismedroit}[4][7mm]{%
   \begin{tikzpicture}[x=#1,y=#1]
     \pgfmathsetmacro{\B}{#2} \pgfmathsetmacro{\H}{#3}
-    \pgfmathsetmacro{\dx}{\H*0.42} \pgfmathsetmacro{\dy}{\H*0.28}
-    \coordinate (A) at (0,0); \coordinate (B) at (\B,0); \coordinate (C) at (\B*0.36,\B*0.78);
-    \coordinate (A') at (\dx,\dy); \coordinate (B') at (\B+\dx,\dy);
-    \coordinate (C') at (\B*0.36+\dx,\B*0.78+\dy);
-    \fill[accentclair,opacity=0.6] (A)--(B)--(C)--cycle;
-    \draw[fig,dashed,figtrait] (A')--(B') (A')--(C') (A)--(A');
-    \draw[fig] (A)--(B)--(C)--cycle;
-    \draw[fig] (B)--(B')--(C')--(C);
+    \pgfmathsetmacro{\dx}{\B*0.42} \pgfmathsetmacro{\dy}{\B*0.26}
+    % Le prisme repose sur sa base : A et B devant, C au fond, et la hauteur
+    % monte verticalement. Couché sur le flanc, il se confondait avec un coin
+    % et sa hauteur cessait d'être lisible comme telle.
+    \coordinate (A)  at (0,0);
+    \coordinate (B)  at (\B,0);
+    \coordinate (C)  at (\B*0.30+\dx,\dy);
+    \coordinate (A') at (0,\H);
+    \coordinate (B') at (\B,\H);
+    \coordinate (C') at (\B*0.30+\dx,\H+\dy);
+    \fill[accentclair,opacity=0.6]  (A)--(B)--(B')--(A')--cycle;
+    \fill[accentclair,opacity=0.32] (A')--(B')--(C')--cycle;
+    % arêtes cachées : les deux côtés de la base qui rejoignent le sommet du
+    % fond, et l'arête verticale qui le porte
+    \draw[fig,dashed,figtrait] (A)--(C) (B)--(C) (C)--(C');
+    \draw[fig] (A)--(B)--(B')--(A')--cycle;
+    \draw[fig] (A')--(C')--(B');
     \node[figcote,below] at (\B/2,0) {base};
-    % Posée en travers du solide, la légende passait sur les arêtes.
-    \node[figcote,right] at (\B+\dx,\dy/2) {hauteur};
+    \node[figcote,right] at (\B,\H/2) {hauteur};
   \end{tikzpicture}}
 
 % ---------------------------------------------------------------------
