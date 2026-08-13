@@ -54,11 +54,13 @@ polices:
     sous_section: 10.8
 
     # -- encadrés
+    # Les encadrés respirent plus que le texte courant : ils sont lus en
+    # diagonale, souvent debout devant le cahier. D'où l'interligne majoré.
     encart_etiquette: 8.4   # « MÉTHODE », « PIÈGE FRÉQUENT », …
-    encart_corps: 10.4      # le texte à l'intérieur d'un encadré
+    encart_corps: { taille: 10.4, interligne: 1.45 }
     automatismes_titre: 8.8
     automatismes_soustitre: 7.8
-    automatismes_corps: 10.2
+    automatismes_corps: { taille: 10.2, interligne: 1.42 }
     badge_source: 7         # étiquette de provenance « BO 6e »
     badge_niveau: 7.4       # pastille « 5e » dans un titre
 

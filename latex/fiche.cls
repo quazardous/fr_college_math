@@ -154,7 +154,7 @@
     \hspace{2mm}— à restituer immédiatement, sans poser de calcul}}
 
 \newenvironment{automatismes}[1][2]
-  {\begin{boiteautomatismes}\fsAutomatismesCorps\setlength{\parskip}{0pt}%
+  {\begin{boiteautomatismes}\fsAutomatismesCorps\raggedright\setlength{\parskip}{0pt}%
    \begin{multicols}{#1}\begin{itemize}[leftmargin=4mm,itemsep=0.55ex,topsep=0pt]}
   {\end{itemize}\end{multicols}%
    \par\vspace{1.4mm}{\color{prioritetrois}\rule{\linewidth}{0.3pt}}\par\vspace{1mm}
@@ -207,6 +207,34 @@
   borderline west={\filetencart}{0pt}{prioriteun},
   left=3.2mm,right=3mm,top=2.2mm,bottom=2.2mm,
   before upper={\enteteencart{#1}{prioriteun}}}
+
+% ---------------------------------------------------------------- exercices
+\newcounter{exo}
+\newtcolorbox[use counter=exo]{exo}[1][]{%
+  breakable,enhanced,sharp corners,
+  colback=white,colframe=trait,boxrule=0.4pt,
+  borderline west={\filetencart}{0pt}{accent},
+  left=3.2mm,right=3mm,top=2.2mm,bottom=2.4mm,
+  before upper={%
+    \sffamily\fsEncartEtiquette\bfseries\color{accent}%
+    \MakeUppercase{Exercice~\theexo}%
+    \if\relax\detokenize{#1}\relax\else
+      \normalfont\sffamily\fsBadgeSource\color{encredouce}\hspace{2mm}#1\fi
+    \par\vspace{1.2mm}\normalfont\fsEncartCorps\color{encre}}}
+
+% Espace de rédaction : des lignes pointillées pour écrire à la main.
+\newcommand{\lignes}[1][3]{%
+  \par\vspace{1.4mm}%
+  \foreach \n in {1,...,#1}{%
+    \textcolor{trait}{\rule[-0.6ex]{\linewidth}{0.35pt}}\par\vspace{4.4mm}}}
+
+\newtcolorbox{solution}[1][]{breakable,enhanced,sharp corners,
+  colback=prioriteunfond,colframe=prioriteunfond,boxrule=0pt,
+  borderline west={\filetencart}{0pt}{prioriteun},
+  left=3.2mm,right=3mm,top=2.2mm,bottom=2.2mm,
+  before upper={\sffamily\fsEncartEtiquette\bfseries\color{prioriteun}%
+    \MakeUppercase{Corrigé\if\relax\detokenize{#1}\relax\else~#1\fi}\par
+    \vspace{1mm}\normalfont\fsEncartCorps\color{encre}}}
 
 % ---------------------------------------------------------------- tableaux
 % Types de colonnes maison : toutes de type « p », donc toutes alignées

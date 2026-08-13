@@ -1,0 +1,12 @@
+{
+  "name": "fiches-maths-college",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fiches de révision et feuilles d'exercices de mathématiques 6e/5e, produites en PDF A4",
+  "scripts": {
+    "build": "./build.sh"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  }
+}

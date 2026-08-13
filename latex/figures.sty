@@ -58,7 +58,7 @@
     \pgfmathsetmacro{\ech}{#1/(#3-#2)}
     \pgfmathsetmacro{\xfin}{(#3-#2)*\ech}
     \pgfmathsetmacro{\xz}{(0-#2)*\ech}
-    \draw[figaccent,{Stealth[length=2mm]}-{Stealth[length=2mm]}] (-5,0) -- (\xfin+5,0);
+    \draw[figaccent,{Stealth[length=2mm]}-{Stealth[length=2mm]}] (-5,0) -- ({\xfin+5},0);
     \foreach \v in {#2,...,#3}{
       \pgfmathsetmacro{\xv}{(\v-#2)*\ech}
       \draw[figaccent] (\xv,1.4) -- (\xv,-1.4);
@@ -66,8 +66,8 @@
     \draw[figfort] (\xz,2.6) -- (\xz,-2.6);
     \node[text=prioritetrois,above=2.6mm,font=\sffamily\bfseries\fontsize{7.4}{9}\selectfont]
       at (\xz,0) {0};
-    \node[figleg] at (\xz/2,8) {nombres négatifs};
-    \node[figleg] at (\xz+(\xfin-\xz)/2,8) {nombres positifs};
+    \node[figleg] at ({\xz/2},8) {nombres négatifs};
+    \node[figleg] at ({\xz+(\xfin-\xz)/2},8) {nombres positifs};
     \foreach \v/\lab in {#4}{
       \pgfmathsetmacro{\xv}{(\v-#2)*\ech}
       \fill[prioritetrois] (\xv,0) circle (0.9mm);
@@ -91,8 +91,8 @@
         (\xcur,0) rectangle (\xb,7);
       \node[figval] at ({(\xcur+\xb)/2},3.5) {\lab};
       \global\let\xcur\xb}
-    \draw[decorate,decoration={brace,amplitude=1.6mm,mirror},figtrait] (0,-1.4) -- (\lg,-1.4);
-    \node[figleg,below=2mm] at (\lg/2,-1.4) {total : #3};
+    \draw[decorate,decoration={brace,amplitude=1.6mm,mirror},figtrait] (0,-1.4) -- ({\lg},-1.4);
+    \node[figleg,below=2mm] at ({\lg/2},-1.4) {total : #3};
   \end{tikzpicture}}
 
 % ---------------------------------------------------------------------
@@ -101,8 +101,8 @@
 \newcommand{\repereplan}[4][8mm]{%
   \begin{tikzpicture}[x=#1,y=#1]
     \draw[figtrait,very thin] (0,0) grid (#2,#3);
-    \draw[figaccent,-{Stealth[length=2mm]}] (0,0) -- (#2+0.5,0) node[figleg,right] {$x$};
-    \draw[figaccent,-{Stealth[length=2mm]}] (0,0) -- (0,#3+0.5) node[figleg,above] {$y$};
+    \draw[figaccent,-{Stealth[length=2mm]}] (0,0) -- ({#2+0.5},0) node[figleg,right] {$x$};
+    \draw[figaccent,-{Stealth[length=2mm]}] (0,0) -- (0,{#3+0.5}) node[figleg,above] {$y$};
     \foreach \i in {1,...,#2} \node[figval,below=0.4mm] at (\i,0) {\i};
     \foreach \j in {1,...,#3} \node[figval,left=0.4mm]  at (0,\j) {\j};
     \node[figval,below left=0.4mm] at (0,0) {0};
@@ -242,23 +242,57 @@
     \pgfmathsetmacro{\cl}{20}     % largeur de colonne
     \pgfmathsetmacro{\ce}{34}     % largeur de la colonne des intitulés
     % intitulés
-    \node[figval,anchor=west] at (1,\ch*1.5) {#1};
-    \node[figval,anchor=west] at (1,\ch*0.5) {#2};
-    \draw[figaccent] (0,0) rectangle (\ce,\ch*2);
-    \draw[figaccent] (0,\ch) -- (\ce,\ch);
+    \node[figval,anchor=west] at (1,{\ch*1.5}) {#1};
+    \node[figval,anchor=west] at (1,{\ch*0.5}) {#2};
+    \draw[figaccent] (0,0) rectangle ({\ce},{\ch*2});
+    \draw[figaccent] (0,{\ch}) -- ({\ce},{\ch});
     % valeurs
     \foreach \a/\b [count=\i from 0] in {#3}{
       \pgfmathsetmacro{\xa}{\ce+\i*\cl}
-      \draw[figaccent] (\xa,0) rectangle (\xa+\cl,\ch*2);
-      \draw[figaccent] (\xa,\ch) -- (\xa+\cl,\ch);
-      \node[figval] at (\xa+\cl/2,\ch*1.5) {\a};
-      \node[figval] at (\xa+\cl/2,\ch*0.5) {\b};}
+      \draw[figaccent] ({\xa},0) rectangle ({\xa+\cl},{\ch*2});
+      \draw[figaccent] ({\xa},{\ch}) -- ({\xa+\cl},{\ch});
+      \node[figval] at ({\xa+\cl/2},{\ch*1.5}) {\a};
+      \node[figval] at ({\xa+\cl/2},{\ch*0.5}) {\b};}
     % flèche du coefficient
     \draw[figfort,-{Stealth[length=2mm]}]
-      (\ce+\cl*0.5+2,\ch*1.5-3) to[bend left=45] (\ce+\cl*0.5+2,\ch*0.5+3);
+      ({\ce+\cl*0.5+2},{\ch*1.5-3}) to[bend left=45] ({\ce+\cl*0.5+2},{\ch*0.5+3});
     \node[text=prioritetrois,anchor=west,
           font=\sffamily\bfseries\fontsize{7.4}{9}\selectfont]
-      at (\ce+\cl*0.5+6,\ch) {#4};
+      at ({\ce+\cl*0.5+6},{\ch}) {#4};
   \end{tikzpicture}}
+
+% ---------------------------------------------------------------------
+% \tableaunumeration — les rangs d'un nombre décimal, sur l'exemple 4,107
+% ---------------------------------------------------------------------
+\newcommand{\tableaunumeration}{%
+  \begin{tikzpicture}[x=13mm,y=7mm]
+    \foreach \i/\n in {0/centaines,1/dizaines,2/unités}{
+      \draw[figtrait] (\i,0) rectangle (\i+1,1);
+      \node[figleg] at (\i+0.5,1.32) {\n};}
+    \foreach \i/\n in {3/dixièmes,4/centièmes,5/millièmes}{
+      \draw[figtrait] (\i+0.16,0) rectangle (\i+1.16,1);
+      \node[figleg] at (\i+0.66,1.32) {\n};}
+    \node at (2.5,0.5) {\large 4};
+    \node[text=prioritetrois,font=\bfseries] at (3.08,0.12) {\large ,};
+    \node at (3.66,0.5) {\large 1};
+    \node at (4.66,0.5) {\large 0};
+    \node at (5.66,0.5) {\large 7};
+    \node[figcote] at (1.3,-0.55) {partie entière};
+    \node[figcote] at (4.7,-0.55) {partie décimale};
+  \end{tikzpicture}}
+
+% ---------------------------------------------------------------------
+% \tableaucarres — les carrés des entiers de 0 à 12
+% ---------------------------------------------------------------------
+\newcommand{\tableaucarres}{%
+  \footnotesize
+  \begin{tabular}{@{}>{\bfseries}l|*{13}{>{\centering\arraybackslash}p{6.6mm}}@{}}
+    \rowcolor{accent}
+    \entetecell{$n$} & \entetecell{0} & \entetecell{1} & \entetecell{2}
+    & \entetecell{3} & \entetecell{4} & \entetecell{5} & \entetecell{6}
+    & \entetecell{7} & \entetecell{8} & \entetecell{9} & \entetecell{10}
+    & \entetecell{11} & \entetecell{12}\\
+    $n^{2}$ & 0 & 1 & 4 & 9 & 16 & 25 & 36 & 49 & 64 & 81 & 100 & 121 & 144\\
+  \end{tabular}}
 
 \endinput
