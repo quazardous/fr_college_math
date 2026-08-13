@@ -38,6 +38,16 @@ for src in fiches/*.md problemes/*.md; do
   printf '  · %s\n' "$base.md"
 done
 
+if [ -z "$FILTRE" ] || [[ "00-sommaire" == *"$FILTRE"* ]]; then
+  echo "→ sommaire"
+  node tools/sommaire.mjs fiches problemes build/00-sommaire.tex
+fi
+
+if [ -d problemes/recueil ] && { [ -z "$FILTRE" ] || [[ "recueil" == *"$FILTRE"* ]]; }; then
+  echo "→ assemblage du recueil"
+  node tools/recueil.mjs problemes/recueil build/recueil.tex build/recueil-corrige.tex
+fi
+
 echo "→ compilation"
 statut=0
 compiler() {

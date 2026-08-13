@@ -80,6 +80,20 @@
       \fi}}}
 \newcommand{\jauge}{\jaugecoul{\couleurpriorite}{\@priorite}}
 
+% Jauge à nombre de crans libre : \jaugen{couleur}{atteint}{total}
+\newcommand{\jaugen}[3]{%
+  \tikz[baseline=-0.32ex]{%
+    \foreach \i in {1,...,#3}{%
+      \ifnum\i>#2
+        \draw[#1,line width=0.22mm] ({(\i-1)*1.6mm},0) circle (0.52mm);
+      \else
+        \fill[#1] ({(\i-1)*1.6mm},0) circle (0.66mm);
+      \fi}}}
+
+% Couleur associée à une difficulté de 1 à 5.
+\newcommand{\couleurdifficulte}[1]{%
+  \ifnum#1>3 prioritetrois\else\ifnum#1>1 prioritedeux\else prioriteun\fi\fi}
+
 % ---------------------------------------------------------------- en-tête / pied
 \newcommand{\mentionsource}{Révisions maths — 6\ieme{} et 5\ieme{}}
 
@@ -207,6 +221,22 @@
   borderline west={\filetencart}{0pt}{prioriteun},
   left=3.2mm,right=3mm,top=2.2mm,bottom=2.2mm,
   before upper={\enteteencart{#1}{prioriteun}}}
+
+% ---------------------------------------------------------------- problèmes
+% \enteteprobleme{numéro}{titre}{difficulté 1-5}{durée}{notions}
+\newcommand{\enteteprobleme}[5]{%
+  \needspace{6\baselineskip}%
+  \par\vspace{4mm}%
+  {\color{accent}\rule{\linewidth}{\filetsection}}\par\vspace{1.8mm}%
+  {\sffamily\fsSurtitre\bfseries\color{accent}\MakeUppercase{Problème~#1}\par}%
+  \vspace{0.8mm}%
+  {\sffamily\fsSection\bfseries #2\par}%
+  \vspace{1.4mm}%
+  {\sffamily\fsBadgeSource\color{encredouce}%
+    \jaugen{\couleurdifficulte{#3}}{#3}{5}\hspace{1.6mm}%
+    \textbf{difficulté #3/5}\quad·\quad #4\quad·\quad #5\par}%
+  \vspace{1.6mm}%
+  \par}
 
 % ---------------------------------------------------------------- exercices
 \newcounter{exo}

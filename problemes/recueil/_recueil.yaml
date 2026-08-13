@@ -1,0 +1,36 @@
+titre: Recueil de problèmes
+titre_corrige: Recueil de problèmes — corrigé
+surtitre: Deux heures · 6e et 5e
+accroche: >-
+  Douze problèmes, de plus en plus ouverts. Les premiers indiquent le chemin ;
+  les derniers ne donnent que la question. Aucun n'a besoin d'une notion
+  au-delà du programme de 5e.
+accroche_corrige: >-
+  Un chemin possible pour chaque problème — rarement le seul. Ce qui compte
+  est la cohérence du raisonnement, pas la ressemblance avec ce corrigé.
+niveaux: [6e, 5e]
+priorite: 3
+pourquoi: >-
+  Chercher sans être guidé est ce que le programme appelle « résolution de problèmes ».
+duree: 2 h
+domaine: Résolution de problèmes
+
+types:
+  application:
+    titre: Première partie — applications guidées
+    intro: >-
+      Le chemin est balisé par des questions successives. L'objectif est de
+      vérifier que chaque technique est disponible et sûre. Compte environ
+      cinq minutes par problème.
+  etapes:
+    titre: Deuxième partie — problèmes à étapes
+    intro: >-
+      Les questions disparaissent en partie : il reste une ou deux balises,
+      mais l'ordre des calculs est à décider. Environ dix minutes chacun.
+  ouvert:
+    titre: Troisième partie — problèmes ouverts
+    intro: >-
+      Une seule question, fermée, et rien pour y conduire. Toutes les données
+      utiles sont dans l'énoncé — certaines ne servent pas. Prends le temps de
+      relire, d'écrire ce que tu cherches, et de vérifier que ta réponse est
+      plausible. Environ quinze minutes chacun.

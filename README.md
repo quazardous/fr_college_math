@@ -1,0 +1,170 @@
+# Fiches de révision — mathématiques 6e et 5e
+
+Onze fiches de cours et deux recueils d'exercices, produits en **PDF A4**
+prêts à imprimer. Contenu calé sur les programmes officiels en vigueur :
+
+- **6e** — arrêté du 10 avril 2025, programme de mathématiques du cycle 3
+  (BO n° 16 du 17 avril 2025), applicable depuis la rentrée 2025 ;
+- **5e** — arrêté du 18 février 2026, programme du cycle 4
+  (BO n° 10 du 5 mars 2026), applicable à la rentrée 2026.
+
+Le vocabulaire des rubriques reprend celui des textes officiels :
+*Automatismes*, *Objectifs d'apprentissage*, *Prolongements possibles*.
+La seule couche ajoutée est l'**indice de priorité**, signalé comme tel.
+
+## Produire les PDF
+
+```bash
+./build.sh              # tout
+./build.sh 03           # seulement ce dont le nom contient « 03 »
+```
+
+Les PDF arrivent dans `pdf/`. Commencer par `pdf/00-sommaire.pdf`, qui dit
+dans quel ordre lire les autres.
+
+Prérequis : `node` et [Tectonic](https://tectonic-typesetting.github.io).
+Aucune installation de TeX Live n'est nécessaire — Tectonic est un binaire
+unique qui télécharge à la demande les seuls paquets utilisés :
+
+```bash
+curl --proto '=https' --tlsv1.2 -fsSL https://drop-sh.fullyjustified.net | sh
+mv tectonic ~/.local/bin/
+```
+
+## Comment c'est fait
+
+```
+design.yaml          jetons de design : polices, tailles, couleurs, marges
+      │
+      ├─ tools/design.mjs ──────────────►  latex/design.tex
+      │
+fiches/*.md          une fiche = un Markdown + son en-tête YAML
+problemes/*.md       séance d'une heure, énoncés et corrigé
+problemes/recueil/   un fichier par problème
+      │
+      ├─ tools/fiche2tex.mjs ───────────►  build/*.tex
+      ├─ tools/recueil.mjs ─────────────►  build/recueil*.tex
+      ├─ tools/sommaire.mjs ────────────►  build/00-sommaire.tex
+      │
+      └─ tectonic (XeLaTeX) ────────────►  pdf/*.pdf
+
+latex/fiche.cls      structure et mise en page — aucune valeur de style
+latex/figures.sty    figures TikZ réutilisables
+```
+
+**Aucune valeur de style n'est écrite dans le LaTeX.** Polices, tailles,
+couleurs et marges vivent dans `design.yaml` ; `tools/design.mjs` les traduit
+en commandes LaTeX. Changer une taille de police, c'est éditer une ligne de
+YAML et relancer `./build.sh`.
+
+De même, `pdf/00-sommaire.pdf` est **engendré** depuis les en-têtes des fiches :
+modifier la priorité d'une fiche met la carte des révisions à jour toute seule.
+
+## Écrire une fiche
+
+Un fichier `fiches/NN-nom.md`, avec un en-tête YAML puis du Markdown étendu.
+
+```markdown
+---
+titre: Les nombres relatifs
+surtitre: Fiche 4 · Nombres et calculs
+accroche: La grande nouveauté de la 5e.
+niveaux: [5e]
+priorite: 2          # 3 incontournable · 2 important · 1 complément
+pourquoi: Notion neuve, sans laquelle rien ne fonctionne en 4e.
+duree: 25 min
+domaine: Nombres et calculs
+
+automatismes:
+  colonnes: 2
+  items:
+    - "5e | Soustraire, c'est ajouter l'opposé"
+    - "règle | L'opposé de $-7$ est $+7$"
+
+videos:
+  - id: 9L4lz1NMPoY
+    titre: Additions et soustractions de relatifs
+    chaine: Yvan Monka
+    duree: "8:47"
+    vues: "1 100 000"
+---
+
+## Un titre de section
+
+Du texte avec du **gras**, de l'*italique* et des maths : $\frac34 + \frac58$.
+
+::: piege
+Ce qui se trompe une fois sur trois.
+:::
+
+:cols G{30mm} Y Y
+| Colonne | Deux | Trois |
+|---|---|---|
+| a | b | c |
+
+!fig \droitegradueerelatifs{-5}{5}{-3/$-3$, 2/$+2$}
+```
+
+### La syntaxe en une page
+
+| Écriture | Effet |
+|---|---|
+| `## Titre` / `### Titre` | section / sous-section |
+| `**gras**` `*italique*` `` `code` `` | mise en forme |
+| `$…$` et `$$…$$` | maths en ligne et centrées (LaTeX brut) |
+| `- item` / `1. item` | listes |
+| `::: type Titre … :::` | encadré : `definition`, `retenir`, `methode`, `piege`, `prolongement`, `exo`, `solution` |
+| `:cols G{30mm} Y Y` | largeurs du tableau qui suit (`G` fixe, `Y` extensible, `Z` centrée) |
+| `\| a \| b \|` | tableau, première ligne en en-tête |
+| `!fig \macro{…}` | figure centrée |
+| `!saut` | saut de page |
+| `[[5e]]` | pastille de niveau |
+| `->` | flèche |
+| `6e` `5e` | exposant automatique |
+| `// texte` | commentaire, absent du PDF |
+
+Tout ce que le précompilateur ne reconnaît pas est transmis tel quel à LaTeX :
+on peut toujours descendre d'un cran quand c'est nécessaire.
+
+### Les figures disponibles
+
+`\droitegraduee` · `\droitegradueerelatifs` · `\schemabarres` · `\repereplan`
+· `\pavedroit` · `\cylindrerev` · `\prismedroit` · `\disqueraye`
+· `\triangleangles` · `\droitesparalleles` · `\tableaupropo`
+· `\tableaunumeration` · `\tableaucarres`
+
+Elles sont définies et documentées dans `latex/figures.sty`.
+
+## Ajouter un problème au recueil
+
+Un fichier `problemes/recueil/NN-nom.md`. Le préfixe numérique fixe l'ordre :
+`1x` applications guidées, `2x` problèmes à étapes, `3x` problèmes ouverts.
+
+```markdown
+---
+titre: Le refuge de montagne
+type: ouvert          # application · etapes · ouvert
+difficulte: 4         # de 1 à 5
+duree: 15 min
+notions: [proportionnalité, volumes, durées]
+---
+
+L'énoncé, sans questions intermédiaires.
+
+::: solution
+Un chemin possible.
+:::
+```
+
+`tools/recueil.mjs` en tire **deux** PDF depuis cette source unique :
+`pdf/recueil.pdf` (énoncés seuls, avec sommaire et jauges de difficulté) et
+`pdf/recueil-corrige.pdf`.
+
+## Les vidéos
+
+Chaque QR code pointe vers une vidéo réelle, vérifiée par l'API oEmbed de
+YouTube au moment de l'ajout. Critères : chaîne de référence
+(Yvan Monka, Les Bons Profs, Hedacademy, Maître Lucas, Paul Olivier),
+format court — moins de dix minutes.
+
+`tools/yt-search.mjs "requête"` liste des candidats avec durée et nombre de vues.
