@@ -135,8 +135,11 @@ compiler() {
     printf '  ✓ %-40s %3s p.  %s\n' "$base" "${pages:-?}" "$poids"
     # Une compilation peut réussir en posant des carrés vides à la place des
     # caractères absents des polices. Le journal le dit ; personne ne le lisait.
-    echo "$journal" | grep -o "Missing character: There is no [^ ]*" | sort -u |
-      sed 's/^/      ⚠ /'
+    # Le « || true » n'est pas décoratif : sous pipefail, un grep qui ne trouve
+    # rien — le cas normal — ferait échouer la fonction, donc tout le build.
+    { echo "$journal" | grep -o "Missing character: There is no [^ ]*" | sort -u |
+      sed 's/^/      ⚠ /'; } || true
+    return 0
   else
     printf '  ✗ %-40s ÉCHEC\n' "$base"
     echo "$journal" | grep -E '^(error|!)|^l\.[0-9]' | head -6 | sed 's/^/      /'
