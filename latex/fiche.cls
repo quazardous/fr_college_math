@@ -36,12 +36,30 @@
 \usetikzlibrary{calc,angles,quotes,patterns,arrows.meta,positioning,
                 decorations.pathreplacing,shapes.geometric,through}
 \RequirePackage{cancel}
+\RequirePackage{pifont}      % la coche : aucune des polices du document n'en a
 \RequirePackage{qrcode}
 \RequirePackage{fancyhdr}
 \RequirePackage{lastpage}
 \RequirePackage{titlesec}
 \RequirePackage{needspace}
 \RequirePackage[hidelinks]{hyperref}
+
+% Les signets du PDF sont du texte pur. hyperref ne peut pas y exécuter la
+% pastille de niveau d'un titre comme « [[4e]] Multiplier et diviser » : il en
+% recrachait l'expansion, d'où des entrées « color push rgb 0.10196… » dans le
+% panneau de navigation. On lui donne donc une lecture textuelle des commandes
+% que les titres peuvent contenir.
+\pdfstringdefDisableCommands{%
+  \def\niv#1{#1e}%
+  \def\pastilleniveau#1#2#3{#3e}%
+  \def\ieme{e}%
+  \def\motcle#1{#1}%
+  \def\coche{}%
+  \def\fleche{ - }%
+  \def\jauge{}%
+  \def\jaugecoul#1#2{}%
+  \def\jaugen#1#2#3{}%
+}
 
 % ---------------------------------------------------------------- jetons de design
 \input{design.tex}          % engendré depuis design.yaml
@@ -140,12 +158,18 @@
   \fancyfoot[L]{\piedversion}%
   \fancyfoot[R]{\pieddroit}}
 
+% Dans un document qui en relie plusieurs, la version n'a plus rien à faire au
+% pied de chaque première page : elle est annoncée une fois, sur la page de
+% garde, et c'est le titre du document en cours qu'on veut lire là.
+\newif\if@piedversion \@piedversiontrue
+\newcommand{\sanspiedversion}{\@piedversionfalse}
+
 % ---------------------------------------------------------------- cartouche de tête
 \newcommand{\etiquette}[1]{%
   {\sffamily\fsEtiquette\bfseries\color{encredouce}\MakeUppercase{#1}\par\vspace{0.6mm}}}
 
 \newcommand{\entetefiche}{%
-  \thispagestyle{premiere}%
+  \if@piedversion\thispagestyle{premiere}\fi%
   {\color{accent}\rule{\linewidth}{\filetsection}}\par\vspace{2.4mm}
   {\sffamily\fsSurtitre\bfseries\color{accent}\MakeUppercase{\@surtitre}\par}
   \vspace{1.4mm}
@@ -171,6 +195,57 @@
     \end{tabular}
   \end{tcolorbox}
   \vspace{1.6mm}}
+
+% ---------------------------------------------------------------- page de garde
+% Un document relié annonce une fois ce que chaque feuille détachée annonçait
+% en pied de page : tirage, droits, provenance.
+\newcommand{\@datedoc}{} \newcommand{\datedoc}[1]{\renewcommand{\@datedoc}{#1}}
+\newcommand{\@auteur}{}  \newcommand{\auteur}[1]{\renewcommand{\@auteur}{#1}}
+% \depot reçoit une commande fabriquée par \urldef : c'est le seul moyen de
+% faire lire une URL à LaTeX sans se battre avec le souligné.
+\newcommand{\@depot}{}   \newcommand{\depot}[1]{\renewcommand{\@depot}{#1}}
+
+\newcommand{\etiquettegarde}[1]{%
+  {\sffamily\fsEtiquette\bfseries\color{encredouce}\MakeUppercase{#1}}}
+
+% Les deux cellules n'ont pas la même taille de police : sans \strut commun,
+% leurs lignes de base se décalent d'un ou deux points.
+\newcommand{\ligneg}[2]{%
+  \strut\etiquettegarde{#1} & \strut{\sffamily\fsCartoucheValeur #2}\\[1.2mm]}
+
+\newcommand{\pagedegarde}{%
+  \thispagestyle{empty}%
+  \null\vspace*{14mm}
+  {\color{accent}\rule{\linewidth}{2.4pt}}\par\vspace{7mm}
+  {\sffamily\fsSurtitre\bfseries\color{accent}\MakeUppercase{\@surtitre}\par}
+  \vspace{3.4mm}
+  {\sffamily\fontsize{33}{37}\selectfont\bfseries\@titrefiche\par}
+  \ifx\@accroche\empty\else
+    \vspace{5.5mm}{\fsAccroche\color{encredouce}\@accroche\par}\fi
+  \vfill
+  \begin{tcolorbox}[enhanced,sharp corners,boxrule=0.4pt,colframe=trait,
+                    colback=white,left=4mm,right=4mm,top=3.4mm,bottom=2mm]
+    \begin{tabular}{@{}l@{\hspace{5mm}}%
+                     >{\raggedright\arraybackslash}p{\dimexpr\linewidth-38mm\relax}@{}}
+      \ifx\@versiondoc\empty\else\ligneg{Version}{\@versiondoc}\fi
+      \ifx\@datedoc\empty\else\ligneg{Tirage}{\@datedoc}\fi
+      \ifx\@niveaux\empty\else\ligneg{Niveaux}{\@niveaux}\fi
+      \ifx\@auteur\empty\else\ligneg{Auteur}{\@auteur}\fi
+      \ifx\@depot\empty\else\ligneg{Sources}{{\color{accent}\@depot}}\fi
+    \end{tabular}
+  \end{tcolorbox}
+  \vspace{4mm}
+  {\fsBadgeSource\color{encredouce}\raggedright
+    \textbf{Droits.} Fiches, énoncés et corrigés sous licence
+    \textbf{\@licencedoc} : réutilisation et modification libres, à condition
+    de citer la source et de partager aux mêmes conditions. La classe LaTeX,
+    les figures et la chaîne de production sont sous licence \textbf{MIT}.
+    Ni l'une ni l'autre ne couvre les vidéos pointées par les QR codes, qui
+    restent la propriété de leurs auteurs.\par
+   \vspace{2mm}
+   Les programmes officiels sur lesquels s'appuie le contenu sont des actes
+   officiels, librement réutilisables.\par}
+  \clearpage}
 
 % ---------------------------------------------------------------- titres
 \titleformat{\section}
@@ -347,6 +422,9 @@
   \else\ifnum#1=4 \pastilleniveau{accent}{white}{#1}%
   \else\ifnum#1=5 \pastilleniveau{accentmoyen}{accent}{#1}%
   \else \pastilleniveau{accentclair}{accent}{#1}\fi\fi\fi}
+% La coche qui clôt un contrôle de résultat. Ni Pagella ni Fira n'ont le
+% glyphe U+2714 : sans ce relais, le caractère sortait en carré vide.
+\newcommand{\coche}{\raisebox{-0.1ex}{\color{accent}\ding{51}}}
 \newcommand{\motcle}[1]{\textbf{#1}}
 \newcommand{\separateur}{\par\vspace{1.2mm}{\color{trait}\rule{\linewidth}{0.4pt}}\par\vspace{1mm}}
 \newcommand{\fleche}{\ensuremath{\rightarrow}}

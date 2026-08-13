@@ -1,5 +1,5 @@
 % =====================================================================
-%  figures.sty — bibliothèque de figures récurrentes des fiches 6e / 5e
+%  figures.sty — bibliothèque de figures récurrentes des fiches 6e à 3e
 %
 %  Chaque macro est paramétrée pour être réutilisée telle quelle d'une
 %  fiche à l'autre : droite graduée, repère, schéma en barres, solides
@@ -27,9 +27,11 @@
 }
 
 % ---------------------------------------------------------------------
-% \droitegraduee[largeur]{min}{max}{pas}{repères}
+% \droitegraduee[largeur]{min}{max}{pas}{repères}{tikz en plus}
 %   repères : liste « valeur/étiquette », séparée par des virgules.
-%   Ex. \droitegraduee{0}{5}{1}{2.5/$\frac{5}{2}$, 4/$4$}
+%   Le dernier argument est injecté tel quel dans le tikzpicture ; il est
+%   obligatoire, et vaut {} quand on n'ajoute rien.
+%   Ex. \droitegraduee[110]{0}{5}{1}{2.5/$\frac{5}{2}$, 4/$4$}{}
 % ---------------------------------------------------------------------
 \newcommand{\droitegraduee}[6][120mm]{%
   \begin{tikzpicture}
@@ -365,6 +367,95 @@
     \node[figleg,right]       at (J) {$J$};
     \node[figcote,text=prioritetrois,above] at ($(I)!0.5!(J)+(0,0.1)$)
       {$IJ = \frac{AB}{2}$ et $(IJ)\parallel(AB)$};
+  \end{tikzpicture}}
+
+% ---------------------------------------------------------------------
+% \configthales — configuration « triangle » du théorème de Thalès :
+%   M sur [AB], N sur [AC], et (MN) parallèle à (BC).
+% ---------------------------------------------------------------------
+\newcommand{\configthales}[1][10mm]{%
+  \begin{tikzpicture}[x=#1,y=#1]
+    \coordinate (A) at (0,3.4); \coordinate (B) at (-2,0); \coordinate (C) at (3.2,0);
+    \coordinate (M) at ($(A)!0.42!(B)$);
+    \coordinate (N) at ($(A)!0.42!(C)$);
+    \fill[accentclair,opacity=0.6] (A)--(B)--(C)--cycle;
+    \draw[fig] (A)--(B)--(C)--cycle;
+    \draw[figfort] (M)--(N);
+    \fill[prioritetrois] (M) circle (0.8mm) (N) circle (0.8mm);
+    \node[figleg,above]       at (A) {$A$};
+    \node[figleg,below left]  at (B) {$B$};
+    \node[figleg,below right] at (C) {$C$};
+    \node[figleg,left=0.8mm]  at (M) {$M$};
+    \node[figleg,right=0.8mm] at (N) {$N$};
+    \node[figcote,text=prioritetrois] at (0.6,-0.65) {$(MN)\parallel(BC)$};
+  \end{tikzpicture}}
+
+% ---------------------------------------------------------------------
+% \configpapillon — configuration « papillon » : A entre les deux
+%   triangles, (MN) parallèle à (BC). Même théorème, autre dessin.
+% ---------------------------------------------------------------------
+\newcommand{\configpapillon}[1][10mm]{%
+  \begin{tikzpicture}[x=#1,y=#1]
+    % M et N sont les symétriques réduits de B et C : le rapport commun
+    % (ici 2/3) garantit le parallélisme sans le poser à la main.
+    \coordinate (A) at (0,0); \coordinate (B) at (-1.7,1.5); \coordinate (C) at (-2.2,-0.6);
+    \coordinate (M) at (1.133,-1); \coordinate (N) at (1.467,0.4);
+    \fill[accentclair,opacity=0.6] (A)--(B)--(C)--cycle;
+    \fill[prioritetroisfond] (A)--(M)--(N)--cycle;
+    \draw[fig] (B)--(A)--(M) (C)--(A)--(N) (B)--(C);
+    \draw[figfort] (M)--(N);
+    \fill[encre] (A) circle (0.8mm);
+    \node[figleg,above=0.9mm]  at (A) {$A$};
+    \node[figleg,above left]   at (B) {$B$};
+    \node[figleg,below left]   at (C) {$C$};
+    \node[figleg,below right]  at (M) {$M$};
+    \node[figleg,above right]  at (N) {$N$};
+  \end{tikzpicture}}
+
+% ---------------------------------------------------------------------
+% \triangletrigo — triangle rectangle vu depuis un angle aigu, avec les
+%   trois côtés nommés par leur rôle : c'est ce vocabulaire, et non les
+%   lettres, qui décide entre cosinus, sinus et tangente.
+% ---------------------------------------------------------------------
+\newcommand{\triangletrigo}[1][8mm]{%
+  \begin{tikzpicture}[x=#1,y=#1]
+    \coordinate (A) at (0,0); \coordinate (B) at (4.2,0); \coordinate (C) at (4.2,2.9);
+    \fill[accentclair,opacity=0.6] (A)--(B)--(C)--cycle;
+    \draw[fig] (A)--(B)--(C)--cycle;
+    \draw[figaccent,line width=0.8pt] (4.2,0.34) -- (3.86,0.34) -- (3.86,0);
+    \pic[draw=prioritetrois,line width=0.8pt,angle radius=9mm,
+         "{\footnotesize\color{prioritetrois}$\alpha$}",angle eccentricity=1.5]
+         {angle=B--A--C};
+    \node[figleg,below left]  at (A) {$A$};
+    \node[figleg,below right] at (B) {$B$};
+    \node[figleg,above right] at (C) {$C$};
+    \node[figcote,below]      at (2.1,0)   {côté adjacent à $\alpha$};
+    \node[figcote,right]      at (4.2,1.45){côté opposé à $\alpha$};
+    \node[figcote,rotate=34.6,above=0.2mm] at (2.0,1.38) {hypoténuse};
+  \end{tikzpicture}}
+
+% ---------------------------------------------------------------------
+% \carreidentite — le carré de côté a+b découpé en quatre morceaux.
+%   La preuve visuelle de $(a+b)^2 = a^2+2ab+b^2$ : le double produit est
+%   la paire de rectangles qu'on oublie.
+% ---------------------------------------------------------------------
+\newcommand{\carreidentite}[1][9mm]{%
+  \begin{tikzpicture}[x=#1,y=#1]
+    \pgfmathsetmacro{\ca}{2.5} \pgfmathsetmacro{\cb}{1.4}
+    \fill[accentclair]            (0,0)   rectangle (\ca,\ca);
+    \fill[prioritetroisfond]      (\ca,\ca) rectangle ({\ca+\cb},{\ca+\cb});
+    \fill[accentmoyen,opacity=0.5](\ca,0) rectangle ({\ca+\cb},\ca);
+    \fill[accentmoyen,opacity=0.5](0,\ca) rectangle (\ca,{\ca+\cb});
+    \draw[fig] (0,0) rectangle ({\ca+\cb},{\ca+\cb});
+    \draw[fig] (\ca,0) -- (\ca,{\ca+\cb})  (0,\ca) -- ({\ca+\cb},\ca);
+    \node[figval] at ({\ca/2},{\ca/2})           {$a^{2}$};
+    \node[figval] at ({\ca+\cb/2},{\ca+\cb/2})   {$b^{2}$};
+    \node[figval] at ({\ca+\cb/2},{\ca/2})       {$ab$};
+    \node[figval] at ({\ca/2},{\ca+\cb/2})       {$ab$};
+    \draw[figaccent,{Stealth[length=1.8mm]}-{Stealth[length=1.8mm]}]
+      (0,-0.5) -- (\ca,-0.5) node[figcote,midway,below] {$a$};
+    \draw[figaccent,{Stealth[length=1.8mm]}-{Stealth[length=1.8mm]}]
+      (\ca,-0.5) -- ({\ca+\cb},-0.5) node[figcote,midway,below] {$b$};
   \end{tikzpicture}}
 
 \endinput

@@ -1,21 +1,21 @@
 ---
-titre: Séance de révision 6e-5e
-surtitre: Une heure · 6e et 5e
+titre: Séance de révision 6e
+surtitre: Une heure · 6e
 accroche: >-
-  Six séries chronométrées qui balaient tout le programme. Fais-les dans
+  Six séries chronométrées qui balaient le programme de 6e. Fais-les dans
   l'ordre : chacune réactive une notion dont la suivante a besoin.
-niveaux: [6e, 5e]
+niveaux: [6e]
 priorite: 3
 pourquoi: >-
   Une heure suffit à repérer les deux ou trois points qui bloquent vraiment.
 duree: 60 min
 domaine: Révision générale
-nomcourt: Séance 1 h · 6e et 5e
+nomcourt: Séance 1 h · 6e
 ---
 
-## Calcul et nombres décimaux
+## Nombres décimaux et calcul
 
-*8 minutes. Sans calculatrice.*
+*10 minutes. Sans calculatrice.*
 
 ::: exo Poser et calculer
 Calcule.
@@ -42,9 +42,9 @@ Le nombre $4\,536$ est-il divisible par 3 ? par 9 ? par 5 ?
 Justifie sans poser les divisions.
 :::
 
-## Fractions et pourcentages
+## Fractions
 
-*10 minutes.*
+*8 minutes.*
 
 ::: exo Simplifier
 Rends chaque fraction irréductible.
@@ -52,50 +52,21 @@ Rends chaque fraction irréductible.
 $\dfrac{42}{56}$ \qquad $\dfrac{24}{36}$ \qquad $\dfrac{75}{100}$
 :::
 
-::: exo Additionner et soustraire
-Calcule et donne le résultat sous forme de fraction simplifiée.
-
-a) $\dfrac34+\dfrac58$ \qquad b) $\dfrac23-\dfrac16$ \qquad c) $1-\dfrac25$
-:::
-
-::: exo Comparer
-Range dans l'ordre croissant : $\dfrac56$ et $\dfrac79$.
-Explique ta méthode en une phrase.
-:::
-
-::: exo Une bouteille
+::: exo Fraction d'une quantité
 Une bouteille contient $1{,}5$ L de jus. On en boit les $\dfrac25$.
 Quelle quantité reste-t-il ?
 :::
 
-::: exo Pourcentages
-a) Calcule 15 % de 240.
-
-b) Un article coûte 80 €. Il est soldé à $-25$ %. Quel est son nouveau prix ?
+::: exo Placer sur une droite graduée
+Place $\dfrac34$, $\dfrac52$ et $\dfrac{7}{4}$ sur une même droite graduée
+allant de 0 à 3, avec un carreau pour $\dfrac14$.
 :::
 
-## Nombres relatifs
-
-*7 minutes. Niveau [[5e]].*
-
-::: exo Calculer
-a) $(-7)+(-5)$ \qquad b) $(-7)+12$ \qquad c) $3-(-8)$ \qquad d) $(-4)-(+9)$
+::: exo Décimal et fraction
+Écris $\dfrac{3}{4}$, $\dfrac{1}{5}$ et $\dfrac{7}{2}$ sous forme décimale.
 :::
 
-::: exo Ranger
-Range dans l'ordre croissant : $-3$ ; $2$ ; $-8$ ; $0$ ; $-1{,}5$.
-:::
-
-::: exo Températures
-À 7 h, il fait $-6$ °C. À 14 h, le thermomètre indique $+9$ °C.
-De combien de degrés la température a-t-elle augmenté ?
-:::
-
-::: exo Programme de calcul
-Pars de $-4$, ajoute $10$, puis soustrais $-3$. Quel nombre obtiens-tu ?
-:::
-
-## Proportionnalité
+## Proportionnalité et pourcentages
 
 *12 minutes. C'est la série la plus importante de la séance.*
 
@@ -119,11 +90,10 @@ Ce tableau est un tableau de proportionnalité.
 Complète les deux cases manquantes.
 :::
 
-::: exo Vitesse moyenne
-Un car parcourt 180 km en 2 h 30.
-Quelle est sa vitesse moyenne en km/h ?
+::: exo Pourcentages
+a) Calcule 15 % de 240.
 
-Attention à l'écriture de la durée.
+b) Un article coûte 80 €. Il est soldé à $-25$ %. Quel est son nouveau prix ?
 :::
 
 ::: exo Échelle
@@ -131,9 +101,9 @@ Sur une carte à l'échelle $\dfrac{1}{25\,000}$, deux villages sont distants de
 Quelle est la distance réelle, en kilomètres ?
 :::
 
-## Grandeurs et géométrie
+## Grandeurs et mesures
 
-*13 minutes. On prendra $\pi \approx 3{,}14$.*
+*12 minutes. On prendra $\pi \approx 3{,}14$.*
 
 ::: exo Rectangle
 Un rectangle mesure $7{,}5$ cm de longueur et 4 cm de largeur.
@@ -150,44 +120,56 @@ Un triangle a une base de 9 cm et une hauteur relative de 6 cm.
 Calcule son aire.
 :::
 
-::: exo Volumes — [[5e]]
-a) Un pavé droit mesure 8 cm sur 5 cm sur 3 cm. Calcule son volume.
+::: exo Conversions
+Complète.
 
-b) Un cylindre a un rayon de 3 cm et une hauteur de 10 cm. Calcule son volume.
+a) $3{,}4$ m $= \dots$ cm \qquad b) $250$ g $= \dots$ kg \qquad
+c) $2$ L $= \dots$ cL \qquad d) $1$ m² $= \dots$ cm²
+:::
+
+::: exo Durées
+Un film commence à 20 h 35 et dure 1 h 50.
+À quelle heure se termine-t-il ?
+:::
+
+## Géométrie plane
+
+*10 minutes. Règle, équerre et compas.*
+
+::: exo Vocabulaire
+Trace un segment $[AB]$ de 6 cm, puis place son milieu $I$.
+Trace ensuite la médiatrice de $[AB]$. Quelle propriété as-tu utilisée ?
+:::
+
+::: exo Cercle
+Trace un cercle de centre $O$ et de rayon 3 cm.
+Place un point $M$ dessus, puis trace le diamètre passant par $M$.
+Quelle est sa longueur ?
 :::
 
 ::: exo Angles
-a) Dans un triangle, deux angles mesurent $47°$ et $68°$. Combien mesure le troisième ?
-
-b) Un triangle isocèle a un angle au sommet de $40°$. Combien mesure chacun des
-angles à la base ?
+Trace un angle de $47°$, puis un angle de $115°$.
+Comment s'appelle chacun d'eux ?
 :::
 
-!fig \triangleangles{47}{68}{?}
+::: exo Construire un triangle
+Construis le triangle $ABC$ tel que $AB = 5$ cm, $AC = 4$ cm et $BC = 3$ cm.
+Que remarques-tu sur cette figure ?
+:::
+
+::: exo Symétrie axiale
+Combien d'axes de symétrie possèdent un carré, un rectangle non carré,
+un triangle équilatéral, un cercle ?
+:::
 
 ## Problèmes
 
-*10 minutes. Rédige : une phrase de réponse est attendue.*
+*8 minutes. Rédige : une phrase de réponse est attendue.*
 
 ::: exo La clôture
 Un jardin rectangulaire mesure 25 m de long et 12 m de large.
 On veut l'entourer d'une clôture qui coûte 8 € le mètre.
 Quel sera le prix total ?
-\lignes[3]
-:::
-
-::: exo La moyenne
-Voici les notes de Lina : 12 ; 15 ; 8 ; 14 ; 11.
-Calcule sa moyenne.
-\lignes[2]
-:::
-
-::: exo Le train
-Un train part à 9 h 45 et arrive à 13 h 15. Il a parcouru 280 km.
-
-a) Quelle est la durée du trajet ?
-
-b) Quelle est sa vitesse moyenne ?
 \lignes[3]
 :::
 
@@ -197,4 +179,14 @@ Parmi ces élèves de 6e, 60 % mangent à la cantine.
 
 Combien d'élèves de 6e mangent à la cantine ?
 \lignes[4]
+:::
+
+::: exo Le train
+Un train part à 9 h 45 et arrive à 13 h 15.
+
+a) Quelle est la durée du trajet ?
+
+b) Il a parcouru 280 km. Combien de kilomètres parcourt-il en moyenne
+par heure ?
+\lignes[3]
 :::

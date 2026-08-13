@@ -1,16 +1,13 @@
 # Fiches de révision — mathématiques 6e, 5e, 4e et 3e
 
-Treize fiches de cours, trois séances chronométrées et un recueil de problèmes,
-produits en **PDF A4** prêts à imprimer. Contenu calé sur les programmes
-officiels :
+Dix-neuf fiches de cours, quatre séances chronométrées — une par classe — et un
+recueil de problèmes, produits en **PDF A4** prêts à imprimer. Contenu calé sur
+les programmes officiels :
 
 - **6e** — arrêté du 10 avril 2025, programme de mathématiques du cycle 3
   (BO n° 16 du 17 avril 2025) ;
 - **5e, 4e et 3e** — arrêté du 18 février 2026, programme du cycle 4
   (BO n° 10 du 5 mars 2026).
-
-Les fiches de cours couvrent la 6e, la 5e et la 4e. La 3e n'a pour l'instant
-que sa séance de révision et sa part du recueil.
 
 Le vocabulaire des rubriques reprend celui des textes officiels :
 *Automatismes*, *Objectifs d'apprentissage*, *Prolongements possibles*.
@@ -19,12 +16,25 @@ La seule couche ajoutée est l'**indice de priorité**, signalé comme tel.
 ## Produire les PDF
 
 ```bash
-./build.sh              # tout
+./build.sh              # tout ce qui a changé
 ./build.sh 03           # seulement ce dont le nom contient « 03 »
+./build.sh --force      # tout recompiler, sans regarder les dates
+JOBS=4 ./build.sh       # brider le parallélisme (défaut : nproc)
 ```
 
-Les PDF arrivent dans `pdf/`. Commencer par `pdf/00-sommaire.pdf`, qui dit
-dans quel ordre lire les autres.
+Les PDF arrivent dans `pdf/`. Deux entrées possibles :
+
+- **`pdf/00-sommaire.pdf`** — la carte des révisions, qui dit dans quel ordre
+  lire les autres ;
+- **`pdf/00-complet.pdf`** — le classeur entier en un seul document, engendré
+  depuis les **mêmes sources**, avec un sommaire donnant les numéros de page.
+
+Un document n'est reconstruit que si sa source, ou l'un des fichiers du socle
+(classe LaTeX, figures, `design.yaml`, précompilateur), est plus récent que son
+PDF. Retoucher une fiche ne relance donc qu'une compilation. Les documents
+agrégés dépendent de plus de choses : le sommaire et le classeur complet
+vieillissent dès qu'un en-tête YAML bouge quelque part, le recueil dès qu'un
+problème change.
 
 `pdf/` n'est **pas versionné** : les PDF sont engendrés depuis les sources et
 publiés en actifs de release. Pour les récupérer sans rien installer, prendre
@@ -38,7 +48,31 @@ git tag v1.1 && git push origin v1.1
 release `v1.1`. Un déclenchement manuel du workflow produit les mêmes fichiers
 en artefact du run, sans créer de release.
 
-Prérequis : `node` et [Tectonic](https://tectonic-typesetting.github.io).
+## Vérifier les PDF
+
+```bash
+npm run check           # ou : node tools/verifier.mjs pdf/*.pdf
+```
+
+Une compilation verte ne garantit pas un PDF sain. `tools/verifier.mjs`
+reprend les fichiers produits et cherche trois défauts que Tectonic laisse
+passer sans rien dire :
+
+- les **renvois non résolus** — un `\pageref` resté à `??` ;
+- les **polices non embarquées**, qui feraient rendre le document autrement
+  ailleurs ;
+- les **signets pollués** : hyperref écrit les titres du panneau de navigation
+  en texte pur, et toute commande non neutralisée par
+  `\pdfstringdefDisableCommands` y apparaît en clair (`color push rgb 0.10196…`
+  au lieu de `4e Multiplier et diviser`). Ce défaut-là ne se voit jamais à
+  l'impression.
+
+`build.sh` signale en plus les **caractères absents des polices** — ceux que
+XeTeX remplace silencieusement par un carré vide. Le contrôle tourne aussi
+dans la CI, avant la publication de la release.
+
+Prérequis : `node`, `poppler-utils` et
+[Tectonic](https://tectonic-typesetting.github.io).
 Aucune installation de TeX Live n'est nécessaire — Tectonic est un binaire
 unique qui télécharge à la demande les seuls paquets utilisés :
 
@@ -61,6 +95,7 @@ problemes/recueil/   un fichier par problème
       ├─ tools/fiche2tex.mjs ───────────►  build/*.tex
       ├─ tools/recueil.mjs ─────────────►  build/recueil*.tex
       ├─ tools/sommaire.mjs ────────────►  build/00-sommaire.tex
+      ├─ tools/complet.mjs ─────────────►  build/00-complet.tex
       │
       └─ tectonic (XeLaTeX) ────────────►  pdf/*.pdf
 
@@ -76,6 +111,14 @@ YAML et relancer `./build.sh`.
 De même, `pdf/00-sommaire.pdf` est **engendré** depuis les en-têtes des fiches :
 modifier la priorité d'une fiche met la carte des révisions à jour toute seule.
 
+`pdf/00-complet.pdf` recycle la chaîne entière plutôt que d'en doubler une
+partie : `tools/complet.mjs` fait précompiler chaque source comme d'habitude,
+récupère de chacune son préambule de métadonnées et son corps, puis rejoue les
+métadonnées avant chaque `\entetefiche`. Les cartouches, les jauges et les
+pieds de page suivent donc document par document, et le sommaire — celui de
+`tools/sommaire.mjs`, avec une colonne en plus — pointe des `\pageref` vers les
+ancres posées à chaque changement de document.
+
 Le pied de page dit deux choses différentes selon la page :
 
 - **page 1** — la *version* du document, déclarée par `version:` dans l'en-tête
@@ -88,6 +131,13 @@ Le pied de page dit deux choses différentes selon la page :
 La version ne bouge pas toute seule : c'est à l'auteur de l'incrémenter quand
 le contenu change. Une version qui s'incrémenterait à chaque compilation ne
 distinguerait plus une correction d'une simple réimpression.
+
+Dans `00-complet.pdf`, cette règle s'inverse : la version, la date de tirage,
+l'auteur, l'adresse du dépôt et les licences sont annoncés une seule fois sur
+la **page de garde**, et chaque première page de document garde donc son titre
+en pied — c'est ce que fait `\sanspiedversion`. L'auteur et l'adresse du dépôt
+ne sont pas saisis dans le générateur : ils sont lus dans `package.json`, seul
+endroit du projet qui les déclare déjà.
 
 ## Écrire une fiche
 
@@ -152,6 +202,7 @@ Ce qui se trompe une fois sur trois.
 | ` ```tikz … ``` ` | figure TikZ écrite à la main, centrée |
 | ` ```latex … ``` ` | LaTeX brut, transmis tel quel |
 | `!saut` | saut de page |
+| `✔` | coche de contrôle (relayée par `\coche`, aucune police du document n'ayant le glyphe) |
 | `[[6e]]` `[[5e]]` `[[4e]]` `[[3e]]` | pastille de niveau, teinte croissante |
 | `->` | flèche |
 | `6e` `5e` | exposant automatique |
@@ -169,7 +220,9 @@ pastille. Dans le corps de l'encadré, ou dans un titre de section, aucun souci.
 `\droitegraduee` · `\droitegradueerelatifs` · `\schemabarres` · `\repereplan`
 · `\pavedroit` · `\cylindrerev` · `\prismedroit` · `\disqueraye`
 · `\triangleangles` · `\droitesparalleles` · `\tableaupropo`
-· `\tableaunumeration` · `\tableaucarres`
+· `\tableaunumeration` · `\tableaucarres` · `\trianglepythagore`
+· `\figuretranslation` · `\droitedesmilieux` · `\configthales`
+· `\configpapillon` · `\triangletrigo` · `\carreidentite`
 
 Elles sont définies et documentées dans `latex/figures.sty`.
 

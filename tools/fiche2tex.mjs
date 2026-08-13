@@ -30,6 +30,7 @@
 
 import fs from 'node:fs';
 import * as yaml from 'js-yaml';
+import { formaterDuree } from './duree.mjs';
 
 const [, , entree, sortie] = process.argv;
 if (!entree) {
@@ -68,6 +69,8 @@ function texteEnLigne(t) {
   s = s.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '\\emph{$1}');
   s = s.replace(/`([^`]+)`/g, '\\texttt{$1}');
   s = s.replace(/(?<![-<=])->(?!>)/g, '\\fleche{}');
+  // Aucune police du document n'a U+2714 : on passe par la classe.
+  s = s.replace(/[✔✓]/g, '\\coche{}');
   s = s.replace(NIVEAUX, '$1\\ieme{}');
   return s;
 }
@@ -237,7 +240,7 @@ if (meta.accroche) pousser(`\\accroche{${enLigne(meta.accroche)}}`);
 pousser(`\\niveaux{${niveauxTex(meta.niveaux)}}`);
 pousser(`\\priorite{${meta.priorite ?? 2}}`);
 if (meta.pourquoi) pousser(`\\pourquoi{${enLigne(meta.pourquoi)}}`);
-pousser(`\\duree{${enLigne(meta.duree)}}`);
+pousser(`\\duree{${enLigne(formaterDuree(meta.duree))}}`);
 pousser(`\\domaine{${enLigne(meta.domaine)}}`);
 
 // Nom court du pied de page. À défaut d'être donné, on le fabrique à partir

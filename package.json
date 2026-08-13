@@ -2,9 +2,16 @@
   "name": "fiches-maths-college",
   "version": "1.0.0",
   "private": true,
-  "description": "Fiches de révision et feuilles d'exercices de mathématiques 6e/5e, produites en PDF A4",
+  "description": "Fiches de révision et feuilles d'exercices de mathématiques 6e à 3e, produites en PDF A4",
+  "author": "David Berlioz",
+  "homepage": "https://github.com/quazardous/fr_college_math",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quazardous/fr_college_math.git"
+  },
   "scripts": {
-    "build": "./build.sh"
+    "build": "./build.sh",
+    "check": "node tools/verifier.mjs pdf/*.pdf"
   },
   "dependencies": {
     "js-yaml": "^4.1.0"

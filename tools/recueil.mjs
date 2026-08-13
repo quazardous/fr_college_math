@@ -24,6 +24,7 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import * as yaml from 'js-yaml';
+import { formaterDuree } from './duree.mjs';
 
 const ici = path.dirname(fileURLToPath(import.meta.url));
 const [, , dossier, sortieEnonces, sortieCorrige] = process.argv;
@@ -96,7 +97,7 @@ function document(titre, accroche, duree, contenus) {
   l.push(`\\niveaux{${(chapeau.niveaux ?? ['6e', '5e']).join(' · ').replace(/\b([3-6])e\b/g, '$1\\ieme{}')}}`);
   l.push(`\\priorite{${chapeau.priorite ?? 3}}`);
   if (chapeau.pourquoi) l.push(`\\pourquoi{${echapper(chapeau.pourquoi)}}`);
-  l.push(`\\duree{${echapper(duree)}}`);
+  l.push(`\\duree{${echapper(formaterDuree(duree))}}`);
   l.push(`\\domaine{${echapper(chapeau.domaine)}}`);
   l.push(`\\nomcourt{${echapper(titre)}}`);
   l.push(`\\versiondoc{${echapper(chapeau.version ?? '1.0')}}`);
@@ -138,7 +139,7 @@ problemes.forEach((p, i) => {
     }
   }
   corpsEnonces.push(
-    `\\enteteprobleme{${i + 1}}{${echapper(p.meta.titre)}}{${d}}{${echapper(p.meta.duree)}}{${echapper((p.meta.notions ?? []).join(' · '))}}`
+    `\\enteteprobleme{${i + 1}}{${echapper(p.meta.titre)}}{${d}}{${echapper(formaterDuree(p.meta.duree))}}{${echapper((p.meta.notions ?? []).join(' · '))}}`
   );
   corpsEnonces.push(versTex(p.enonce), '');
 });
@@ -157,7 +158,7 @@ if (sortieCorrige) {
     if (!p.solution) return;
     const d = p.meta.difficulte ?? 3;
     corpsCorrige.push(
-      `\\enteteprobleme{${i + 1}}{${echapper(p.meta.titre)}}{${d}}{${echapper(p.meta.duree)}}{${echapper((p.meta.notions ?? []).join(' · '))}}`
+      `\\enteteprobleme{${i + 1}}{${echapper(p.meta.titre)}}{${d}}{${echapper(formaterDuree(p.meta.duree))}}{${echapper((p.meta.notions ?? []).join(' · '))}}`
     );
     corpsCorrige.push(versTex(p.solution), '');
   });

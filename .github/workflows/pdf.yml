@@ -46,6 +46,11 @@ jobs:
       - name: Construire
         run: ./build.sh
 
+      # Une compilation verte peut laisser passer un renvoi non résolu, une
+      # police non embarquée ou des commandes LaTeX dans les signets.
+      - name: Vérifier les PDF
+        run: npm run check
+
       - name: Artefact du run
         uses: actions/upload-artifact@v4
         with:

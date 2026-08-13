@@ -5,15 +5,28 @@
  * une fiche met le sommaire à jour au prochain build.
  *
  *   node tools/sommaire.mjs fiches problemes build/00-sommaire.tex
+ *
+ * Le fichier sert aussi de bibliothèque : `tools/complet.mjs` importe
+ * `contexte()` et `corpsSommaire()` pour rebâtir les mêmes tableaux en tête du
+ * document complet, avec en plus une colonne de numéros de page.
  */
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import * as yaml from 'js-yaml';
+import { enHeures, formaterDuree } from './duree.mjs';
 
-const [, , dossierFiches, dossierProblemes, sortie] = process.argv;
+export const ORDRE_NIVEAUX = ['6e', '5e', '4e', '3e'];
 
-function lireEntetes(dossier) {
+export const ech = (s) => String(s ?? '').replace(/([%&#])/g, '\\$1');
+export const niv = (v) =>
+  (Array.isArray(v) ? v.join(' · ') : String(v ?? '')).replace(/\b([3-6])e\b/g, '$1\\ieme{}');
+
+/** Nom de base d'un document, tel que le portent build/<base>.tex et pdf/<base>.pdf. */
+export const base = (d) => d.fichier.replace(/\.md$/, '');
+
+export function lireEntetes(dossier) {
   if (!fs.existsSync(dossier)) return [];
   return fs
     .readdirSync(dossier)
@@ -27,123 +40,179 @@ function lireEntetes(dossier) {
     .filter(Boolean);
 }
 
-const fiches = lireEntetes(dossierFiches);
-const problemes = lireEntetes(dossierProblemes);
-
-// Le recueil n'est pas un .md : son chapeau vit dans problemes/recueil/_recueil.yaml,
-// et son nombre de problèmes se compte sur le disque. Rien n'est saisi ici.
-const dossierRecueil = path.join(dossierProblemes ?? '', 'recueil');
-let recueil = null;
-if (fs.existsSync(path.join(dossierRecueil, '_recueil.yaml'))) {
-  recueil = yaml.load(fs.readFileSync(path.join(dossierRecueil, '_recueil.yaml'), 'utf8'));
-  recueil.nombre = fs
-    .readdirSync(dossierRecueil)
-    .filter((f) => f.endsWith('.md') && !f.startsWith('_')).length;
+/** Le recueil n'est pas un .md : son chapeau vit dans _recueil.yaml, et son
+ *  nombre de problèmes se compte sur le disque. */
+export function lireRecueil(dossierProblemes) {
+  const dossier = path.join(dossierProblemes ?? '', 'recueil');
+  const chapeau = path.join(dossier, '_recueil.yaml');
+  if (!fs.existsSync(chapeau)) return null;
+  const r = yaml.load(fs.readFileSync(chapeau, 'utf8'));
+  r.dossier = dossier;
+  r.nombre = fs.readdirSync(dossier).filter((f) => f.endsWith('.md') && !f.startsWith('_')).length;
+  return r;
 }
 
-// Les niveaux couverts par le projet : l'union de ceux que déclarent les
-// documents, du plus ancien au plus récent.
-const ORDRE_NIVEAUX = ['6e', '5e', '4e', '3e'];
-const niveauxDeclares = new Set(
-  [...fiches, ...problemes, ...(recueil ? [recueil] : [])]
-    .flatMap((d) => (Array.isArray(d.niveaux) ? d.niveaux : d.niveaux ? [d.niveaux] : []))
-    .map(String)
-);
-const niveauxProjet = ORDRE_NIVEAUX.filter((n) => niveauxDeclares.has(n));
+export function contexte(dossierFiches, dossierProblemes) {
+  const fiches = lireEntetes(dossierFiches);
+  const problemes = lireEntetes(dossierProblemes);
+  const recueil = lireRecueil(dossierProblemes);
 
-const ech = (s) => String(s ?? '').replace(/([%&#])/g, '\\$1');
-const niv = (v) => (Array.isArray(v) ? v.join(' · ') : String(v ?? '')).replace(/\b([3-6])e\b/g, '$1\\ieme{}');
+  // Les niveaux couverts par le projet : l'union de ceux que déclarent les
+  // documents, du plus ancien au plus récent.
+  const declares = new Set(
+    [...fiches, ...problemes, ...(recueil ? [recueil] : [])]
+      .flatMap((d) => (Array.isArray(d.niveaux) ? d.niveaux : d.niveaux ? [d.niveaux] : []))
+      .map(String)
+  );
+  const niveaux = ORDRE_NIVEAUX.filter((n) => declares.has(n));
+  return { fiches, problemes, recueil, niveaux };
+}
 
-const l = [];
-const p = (...x) => l.push(...x);
+export { enHeures, formaterDuree };
 
-p('% Fichier engendré par tools/sommaire.mjs — ne pas modifier à la main.');
-p('\\documentclass{fiche}', '');
-p('\\surtitre{Par où commencer}');
-p('\\titrefiche{Carte des révisions}');
-p("\\accroche{Toutes les leçons ne se valent pas. Cette page dit lesquelles rapportent le plus, et dans quel ordre les reprendre quand le temps manque.}");
-p(`\\niveaux{${niv(niveauxProjet)}}`);
-p('\\priorite{3}');
-p("\\pourquoi{Réviser dans le désordre coûte du temps : trois leçons portent tout le reste.}");
-const total = fiches.reduce((s, f) => s + (parseInt(f.duree) || 0), 0);
-p(`\\duree{${total} min}`);
-p('\\domaine{Toutes les fiches}');
-p('\\nomcourt{Carte des révisions}');
-p("\\versiondoc{1.0}");
-p('', '\\begin{document}', '\\entetefiche', '');
+export const dureeTotale = (fiches) =>
+  enHeures(fiches.reduce((s, f) => s + (parseInt(f.duree) || 0), 0));
 
-/* --------------------------------------------------------- légende */
-p('\\section{Comment lire la priorité}');
-p('\\begin{tableaufiche}{@{}G{26mm} G{28mm} Y@{}}');
-p('\\ligneentete \\entetecell{Repère} & \\entetecell{Niveau} & \\entetecell{Ce que ça veut dire}\\\\');
-p('\\jaugen{prioritetrois}{3}{3} & \\textbf{Incontournable} & Sert dans toutes les autres leçons. À revoir en premier, sans exception.\\\\');
-p('\\jaugen{prioritedeux}{2}{3} & \\textbf{Important} & Attendu du programme, à savoir faire seul.\\\\');
-p('\\jaugen{prioriteun}{1}{3} & \\textbf{Complément} & Utile, mais secondaire si le temps manque.\\\\');
-p('\\end{tableaufiche}', '');
+const porte = (d, n) => (Array.isArray(d.niveaux) ? d.niveaux : [d.niveaux]).includes(n);
 
-/* --------------------------------------------------------- les fiches */
-const parPriorite = [3, 2, 1];
-// Le titre suit la donnée : pas de « trois » codé en dur qui mentirait
-// dès qu'une fiche change de priorité.
-const nombres = ['aucune', 'une', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit'];
-const titres = (n) => ({
-  3: `Les ${nombres[n] ?? n} leçons qui portent tout le reste`,
-  2: 'À maîtriser ensuite',
-  1: 'Si le temps le permet',
-});
+/**
+ * Le corps du sommaire.
+ *   avecPages : ajoute une colonne « Page » remplie par \pageref{doc:<base>}.
+ *               Réservé au document complet, seul endroit où ces ancres existent.
+ */
+export function corpsSommaire({ fiches, problemes, recueil, niveaux }, { avecPages = false } = {}) {
+  const l = [];
+  const p = (...x) => l.push(...x);
+  const colPage = avecPages ? ' G{11mm}' : '';
+  const enttPage = avecPages ? ' & \\entetecell{Page}' : '';
+  const page = (b) => (avecPages ? ` & \\pageref{doc:${b}}` : '');
 
-for (const niveau of parPriorite) {
-  const lot = fiches.filter((f) => (f.priorite ?? 2) === niveau);
-  if (!lot.length) continue;
-  p(`\\section{${titres(lot.length)[niveau]}}`);
-  p('\\begin{tableaufiche}{@{}G{7mm} Y G{16mm} G{14mm} G{17mm}@{}}');
-  p('\\ligneentete \\entetecell{Nº} & \\entetecell{Fiche} & \\entetecell{Niveau} & \\entetecell{Durée} & \\entetecell{Priorité}\\\\');
-  for (const f of lot) {
-    const num = f.fichier.slice(0, 2);
-    const coul = niveau === 3 ? 'prioritetrois' : niveau === 2 ? 'prioritedeux' : 'prioriteun';
+  /* ------------------------------------------------------- légende */
+  p('\\section{Comment lire la priorité}');
+  p('\\begin{tableaufiche}{@{}G{26mm} G{28mm} Y@{}}');
+  p('\\ligneentete \\entetecell{Repère} & \\entetecell{Niveau} & \\entetecell{Ce que ça veut dire}\\\\');
+  p('\\jaugen{prioritetrois}{3}{3} & \\textbf{Incontournable} & Sert dans toutes les autres leçons. À revoir en premier, sans exception.\\\\');
+  p('\\jaugen{prioritedeux}{2}{3} & \\textbf{Important} & Attendu du programme, à savoir faire seul.\\\\');
+  p('\\jaugen{prioriteun}{1}{3} & \\textbf{Complément} & Utile, mais secondaire si le temps manque.\\\\');
+  p('\\end{tableaufiche}', '');
+
+  /* ------------------------------------------------------- les fiches */
+  // Le titre suit la donnée : pas de « trois » codé en dur qui mentirait
+  // dès qu'une fiche change de priorité.
+  const nombres = ['aucune', 'une', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf', 'dix'];
+  const titres = (n) => ({
+    3: `Les ${nombres[n] ?? n} leçons qui portent tout le reste`,
+    2: 'À maîtriser ensuite',
+    1: 'Si le temps le permet',
+  });
+
+  for (const niveau of [3, 2, 1]) {
+    const lot = fiches.filter((f) => (f.priorite ?? 2) === niveau);
+    if (!lot.length) continue;
+    p(`\\section{${titres(lot.length)[niveau]}}`);
+    p(`\\begin{tableaufiche}{@{}G{7mm} Y G{16mm} G{14mm} G{17mm}${colPage}@{}}`);
     p(
-      `${num} & \\textbf{${ech(f.titre)}} \\newline {\\fsBadgeSource\\color{encredouce}${ech(f.pourquoi)}} & ` +
-        `${niv(f.niveaux)} & ${ech(f.duree)} & \\jaugen{${coul}}{${niveau}}{3}\\\\`
+      '\\ligneentete \\entetecell{Nº} & \\entetecell{Fiche} & \\entetecell{Niveau} & ' +
+        `\\entetecell{Durée} & \\entetecell{Priorité}${enttPage}\\\\`
+    );
+    for (const f of lot) {
+      const coul = niveau === 3 ? 'prioritetrois' : niveau === 2 ? 'prioritedeux' : 'prioriteun';
+      p(
+        `${f.fichier.slice(0, 2)} & \\textbf{${ech(f.titre)}} \\newline ` +
+          `{\\fsBadgeSource\\color{encredouce}${ech(f.pourquoi)}} & ${niv(f.niveaux)} & ` +
+          `${ech(formaterDuree(f.duree))} & \\jaugen{${coul}}{${niveau}}{3}${page(base(f))}\\\\`
+      );
+    }
+    p('\\end{tableaufiche}', '');
+  }
+
+  /* ------------------------------------------------------- s'entraîner */
+  if (problemes.length || recueil) {
+    p("\\section{S'entraîner}");
+    p(`\\begin{tableaufiche}{@{}Y G{16mm} G{14mm}${colPage}@{}}`);
+    p(
+      `\\ligneentete \\entetecell{Document} & \\entetecell{Niveau} & \\entetecell{Durée}${enttPage}\\\\`
+    );
+    for (const d of problemes) {
+      p(`\\textbf{${ech(d.titre)}} & ${niv(d.niveaux)} & ${ech(formaterDuree(d.duree))}${page(base(d))}\\\\`);
+    }
+    if (recueil) {
+      p(
+        `\\textbf{${ech(recueil.titre)}} \\newline ` +
+          `{\\fsBadgeSource\\color{encredouce}${recueil.nombre} problèmes, du guidé vers l'ouvert} & ` +
+          `${niv(recueil.niveaux)} & ${ech(formaterDuree(recueil.duree))}${page('recueil')}\\\\`
+      );
+    }
+    p('\\end{tableaufiche}', '');
+  }
+
+  /* ------------------------------------------------------- plan par niveau */
+  // Rien n'est nommé à la main : le plan se recalcule quand une fiche change
+  // de priorité ou de niveau, et quand une séance apparaît.
+  const enonces = problemes.filter((d) => !/-corrige\.md$/.test(d.fichier));
+  p('\\section{Par où commencer selon ta classe}');
+  p('\\begin{tableaufiche}{@{}G{13mm} Y G{40mm}@{}}');
+  p(
+    '\\ligneentete \\entetecell{Classe} & \\entetecell{Fiches à revoir en premier} & ' +
+      '\\entetecell{Séance chronométrée}\\\\'
+  );
+  for (const n of niveaux) {
+    const nums = fiches
+      .filter((f) => porte(f, n) && (f.priorite ?? 2) === 3)
+      .map((f) => f.fichier.slice(0, 2));
+    const seance = enonces.find((d) => porte(d, n));
+    p(
+      `${niv([n])} & ${nums.length ? nums.join(' · ') : '\\emph{aucune}'} & ` +
+        `${seance ? ech(seance.titre) : '—'}\\\\`
     );
   }
   p('\\end{tableaufiche}', '');
+
+  p('\\begin{methode}[Si tu ne disposes que de trois heures]');
+  p('\\begin{enumerate}[leftmargin=6mm,label=\\textbf{\\arabic*.}]');
+  p("  \\item \\textbf{Soir 1} — les fiches de ta ligne dans le tableau ci-dessus. Sans elles, le reste ne tient pas.");
+  p("  \\item \\textbf{Soir 2} — la séance chronométrée de ton niveau, puis, pour chaque série qui a coincé, la fiche correspondante.");
+  p("  \\item \\textbf{Soir 3} — le recueil de problèmes, en commençant par la partie qui correspond à ton aisance.");
+  p('\\end{enumerate}');
+  p('\\end{methode}', '');
+
+  p('\\begin{retenir}[La règle qui vaut pour toutes les fiches]');
+  p("Lis l'encadré \\textbf{Automatismes} en premier, et vérifie que chaque ligne sort sans réfléchir. Si l'une résiste, c'est là qu'il faut travailler — pas ailleurs.");
+  p('\\end{retenir}');
+
+  return l;
 }
 
-/* --------------------------------------------------------- s'entraîner */
-if (problemes.length) {
-  p("\\section{S'entraîner}");
-  p('\\begin{tableaufiche}{@{}Y G{16mm} G{14mm}@{}}');
-  p('\\ligneentete \\entetecell{Document} & \\entetecell{Niveau} & \\entetecell{Durée}\\\\');
-  for (const d of problemes) {
-    p(`\\textbf{${ech(d.titre)}} & ${niv(d.niveaux)} & ${ech(d.duree)}\\\\`);
-  }
-  if (recueil) {
-    p(
-      `\\textbf{${ech(recueil.titre)}} \\newline ` +
-        `{\\fsBadgeSource\\color{encredouce}${recueil.nombre} problèmes, du guidé vers l'ouvert} & ` +
-        `${niv(recueil.niveaux)} & ${ech(recueil.duree)}\\\\`
-    );
-  }
-  p('\\end{tableaufiche}', '');
+/* ------------------------------------------------------------------ *
+ * En ligne de commande : le sommaire autonome, pdf/00-sommaire.pdf
+ * ------------------------------------------------------------------ */
+const appeleDirectement =
+  process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
+if (appeleDirectement) {
+  const [, , dossierFiches, dossierProblemes, sortie] = process.argv;
+  const ctx = contexte(dossierFiches, dossierProblemes);
+
+  const l = [];
+  const p = (...x) => l.push(...x);
+  p('% Fichier engendré par tools/sommaire.mjs — ne pas modifier à la main.');
+  p('\\documentclass{fiche}', '');
+  p('\\surtitre{Par où commencer}');
+  p('\\titrefiche{Carte des révisions}');
+  p("\\accroche{Toutes les leçons ne se valent pas. Cette page dit lesquelles rapportent le plus, et dans quel ordre les reprendre quand le temps manque.}");
+  p(`\\niveaux{${niv(ctx.niveaux)}}`);
+  p('\\priorite{3}');
+  p("\\pourquoi{Réviser dans le désordre coûte du temps : trois leçons portent tout le reste.}");
+  p(`\\duree{${dureeTotale(ctx.fiches)}}`);
+  p('\\domaine{Toutes les fiches}');
+  p('\\nomcourt{Carte des révisions}');
+  p('\\versiondoc{1.0}');
+  p('', '\\begin{document}', '\\entetefiche', '');
+  p(...corpsSommaire(ctx));
+  p('', '\\end{document}');
+
+  fs.writeFileSync(sortie, l.join('\n') + '\n');
+  console.log(
+    `sommaire : ${ctx.fiches.length} fiches, ${ctx.problemes.length + (ctx.recueil ? 1 : 0)} documents d'entraînement`
+  );
 }
-
-/* --------------------------------------------------------- plan de révision */
-p("\\section{Un plan de révision qui tient en trois soirs}");
-p('\\begin{methode}[Si tu ne disposes que de trois heures]');
-p('\\begin{enumerate}[leftmargin=6mm,label=\\textbf{\\arabic*.}]');
-p("  \\item \\textbf{Soir 1} — les fiches marquées \\emph{incontournable} ci-dessus, puis la séance d'une heure. Sans elles, le reste ne tient pas.");
-p('  \\item \\textbf{Soir 2} — les fiches \\emph{important} qui correspondent au niveau : relatifs et calcul littéral en 5\\ieme{}, géométrie plane en 6\\ieme{}.');
-p("  \\item \\textbf{Soir 3} — le recueil de problèmes, en commençant par la partie qui correspond à ton aisance.");
-p('\\end{enumerate}');
-p('\\end{methode}', '');
-
-p('\\begin{retenir}[La règle qui vaut pour toutes les fiches]');
-p("Lis l'encadré \\textbf{Automatismes} en premier, et vérifie que chaque ligne sort sans réfléchir. Si l'une résiste, c'est là qu'il faut travailler — pas ailleurs.");
-p('\\end{retenir}');
-
-p('', '\\end{document}');
-
-fs.writeFileSync(sortie, l.join('\n') + '\n');
-console.log(
-  `sommaire : ${fiches.length} fiches, ${problemes.length + (recueil ? 1 : 0)} documents d'entraînement`
-);
