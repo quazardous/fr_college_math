@@ -335,7 +335,7 @@
 
 % ---------------------------------------------------------------- divers
 % Pastille de niveau. L'argument est le chiffre seul : \niv{5}.
-% Trois teintes de l'accent, de la plus claire (6e) à la plus dense (4e) :
+% Quatre teintes de l'accent, de la plus claire (6e) à la plus dense (3e) :
 % l'échelle est ordonnée mais reste distincte de celle des priorités, pour
 % que le niveau et l'importance ne se disputent pas la lecture.
 \newcommand{\pastilleniveau}[3]{%
@@ -343,9 +343,10 @@
     \sffamily\fsBadgeNiveau\bfseries\color{#2}%
     \hspace{0.4mm}#3\ieme{}\hspace{0.4mm}}}}
 \newcommand{\niv}[1]{%
-  \ifnum#1=4 \pastilleniveau{accent}{white}{#1}%
+  \ifnum#1=3 \pastilleniveau{accentdense}{white}{#1}%
+  \else\ifnum#1=4 \pastilleniveau{accent}{white}{#1}%
   \else\ifnum#1=5 \pastilleniveau{accentmoyen}{accent}{#1}%
-  \else \pastilleniveau{accentclair}{accent}{#1}\fi\fi}
+  \else \pastilleniveau{accentclair}{accent}{#1}\fi\fi\fi}
 \newcommand{\motcle}[1]{\textbf{#1}}
 \newcommand{\separateur}{\par\vspace{1.2mm}{\color{trait}\rule{\linewidth}{0.4pt}}\par\vspace{1mm}}
 \newcommand{\fleche}{\ensuremath{\rightarrow}}

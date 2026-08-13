@@ -30,6 +30,27 @@ function lireEntetes(dossier) {
 const fiches = lireEntetes(dossierFiches);
 const problemes = lireEntetes(dossierProblemes);
 
+// Le recueil n'est pas un .md : son chapeau vit dans problemes/recueil/_recueil.yaml,
+// et son nombre de problèmes se compte sur le disque. Rien n'est saisi ici.
+const dossierRecueil = path.join(dossierProblemes ?? '', 'recueil');
+let recueil = null;
+if (fs.existsSync(path.join(dossierRecueil, '_recueil.yaml'))) {
+  recueil = yaml.load(fs.readFileSync(path.join(dossierRecueil, '_recueil.yaml'), 'utf8'));
+  recueil.nombre = fs
+    .readdirSync(dossierRecueil)
+    .filter((f) => f.endsWith('.md') && !f.startsWith('_')).length;
+}
+
+// Les niveaux couverts par le projet : l'union de ceux que déclarent les
+// documents, du plus ancien au plus récent.
+const ORDRE_NIVEAUX = ['6e', '5e', '4e', '3e'];
+const niveauxDeclares = new Set(
+  [...fiches, ...problemes, ...(recueil ? [recueil] : [])]
+    .flatMap((d) => (Array.isArray(d.niveaux) ? d.niveaux : d.niveaux ? [d.niveaux] : []))
+    .map(String)
+);
+const niveauxProjet = ORDRE_NIVEAUX.filter((n) => niveauxDeclares.has(n));
+
 const ech = (s) => String(s ?? '').replace(/([%&#])/g, '\\$1');
 const niv = (v) => (Array.isArray(v) ? v.join(' · ') : String(v ?? '')).replace(/\b([3-6])e\b/g, '$1\\ieme{}');
 
@@ -41,7 +62,7 @@ p('\\documentclass{fiche}', '');
 p('\\surtitre{Par où commencer}');
 p('\\titrefiche{Carte des révisions}');
 p("\\accroche{Toutes les leçons ne se valent pas. Cette page dit lesquelles rapportent le plus, et dans quel ordre les reprendre quand le temps manque.}");
-p('\\niveaux{6\\ieme{} · 5\\ieme{}}');
+p(`\\niveaux{${niv(niveauxProjet)}}`);
 p('\\priorite{3}');
 p("\\pourquoi{Réviser dans le désordre coûte du temps : trois leçons portent tout le reste.}");
 const total = fiches.reduce((s, f) => s + (parseInt(f.duree) || 0), 0);
@@ -96,7 +117,13 @@ if (problemes.length) {
   for (const d of problemes) {
     p(`\\textbf{${ech(d.titre)}} & ${niv(d.niveaux)} & ${ech(d.duree)}\\\\`);
   }
-  p('\\textbf{Recueil de problèmes} \\newline {\\fsBadgeSource\\color{encredouce}douze problèmes, du guidé vers l\'ouvert} & 6\\ieme{} · 5\\ieme{} & 2 h\\\\');
+  if (recueil) {
+    p(
+      `\\textbf{${ech(recueil.titre)}} \\newline ` +
+        `{\\fsBadgeSource\\color{encredouce}${recueil.nombre} problèmes, du guidé vers l'ouvert} & ` +
+        `${niv(recueil.niveaux)} & ${ech(recueil.duree)}\\\\`
+    );
+  }
   p('\\end{tableaufiche}', '');
 }
 
@@ -117,4 +144,6 @@ p('\\end{retenir}');
 p('', '\\end{document}');
 
 fs.writeFileSync(sortie, l.join('\n') + '\n');
-console.log(`sommaire : ${fiches.length} fiches, ${problemes.length + 1} documents d'entraînement`);
+console.log(
+  `sommaire : ${fiches.length} fiches, ${problemes.length + (recueil ? 1 : 0)} documents d'entraînement`
+);

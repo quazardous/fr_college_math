@@ -90,6 +90,7 @@ couleurs:
   accent: "1D4E6F"         # bleu structurel : filets, titres, liens
   accent_clair: "E3EDF3"
   accent_moyen: "C3DAE7"   # teinte intermédiaire de l'échelle des niveaux
+  accent_dense: "0D2E42"   # cran le plus dense de l'échelle des niveaux (3e)
 
   # Gradation de priorité — reprise à l'identique dans la jauge,
   # l'en-tête de page et les encadrés.
