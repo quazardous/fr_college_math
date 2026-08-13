@@ -87,6 +87,7 @@ niveaux: [5e]
 priorite: 2          # 3 incontournable · 2 important · 1 complément
 nomcourt: Fiche 4 · Relatifs   # pied de page dès la page 2 (facultatif)
 version: 1.0                   # affichée en pied de page 1 (défaut : 1.0)
+licence: CC BY-SA 4.0          # facultatif, écrase la licence du projet
 pourquoi: Notion neuve, sans laquelle rien ne fonctionne en 4e.
 duree: 25 min
 domaine: Nombres et calculs
@@ -206,3 +207,23 @@ Paul Olivier), format court — autour de cinq minutes, dix au plus.
 
 Elles sont délibérément distinctes : une notion de 4e n'est pas plus importante
 qu'une notion de 6e, elle est seulement plus tardive.
+
+## Licence
+
+Double licence, parce que le code et le contenu n'ont pas les mêmes usages :
+
+| Ce qui est couvert | Licence | Fichier |
+|---|---|---|
+| Fiches, énoncés, corrigés (`fiches/`, `problemes/`, `pdf/`) | **CC BY-SA 4.0** | [`LICENSE-CONTENU.md`](LICENSE-CONTENU.md) |
+| Classe LaTeX, figures, chaîne de production | **MIT** | [`LICENSE`](LICENSE) |
+
+Ni l'une ni l'autre ne s'étend aux **vidéos** pointées par les QR codes, qui
+restent la propriété de leurs auteurs. Les **programmes officiels** sur lesquels
+s'appuie le contenu sont des actes officiels, librement réutilisables. Les
+**polices** embarquées (GUST Font License, SIL OFL 1.1) autorisent
+l'embarquement sans rien imposer au document.
+
+La mention `version 1.0 · CC BY-SA 4.0` apparaît en pied de la première page de
+chaque PDF. Pour changer le titulaire des droits, éditer les deux fichiers de
+licence ; pour changer la licence affichée, la constante `\@licencedoc` dans
+`latex/fiche.cls`, ou `licence:` dans l'en-tête d'un document précis.

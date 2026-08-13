@@ -250,6 +250,7 @@ const nomcourt =
     : meta.titre);
 pousser(`\\nomcourt{${enLigne(nomcourt)}}`);
 pousser(`\\versiondoc{${txt(meta.version ?? '1.0')}}`);
+if (meta.licence) pousser(`\\licencedoc{${enLigne(meta.licence)}}`);
 pousser('', '\\begin{document}', '\\entetefiche', '');
 
 if (meta.automatismes?.items?.length) {

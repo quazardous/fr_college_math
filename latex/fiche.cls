@@ -70,6 +70,11 @@
 % s'affiche en page 1, à la place du nom court — lequel n'y ferait que
 % répéter le grand titre.
 \newcommand{\@versiondoc}{} \newcommand{\versiondoc}[1]{\renewcommand{\@versiondoc}{#1}}
+% Licence du contenu, affichée en page 1 à côté de la version. Valeur par
+% défaut du projet ; une fiche peut la remplacer via « licence: » dans son
+% en-tête YAML.
+\newcommand{\@licencedoc}{CC BY-SA 4.0}
+\newcommand{\licencedoc}[1]{\renewcommand{\@licencedoc}{#1}}
 
 \newcommand{\couleurpriorite}{%
   \ifnum\@priorite=3 prioritetrois\else\ifnum\@priorite=2 prioritedeux\else prioriteun\fi\fi}
@@ -125,7 +130,10 @@
 % seulement à partir de la page 2.
 \newcommand{\piedversion}{%
   \sffamily\fsPiedPage\color{encredouce}%
-  \ifx\@versiondoc\empty\else version~\@versiondoc\fi}
+  \ifx\@versiondoc\empty\else version~\@versiondoc\fi
+  \ifx\@licencedoc\empty\else
+    \ifx\@versiondoc\empty\else\enspace·\enspace\fi
+    \@licencedoc\fi}
 
 \fancypagestyle{premiere}{%
   \fancyhf{}\renewcommand{\headrulewidth}{0pt}%

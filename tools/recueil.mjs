@@ -100,6 +100,7 @@ function document(titre, accroche, duree, contenus) {
   l.push(`\\domaine{${echapper(chapeau.domaine)}}`);
   l.push(`\\nomcourt{${echapper(titre)}}`);
   l.push(`\\versiondoc{${echapper(chapeau.version ?? '1.0')}}`);
+  if (chapeau.licence) l.push(`\\licencedoc{${echapper(chapeau.licence)}}`);
   l.push('', '\\begin{document}', '\\entetefiche', '');
   l.push(...contenus);
   l.push('', '\\end{document}');
