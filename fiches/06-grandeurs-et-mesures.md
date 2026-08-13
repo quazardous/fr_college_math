@@ -5,7 +5,7 @@ accroche: >-
   Périmètre, aire, volume : trois grandeurs différentes, trois unités
   différentes. Les confondre est l'erreur la plus coûteuse de tout le collège,
   bien avant les erreurs de calcul.
-niveaux: [6e, 5e]
+niveaux: [6e, 5e, 4e]
 priorite: 3
 pourquoi: >-
   Toutes les questions concrètes du brevet et de la vie courante passent par là.
@@ -85,8 +85,8 @@ le rayon vaut 5 cm — recopier 10 dans la formule double le résultat.
 :cols G{40mm} Y Y
 | Figure | Formule | Niveau |
 |---|---|---|
-| Carré de côté $c$ | $\mathcal{A} = c\times c$ | 6e |
-| Rectangle | $\mathcal{A} = L\times \ell$ | 6e |
+| Carré de côté $c$ | $\mathcal{A} = c\times c$ | [[6e]] |
+| Rectangle | $\mathcal{A} = L\times \ell$ | [[6e]] |
 | **Triangle** | $\mathcal{A} = \dfrac{\text{base}\times\text{hauteur}}{2}$ | [[5e]] |
 | **Disque** | $\mathcal{A} = \pi\times R^{2}$ | [[5e]] |
 | **Parallélogramme** | $\mathcal{A} = \text{base}\times\text{hauteur}$ | [[5e]] |
@@ -130,6 +130,14 @@ transforme une chambre en timbre-poste.
 ::: retenir Prisme et cylindre, une seule idée
 Dans les deux cas : **aire de la base $\times$ hauteur**. Le cylindre n'est
 qu'un prisme dont la base est un disque. Une formule à retenir, pas deux.
+:::
+
+::: retenir En 4e — la pyramide et le cône : le tiers
+$$V_{\text{pyramide}} = \frac{\mathcal{A}_{\text{base}}\times h}{3}
+\qquad
+V_{\text{cône}} = \frac{\pi R^{2}\times h}{3}$$
+Même base et même hauteur qu'un prisme ou un cylindre, mais **trois fois moins
+de volume**. Voir la fiche 13.
 :::
 
 ::: retenir Volumes et capacités

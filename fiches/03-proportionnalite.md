@@ -5,7 +5,7 @@ accroche: >-
   Si une seule leçon devait être maîtrisée dans toute l'année, c'est celle-ci.
   Recettes, prix, échelles, vitesses, pourcentages, statistiques : elle est
   partout, au collège comme dans la vie courante.
-niveaux: [6e, 5e]
+niveaux: [6e, 5e, 4e]
 priorite: 3
 pourquoi: >-
   La notion la plus rentable du programme : elle irrigue tous les autres chapitres.
@@ -159,6 +159,57 @@ $$\text{prix} = 1{,}25 \times \text{nombre de croissants}$$
 
 La proportionnalité devient ainsi le premier exemple de fonction, notion qui
 sera étudiée en 4e et en 3e.
+
+## [[4e]] Ratios, grandeurs quotients et coefficient multiplicateur
+
+::: definition Le ratio
+Un **ratio** compare des parts entre elles, sans dire le total.
+« Le ciment et le sable sont dans le ratio $2:5$ » signifie que pour 2 seaux de
+ciment, il y a 5 seaux de sable — soit 7 parts en tout.
+:::
+
+::: methode Un partage proportionnel
+Répartir 350 € entre trois personnes selon le ratio $2:3:5$.
+
+Le total des parts vaut $2+3+5 = 10$. Une part vaut donc $350\div 10 = 35$ €.
+Les trois personnes reçoivent $70$ €, $105$ € et $175$ €.
+
+Contrôle : $70+105+175 = 350$. ✔
+:::
+
+::: definition Grandeur quotient
+Une **grandeur quotient** naît de la division de deux grandeurs :
+km/h, €/kg, habitants/km², g/cm³. Elle se lit toujours « par unité ».
+C'est le coefficient de proportionnalité, avec son unité.
+:::
+
+::: retenir Le coefficient multiplicateur
+Une évolution en pourcentage s'applique en **une seule multiplication**.
+
+$$+20\,\%\ \longrightarrow\ \times 1{,}20
+\qquad\qquad
+-25\,\%\ \longrightarrow\ \times 0{,}75$$
+
+Un article à 80 € soldé à $-25\,\%$ coûte $80\times 0{,}75 = 60$ € — sans passer
+par le calcul de la remise.
+:::
+
+::: methode Enchaîner deux évolutions
+Un prix augmente de 10 %, puis baisse de 10 %. Revient-il à sa valeur de départ ?
+
+$$100\times 1{,}10\times 0{,}90 = 99$$
+
+Non : il manque 1 €. Les pourcentages **ne s'additionnent pas** ; les
+coefficients, eux, se multiplient. C'est l'un des résultats les plus
+contre-intuitifs du programme.
+:::
+
+::: definition Quatrième proportionnelle
+Dans un tableau de proportionnalité où trois valeurs sur quatre sont connues,
+la quatrième s'appelle la **quatrième proportionnelle**. On la trouve par le
+coefficient, par la linéarité, ou — désormais autorisé en 4e — par l'égalité
+des rapports.
+:::
 
 ::: prolongement
 Le programme relie la proportionnalité aux grands enjeux contemporains : lire un

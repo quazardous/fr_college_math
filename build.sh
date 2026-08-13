@@ -26,6 +26,12 @@ fi
 FILTRE="${1:-}"
 mkdir -p build pdf
 
+# Purge des fichiers engendrés : sans cela, un document renommé ou supprimé
+# laisserait derrière lui un .tex et un PDF orphelins.
+if [ -z "$FILTRE" ]; then
+  rm -f build/*.tex
+fi
+
 echo "→ jetons de design"
 node tools/design.mjs
 
@@ -71,6 +77,17 @@ for src in build/*.tex fiches/*.tex problemes/*.tex; do
   if [[ "$src" != build/* ]] && [ -e "build/$base.tex" ]; then continue; fi
   compiler "$src" "$base"
 done
+
+if [ -z "$FILTRE" ]; then
+  for vieux in pdf/*.pdf; do
+    [ -e "$vieux" ] || continue
+    base="$(basename "$vieux" .pdf)"
+    if [ ! -e "build/$base.tex" ] && [ ! -e "fiches/$base.tex" ] && [ ! -e "problemes/$base.tex" ]; then
+      rm -f "$vieux"
+      printf '  ⌫ %-40s supprimé (source disparue)\n' "$base"
+    fi
+  done
+fi
 
 echo
 echo "PDF dans ./pdf/"

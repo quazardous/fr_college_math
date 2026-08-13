@@ -1,12 +1,13 @@
-# Fiches de révision — mathématiques 6e et 5e
+# Fiches de révision — mathématiques 6e, 5e et 4e
 
-Onze fiches de cours et deux recueils d'exercices, produits en **PDF A4**
-prêts à imprimer. Contenu calé sur les programmes officiels en vigueur :
+Treize fiches de cours, deux séances chronométrées et un recueil de problèmes,
+produits en **PDF A4** prêts à imprimer. Contenu calé sur les programmes
+officiels :
 
 - **6e** — arrêté du 10 avril 2025, programme de mathématiques du cycle 3
-  (BO n° 16 du 17 avril 2025), applicable depuis la rentrée 2025 ;
-- **5e** — arrêté du 18 février 2026, programme du cycle 4
-  (BO n° 10 du 5 mars 2026), applicable à la rentrée 2026.
+  (BO n° 16 du 17 avril 2025) ;
+- **5e et 4e** — arrêté du 18 février 2026, programme du cycle 4
+  (BO n° 10 du 5 mars 2026).
 
 Le vocabulaire des rubriques reprend celui des textes officiels :
 *Automatismes*, *Objectifs d'apprentissage*, *Prolongements possibles*.
@@ -118,13 +119,17 @@ Ce qui se trompe une fois sur trois.
 | `\| a \| b \|` | tableau, première ligne en en-tête |
 | `!fig \macro{…}` | figure centrée |
 | `!saut` | saut de page |
-| `[[5e]]` | pastille de niveau |
+| `[[6e]]` `[[5e]]` `[[4e]]` | pastille de niveau, teinte croissante |
 | `->` | flèche |
 | `6e` `5e` | exposant automatique |
 | `// texte` | commentaire, absent du PDF |
 
 Tout ce que le précompilateur ne reconnaît pas est transmis tel quel à LaTeX :
 on peut toujours descendre d'un cran quand c'est nécessaire.
+
+**Une seule restriction** : pas de `[[5e]]` dans le *titre* d'un encadré.
+Ces titres passent par `\MakeUppercase`, qui abîmerait le nom de couleur de la
+pastille. Dans le corps de l'encadré, ou dans un titre de section, aucun souci.
 
 ### Les figures disponibles
 
@@ -162,9 +167,20 @@ Un chemin possible.
 
 ## Les vidéos
 
-Chaque QR code pointe vers une vidéo réelle, vérifiée par l'API oEmbed de
-YouTube au moment de l'ajout. Critères : chaîne de référence
-(Yvan Monka, Les Bons Profs, Hedacademy, Maître Lucas, Paul Olivier),
-format court — moins de dix minutes.
+Chaque QR code pointe vers une vidéo réelle : les identifiants proviennent des
+résultats de recherche de YouTube, jamais d'une reconstitution. Le premier lot
+(6e et 5e) a en plus été recoupé un par un via l'API oEmbed. Critères de choix :
+chaîne de référence (Yvan Monka, Les Bons Profs, Hedacademy, Maître Lucas,
+Paul Olivier), format court — autour de cinq minutes, dix au plus.
 
 `tools/yt-search.mjs "requête"` liste des candidats avec durée et nombre de vues.
+
+## Deux échelles visuelles, à ne pas confondre
+
+| Échelle | Palette | Ce qu'elle dit |
+|---|---|---|
+| **Priorité** | rouge / ambre / bleu-gris, jauge à 3 crans | ce qui rapporte le plus à réviser |
+| **Niveau** | trois teintes du bleu d'accent, pastille | l'année où la notion est au programme |
+
+Elles sont délibérément distinctes : une notion de 4e n'est pas plus importante
+qu'une notion de 6e, elle est seulement plus tardive.

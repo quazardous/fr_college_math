@@ -4,7 +4,7 @@ surtitre: Fiche 4 · Nombres et calculs
 accroche: >-
   La grande nouveauté de la 5e. Les nombres négatifs existent pour que
   toute soustraction devienne possible : on peut enfin retirer 8 à 3.
-niveaux: [5e]
+niveaux: [5e, 4e]
 priorite: 2
 pourquoi: >-
   Notion neuve, sans laquelle rien ne fonctionne en 4e ni en 3e.
@@ -27,11 +27,16 @@ videos:
     chaine: Yvan Monka
     duree: "8:47"
     vues: "1 100 000"
-  - id: ZjrmsHRKajg
-    titre: Additions et soustractions — exercices
+  - id: ssNlXZPPnq8
+    titre: Multiplier des nombres relatifs — 4e
+    chaine: Hedacademy
+    duree: "4:24"
+    vues: "65 000"
+  - id: p_-4EYjsOiA
+    titre: Enchaîner des calculs avec des relatifs — 4e
     chaine: Yvan Monka
-    duree: "4:35"
-    vues: "284 000"
+    duree: "7:35"
+    vues: "691 000"
 ---
 
 ## À quoi servent les nombres négatifs
@@ -159,10 +164,45 @@ $$
 La température a augmenté de **15 °C**.
 :::
 
-::: piege Ce qui n'est PAS au programme de 5e
+::: piege Ce qui attend en 5e, et ce qui vient après
 En 5e, on additionne et on soustrait les relatifs — **c'est tout**.
-La multiplication et la division des relatifs sont au programme de 4e.
-Voir une règle des signes pour un produit en 5e, c'est une confusion de niveau.
+La multiplication et la division arrivent en 4e : c'est la section suivante.
+:::
+
+## [[4e]] Multiplier et diviser
+
+::: retenir La règle des signes
+$$(+)\times(+) = + \qquad (-)\times(-) = + \qquad
+  (+)\times(-) = - \qquad (-)\times(+) = -$$
+
+En un mot : **deux signes identiques donnent un résultat positif**, deux signes
+contraires un résultat négatif. La règle est exactement la même pour la division.
+:::
+
+$$(-7)\times(-5) = +35 \qquad (-7)\times 5 = -35 \qquad
+  \frac{-36}{-4} = +9 \qquad \frac{36}{-4} = -9$$
+
+::: methode Plusieurs facteurs : compter les signes moins
+On calcule d'abord le produit des distances à zéro, puis on décide du signe :
+un nombre **pair** de facteurs négatifs donne un résultat positif, un nombre
+**impair** un résultat négatif.
+
+$(-2)\times 3\times(-4)$ : deux facteurs négatifs, donc le résultat est positif,
+et vaut $24$.
+:::
+
+::: piege Le piège qui traverse toute la 4e
+$-3^{2}$ et $(-3)^{2}$ ne sont pas le même nombre : $-9$ contre $+9$.
+La règle des signes ne s'applique qu'à ce qui est **dans** la parenthèse.
+:::
+
+::: methode D'où vient la règle des moins
+Elle n'est pas arbitraire : elle découle de la distributivité. Puisque
+$3+(-3)=0$, on a $(-5)\times\big(3+(-3)\big) = 0$, c'est-à-dire
+$(-15) + (-5)\times(-3) = 0$. Le second terme doit donc valoir $+15$.
+
+Le programme demande justement de construire la règle ainsi, plutôt que de
+l'imposer.
 :::
 
 ::: prolongement

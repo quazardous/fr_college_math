@@ -180,10 +180,11 @@
     \pgfmathsetmacro{\R}{#2}
     \fill[accentclair,opacity=0.7] (0,0) circle (\R);
     \draw[fig] (0,0) circle (\R);
-    \fill[encre] (0,0) circle (0.7mm) node[figleg,below left=0.3mm] {$O$};
-    \draw[figfort] (0,0) -- (\R,0) node[figcote,midway,above,text=prioritetrois] {$R$};
     \draw[figaccent] (-\R,0) -- (\R,0);
-    \node[figcote,below] at (0,-0.1) {$D=2R$};
+    \draw[figfort] (0,0) -- (\R,0) node[figcote,midway,above,text=prioritetrois] {$R$};
+    \fill[encre] (0,0) circle (0.7mm);
+    \node[figleg,above left=0.2mm] at (0,0) {$O$};
+    \node[figcote] at (0,-0.42) {$D=2R$};
   \end{tikzpicture}}
 
 % ---------------------------------------------------------------------
@@ -294,5 +295,74 @@
     & \entetecell{11} & \entetecell{12}\\
     $n^{2}$ & 0 & 1 & 4 & 9 & 16 & 25 & 36 & 49 & 64 & 81 & 100 & 121 & 144\\
   \end{tabular}}
+
+% ---------------------------------------------------------------------
+% \trianglepythagore{côté1}{côté2}{nomA}{nomB}{nomC}
+%   Triangle rectangle en A, avec le codage de l'angle droit et les
+%   trois sommets nommés. Les longueurs sont des unités de dessin.
+% ---------------------------------------------------------------------
+\newcommand{\trianglepythagore}[6][10mm]{%
+  \begin{tikzpicture}[x=#1,y=#1]
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (#2,0);
+    \coordinate (C) at (0,#3);
+    \fill[accentclair,opacity=0.6] (A)--(B)--(C)--cycle;
+    \draw[fig] (A)--(B)--(C)--cycle;
+    \draw[figaccent,line width=0.8pt] (0.28,0) -- (0.28,0.28) -- (0,0.28);
+    \node[figleg,below left]  at (A) {$#4$};
+    \node[figleg,below right] at (B) {$#5$};
+    \node[figleg,above left]  at (C) {$#6$};
+    \node[figcote,below]      at ({#2/2},0) {$#4#5$};
+    \node[figcote,left]       at (0,{#3/2}) {$#4#6$};
+    \node[figcote,above right,text=prioritetrois]
+      at ({#2/2},{#3/2}) {$#5#6$ \footnotesize(hypoténuse)};
+  \end{tikzpicture}}
+
+% ---------------------------------------------------------------------
+% \figuretranslation — un triangle et son image par une translation
+% ---------------------------------------------------------------------
+\newcommand{\figuretranslation}{%
+  \begin{tikzpicture}[x=9mm,y=9mm]
+    \coordinate (A) at (0,0); \coordinate (B) at (1.6,0.4); \coordinate (C) at (0.5,1.5);
+    \coordinate (v) at (3.2,0.9);
+    \coordinate (A') at ($(A)+(v)$);
+    \coordinate (B') at ($(B)+(v)$);
+    \coordinate (C') at ($(C)+(v)$);
+    \fill[accentclair,opacity=0.7] (A)--(B)--(C)--cycle;
+    \draw[fig] (A)--(B)--(C)--cycle;
+    \fill[prioritetroisfond,opacity=0.9] (A')--(B')--(C')--cycle;
+    \draw[figfort] (A')--(B')--(C')--cycle;
+    \foreach \P/\Q in {A/A',B/B',C/C'}{
+      \draw[figtrait,dashed,-{Stealth[length=1.8mm]}] (\P) -- (\Q);}
+    \node[figleg,below left]  at (A)  {$A$};
+    \node[figleg,below right] at (B)  {$B$};
+    \node[figleg,above left]  at (C)  {$C$};
+    \node[figleg,below left]  at (A') {$A'$};
+    \node[figleg,below right] at (B') {$B'$};
+    \node[figleg,above left]  at (C') {$C'$};
+    \node[figcote,text=prioritetrois,above] at ($(B)!0.5!(B')+(0,0.15)$)
+      {même direction, même sens, même longueur};
+  \end{tikzpicture}}
+
+% ---------------------------------------------------------------------
+% \droitedesmilieux — triangle avec le segment des milieux
+% ---------------------------------------------------------------------
+\newcommand{\droitedesmilieux}{%
+  \begin{tikzpicture}[x=11mm,y=11mm]
+    \coordinate (A) at (0,0); \coordinate (B) at (3.4,0); \coordinate (C) at (1,2.1);
+    \coordinate (I) at ($(A)!0.5!(C)$);
+    \coordinate (J) at ($(B)!0.5!(C)$);
+    \fill[accentclair,opacity=0.6] (A)--(B)--(C)--cycle;
+    \draw[fig] (A)--(B)--(C)--cycle;
+    \draw[figfort] (I)--(J);
+    \fill[prioritetrois] (I) circle (0.8mm) (J) circle (0.8mm);
+    \node[figleg,below left]  at (A) {$A$};
+    \node[figleg,below right] at (B) {$B$};
+    \node[figleg,above]       at (C) {$C$};
+    \node[figleg,left]        at (I) {$I$};
+    \node[figleg,right]       at (J) {$J$};
+    \node[figcote,text=prioritetrois,above] at ($(I)!0.5!(J)+(0,0.1)$)
+      {$IJ = \frac{AB}{2}$ et $(IJ)\parallel(AB)$};
+  \end{tikzpicture}}
 
 \endinput

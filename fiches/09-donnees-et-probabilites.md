@@ -5,7 +5,7 @@ accroche: >-
   Lire un graphique, calculer une moyenne, estimer une chance : le programme
   présente ce domaine comme un outil d'esprit critique, pas seulement comme
   une technique de calcul.
-niveaux: [6e, 5e]
+niveaux: [6e, 5e, 4e]
 priorite: 2
 pourquoi: >-
   Compétence directement réutilisable en SVT, en géographie et dans la vie courante.
@@ -38,6 +38,16 @@ videos:
     chaine: Yvan Monka
     duree: "6:42"
     vues: "135 000"
+  - id: q-O9ETTk-y8
+    titre: Médiane, mode, étendue — 4e
+    chaine: Hedacademy
+    duree: "8:04"
+    vues: "237 000"
+  - id: S6HpRIVaL5U
+    titre: Probabilité de l'évènement contraire — 4e
+    chaine: Yvan Monka
+    duree: "8:14"
+    vues: "25 000"
 ---
 
 ## Effectifs et fréquences
@@ -143,6 +153,69 @@ En répétant réellement l'expérience et en notant les résultats dans un tabl
 d'effectifs et de fréquences, on observe que les fréquences se rapprochent des
 probabilités théoriques à mesure que le nombre d'essais augmente. Sur dix
 lancers, l'écart peut être grand ; sur mille, il devient très petit.
+:::
+
+## [[4e]] Médiane, étendue, moyenne pondérée
+
+::: definition La médiane
+La **médiane** partage la série en deux moitiés de même effectif : autant de
+valeurs en dessous qu'au-dessus. On range d'abord les valeurs dans l'ordre.
+:::
+
+::: methode
+Série : 3 ; 7 ; 8 ; 12 ; 15 ; 18 ; 20. Sept valeurs, la médiane est la
+**quatrième** : $12$.
+
+Si l'effectif est **pair**, la médiane est la moyenne des deux valeurs
+centrales. Pour 3 ; 7 ; 8 ; 12 : $(7+8)\div 2 = 7{,}5$.
+:::
+
+::: definition L'étendue
+L'**étendue** est l'écart entre la plus grande et la plus petite valeur.
+Elle mesure la dispersion, pas le centre.
+:::
+
+::: retenir Pourquoi la médiane vaut mieux que la moyenne, parfois
+Série des salaires : 1 500 ; 1 600 ; 1 700 ; 1 800 ; 20 000.
+
+Moyenne : $5\,320$ € — un montant que **personne** ne touche.
+Médiane : $1\,700$ € — bien plus représentatif.
+
+Une valeur extrême déplace fortement la moyenne, mais laisse la médiane presque
+intacte. Le programme demande explicitement de comprendre cet effet.
+:::
+
+::: methode La moyenne pondérée
+Quand une valeur revient plusieurs fois, on la compte autant de fois.
+
+| Note | 8 | 12 | 15 |
+|---|---|---|---|
+| Effectif | 3 | 5 | 2 |
+
+$$\frac{8\times 3 + 12\times 5 + 15\times 2}{3+5+2}
+= \frac{24+60+30}{10} = \frac{114}{10} = 11{,}4$$
+:::
+
+## [[4e]] L'évènement contraire et les deux épreuves
+
+::: retenir
+L'**évènement contraire** de $A$ est celui qui se produit exactement quand $A$
+ne se produit pas.
+$$P(\text{contraire de }A) = 1 - P(A)$$
+:::
+
+Avec un dé : $P(\text{obtenir un 6}) = \tfrac16$, donc
+$P(\text{ne pas obtenir un 6}) = 1-\tfrac16 = \tfrac56$.
+
+::: methode Deux épreuves : l'arbre ou le tableau
+On lance deux pièces. Les issues possibles sont PP, PF, FP, FF — quatre issues
+équiprobables.
+
+$$P(\text{deux fois pile}) = \frac14 \qquad
+P(\text{un pile et un face}) = \frac24 = \frac12$$
+
+PF et FP sont **deux issues distinctes** : les oublier fait passer la seconde
+probabilité de $\tfrac12$ à $\tfrac14$. C'est l'erreur classique.
 :::
 
 ::: prolongement

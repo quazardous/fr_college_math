@@ -1,6 +1,6 @@
 ---
-titre: Séance de révision — corrigé
-surtitre: Problèmes · 6e et 5e
+titre: Séance 6e-5e — corrigé
+surtitre: Une heure · 6e et 5e
 accroche: >-
   Le résultat seul ne sert à rien : ce qui compte est la démarche. Compare
   ton chemin au chemin proposé, même quand ta réponse est juste.

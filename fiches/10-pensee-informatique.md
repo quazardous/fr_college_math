@@ -5,7 +5,7 @@ accroche: >-
   Écrire un programme, c'est décrire une méthode assez précisément pour qu'une
   machine l'exécute sans rien deviner. C'est la même exigence que celle d'une
   démonstration.
-niveaux: [6e, 5e]
+niveaux: [6e, 5e, 4e]
 priorite: 1
 pourquoi: >-
   Peu de points aux évaluations, mais la rigueur acquise ici sert partout ailleurs.
@@ -109,6 +109,34 @@ On passe d'une étape à la suivante en ajoutant 3.
 
 L'étape 100 comporterait donc $1+3\times 100 = 301$ carreaux — sans rien dessiner.
 C'est le pas décisif vers le calcul littéral de la fiche 5.
+:::
+
+## [[4e]] Variables et conditions
+
+::: definition La variable informatique
+Une **variable** est une case mémoire portant un nom, dont le contenu peut
+changer pendant l'exécution. `score <- score + 1` se lit : « prends la valeur
+actuelle de `score`, ajoute 1, et range le résultat dans `score` ».
+:::
+
+::: piege Le signe n'a pas le même sens qu'en mathématiques
+En mathématiques, $x = x+1$ est une égalité impossible. En informatique,
+`x <- x + 1` est une **instruction** parfaitement valide : elle range dans `x`
+son ancienne valeur augmentée de 1.
+:::
+
+::: definition L'instruction conditionnelle
+`si` *condition* `alors` … `sinon` … : le programme choisit son chemin selon
+que la condition est vraie ou fausse.
+:::
+
+::: methode Un exemple complet
+> si `note` $\geqslant 10$
+> alors afficher « admis »
+> sinon afficher « ajourné »
+
+La condition est un test qui ne peut valoir que **vrai** ou **faux** :
+$\geqslant$, $\leqslant$, $=$, différent de.
 :::
 
 ::: retenir Ce qu'il faut savoir faire, au minimum

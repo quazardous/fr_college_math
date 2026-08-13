@@ -1,6 +1,6 @@
 ---
-titre: Séance de révision — 1 heure
-surtitre: Problèmes · 6e et 5e
+titre: Séance de révision 6e-5e
+surtitre: Une heure · 6e et 5e
 accroche: >-
   Six séries chronométrées qui balaient tout le programme. Fais-les dans
   l'ordre : chacune réactive une notion dont la suivante a besoin.

@@ -89,6 +89,7 @@ couleurs:
   fond_tendre: "F3F7F9"    # lignes alternées des tableaux
   accent: "1D4E6F"         # bleu structurel : filets, titres, liens
   accent_clair: "E3EDF3"
+  accent_moyen: "C3DAE7"   # teinte intermédiaire de l'échelle des niveaux
 
   # Gradation de priorité — reprise à l'identique dans la jauge,
   # l'en-tête de page et les encadrés.

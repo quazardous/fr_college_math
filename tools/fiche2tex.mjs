@@ -60,7 +60,8 @@ const NIVEAUX = /\b([3-6])e\b/g;
 
 function texteEnLigne(t) {
   let s = echapper(t);
-  s = s.replace(/\[\[([^\]]+)\]\]/g, (_, n) => `\\niv{${n.replace(NIVEAUX, '$1\\ieme{}')}}`);
+  // [[5e]] -> \niv{5} : la classe se charge du libellé et de la teinte.
+  s = s.replace(/\[\[\s*([3-6])e\s*\]\]/g, '\\niv{$1}');
   s = s.replace(/\*\*([^*]+)\*\*/g, '\\textbf{$1}');
   s = s.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '\\emph{$1}');
   s = s.replace(/`([^`]+)`/g, '\\texttt{$1}');
@@ -69,12 +70,17 @@ function texteEnLigne(t) {
   return s;
 }
 
-// Ce qui est entre $…$ est déjà du LaTeX : cela doit traverser intact.
+// Ce qui est entre $…$ est déjà du LaTeX et doit traverser intact. On le met
+// de côté derrière un jeton plutôt que de découper la chaîne : sinon un
+// **gras** qui enjambe un segment mathématique ne serait plus reconnu.
 function enLigne(ligne) {
-  return String(ligne ?? '')
-    .split(/(\$[^$]*\$)/g)
-    .map((bout) => (bout.startsWith('$') ? bout : texteEnLigne(bout)))
-    .join('');
+  const maths = [];
+  let s = String(ligne ?? '').replace(/\$[^$]*\$/g, (m) => {
+    maths.push(m);
+    return `\u0000${maths.length - 1}\u0000`;
+  });
+  s = texteEnLigne(s);
+  return s.replace(/\u0000(\d+)\u0000/g, (_, i) => maths[Number(i)]);
 }
 
 /* ------------------------------------------------------------------ *
@@ -103,17 +109,20 @@ function compiler(texte) {
     const env = numerotee ? 'enumerate' : 'itemize';
     const opts = numerotee ? '[leftmargin=6mm,label=\\textbf{\\arabic*.}]' : '';
     out.push(`\\begin{${env}}${opts}`);
+    // On accumule le texte brut de chaque item, et on ne le transforme
+    // qu'une fois complet : sinon un **gras** à cheval sur deux lignes
+    // ne serait pas reconnu.
     let courant = null;
     for (const l of bloc) {
       const debut = l.match(/^\s*(?:[-*]|\d+\.)\s+(.*)$/);
       if (debut) {
-        if (courant !== null) out.push(`  \\item ${courant}`);
-        courant = enLigne(debut[1]);
+        if (courant !== null) out.push(`  \\item ${enLigne(courant)}`);
+        courant = debut[1];
       } else if (courant !== null) {
-        courant += ' ' + enLigne(l.trim());
+        courant += ' ' + l.trim();
       }
     }
-    if (courant !== null) out.push(`  \\item ${courant}`);
+    if (courant !== null) out.push(`  \\item ${enLigne(courant)}`);
     out.push(`\\end{${env}}`);
   };
 
@@ -188,7 +197,7 @@ function compiler(texte) {
       continue;
     }
 
-    out.push(avaler((x) => x.trim() !== '' && !estStructure(x)).map(enLigne).join('\n'));
+    out.push(enLigne(avaler((x) => x.trim() !== '' && !estStructure(x)).join('\n')));
   }
 
   return out;

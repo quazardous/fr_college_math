@@ -5,7 +5,7 @@ accroche: >-
   La lettre entre en scène. Elle ne remplace pas un nombre au hasard : elle
   permet de dire une chose vraie pour tous les nombres à la fois, et donc
   de démontrer.
-niveaux: [5e]
+niveaux: [5e, 4e]
 priorite: 2
 pourquoi: >-
   Porte d'entrée de toute l'algèbre du lycée. Ce qui se joue ici se paie en 3e.
@@ -33,11 +33,16 @@ videos:
     chaine: Hedacademy
     duree: "9:21"
     vues: "683 000"
-  - id: yQ1auuMtMvw
-    titre: Résoudre une équation
-    chaine: Hedacademy
-    duree: "2:58"
-    vues: "378 000"
+  - id: 4PTioyfnmqc
+    titre: Développer et réduire une expression — 4e
+    chaine: Yvan Monka
+    duree: "6:48"
+    vues: "1 800 000"
+  - id: ezGlju-nR6s
+    titre: Résoudre une équation — méthode
+    chaine: Paul Olivier
+    duree: "4:15"
+    vues: "388 000"
 ---
 
 ## Pourquoi une lettre
@@ -156,6 +161,45 @@ En 5e, deux formes seulement sont au programme, et on les résout par les
 Une fois la solution trouvée, on la remplace dans l'équation de départ.
 Pour $4x=20$ et $x=5$ : $4\times 5 = 20$. ✔ La vérification coûte cinq secondes
 et rattrape presque toutes les erreurs.
+:::
+
+## [[4e]] Les équations à deux étapes
+
+En 4e, la lettre peut apparaître **des deux côtés** du signe égal, et l'équation
+demande deux opérations au lieu d'une.
+
+::: methode Une équation du type $ax+b=c$
+$$5x+3 = 23$$
+1. On isole d'abord le terme en $x$ : $5x = 23-3 = 20$.
+2. On divise ensuite : $x = 20\div 5 = 4$.
+
+Vérification : $5\times 4+3 = 23$. ✔
+:::
+
+::: methode Une équation du type $ax+b=cx+d$
+$$7x-2 = 4x+13$$
+1. On regroupe les $x$ d'un côté : $7x-4x = 13+2$, soit $3x = 15$.
+2. On divise : $x = 5$.
+
+Vérification : à gauche $7\times 5-2 = 33$, à droite $4\times 5+13 = 33$. ✔
+:::
+
+::: retenir L'image de la balance
+Une équation est une balance en équilibre. On peut ajouter, retrancher,
+multiplier ou diviser — **à condition de le faire des deux côtés**. Un geste
+sur un seul plateau rompt l'équilibre et fausse le résultat.
+:::
+
+::: methode Mettre un problème en équation
+« J'ai trois fois plus de billes que mon frère. Ensemble nous en avons 48. »
+
+On nomme l'inconnue : soit $x$ le nombre de billes du frère.
+On traduit : $x + 3x = 48$, donc $4x = 48$ et $x = 12$.
+
+Le frère a 12 billes, moi 36. Contrôle : $12+36 = 48$. ✔
+
+**Nommer l'inconnue par une phrase avant d'écrire l'équation** est ce que le
+programme attend, et ce qui évite de se tromper de grandeur.
 :::
 
 ::: prolongement

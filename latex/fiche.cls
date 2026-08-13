@@ -35,6 +35,7 @@
 \RequirePackage{tikz}
 \usetikzlibrary{calc,angles,quotes,patterns,arrows.meta,positioning,
                 decorations.pathreplacing,shapes.geometric,through}
+\RequirePackage{cancel}
 \RequirePackage{qrcode}
 \RequirePackage{fancyhdr}
 \RequirePackage{lastpage}
@@ -95,7 +96,7 @@
   \ifnum#1>3 prioritetrois\else\ifnum#1>1 prioritedeux\else prioriteun\fi\fi}
 
 % ---------------------------------------------------------------- en-tête / pied
-\newcommand{\mentionsource}{Révisions maths — 6\ieme{} et 5\ieme{}}
+\newcommand{\mentionsource}{Révisions maths — 6\ieme{}, 5\ieme{} et 4\ieme{}}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -305,9 +306,18 @@
   \end{tcolorbox}\hfill}
 
 % ---------------------------------------------------------------- divers
+% Pastille de niveau. L'argument est le chiffre seul : \niv{5}.
+% Trois teintes de l'accent, de la plus claire (6e) à la plus dense (4e) :
+% l'échelle est ordonnée mais reste distincte de celle des priorités, pour
+% que le niveau et l'importance ne se disputent pas la lecture.
+\newcommand{\pastilleniveau}[3]{%
+  \raisebox{0.15ex}{\colorbox{#1}{%
+    \sffamily\fsBadgeNiveau\bfseries\color{#2}%
+    \hspace{0.4mm}#3\ieme{}\hspace{0.4mm}}}}
 \newcommand{\niv}[1]{%
-  \raisebox{0.15ex}{\colorbox{prioritedeuxfond}{%
-    \sffamily\fsBadgeNiveau\bfseries\color{prioritedeux}\hspace{0.3mm}#1\hspace{0.3mm}}}}
+  \ifnum#1=4 \pastilleniveau{accent}{white}{#1}%
+  \else\ifnum#1=5 \pastilleniveau{accentmoyen}{accent}{#1}%
+  \else \pastilleniveau{accentclair}{accent}{#1}\fi\fi}
 \newcommand{\motcle}[1]{\textbf{#1}}
 \newcommand{\separateur}{\par\vspace{1.2mm}{\color{trait}\rule{\linewidth}{0.4pt}}\par\vspace{1mm}}
 \newcommand{\fleche}{\ensuremath{\rightarrow}}

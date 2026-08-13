@@ -5,7 +5,7 @@ accroche: >-
   La fraction change de sens entre le CM2 et la 5e : elle devient un nombre à
   part entière, un quotient, et un opérateur. Comprendre ces trois visages
   évite la plupart des erreurs.
-niveaux: [6e, 5e]
+niveaux: [6e, 5e, 4e]
 priorite: 3
 pourquoi: >-
   Passage obligé vers la proportionnalité, les pourcentages et tout le calcul de 4e.
@@ -37,11 +37,16 @@ videos:
     chaine: Yvan Monka
     duree: "2:58"
     vues: "149 000"
-  - id: YaLkcA4cIp4
-    titre: Encadrer une fraction entre deux entiers
-    chaine: Maître Lucas
-    duree: "4:11"
-    vues: "117 000"
+  - id: j27kXXrw3Xk
+    titre: Multiplier des fractions — 4e
+    chaine: Yvan Monka
+    duree: "4:57"
+    vues: "679 000"
+  - id: 7_hZWOoMBSA
+    titre: Diviser des fractions — 4e
+    chaine: Yvan Monka
+    duree: "9:18"
+    vues: "710 000"
 ---
 
 ## Les trois sens d'une fraction
@@ -161,6 +166,50 @@ $$10\,\% = \text{diviser par }10 \qquad
   50\,\% = \text{la moitié} \qquad
   1\,\% = \text{diviser par }100$$
 Le reste s'en déduit : 30 % = trois fois 10 % ; 5 % = la moitié de 10 %.
+:::
+
+## [[4e]] Multiplier, inverser, diviser
+
+::: retenir Multiplier, c'est le cas facile
+On multiplie les numérateurs entre eux, et les dénominateurs entre eux.
+$$\frac{a}{b}\times\frac{c}{d} = \frac{a\times c}{b\times d}$$
+Aucun dénominateur commun n'est nécessaire — contrairement à l'addition.
+:::
+
+$$\frac23\times\frac57 = \frac{10}{21} \qquad
+  \frac34\times\frac89 = \frac{24}{36} = \frac23$$
+
+::: methode Simplifier avant de multiplier
+$\dfrac34\times\dfrac89$ : plutôt que de calculer $24$ et $36$ puis de
+simplifier, on barre avant. Le 3 du haut et le 9 du bas se divisent par 3,
+le 8 du haut et le 4 du bas par 4 :
+$$\frac{\cancel{3}^{1}}{\cancel{4}^{1}}\times\frac{\cancel{8}^{2}}{\cancel{9}^{3}}
+= \frac{1\times 2}{1\times 3} = \frac23$$
+Les nombres restent petits, et le résultat est déjà irréductible.
+:::
+
+::: definition L'inverse
+L'**inverse** d'un nombre non nul $a$ est le nombre $\dfrac1a$, celui qui
+multiplié par $a$ donne 1. L'inverse d'une fraction s'obtient en la retournant :
+$$\text{l'inverse de }\frac{a}{b}\text{ est }\frac{b}{a}$$
+:::
+
+::: retenir Diviser, c'est multiplier par l'inverse
+$$\frac{a}{b}\div\frac{c}{d} = \frac{a}{b}\times\frac{d}{c}$$
+:::
+
+$$\frac34\div\frac25 = \frac34\times\frac52 = \frac{15}{8}$$
+
+::: piege
+Ne pas confondre l'**opposé** et l'**inverse**. L'opposé de $\tfrac23$ est
+$-\tfrac23$ — on l'ajoute pour obtenir 0. L'inverse de $\tfrac23$ est
+$\tfrac32$ — on le multiplie pour obtenir 1.
+:::
+
+::: definition Nombre rationnel
+Un **nombre rationnel** est un nombre qui peut s'écrire comme quotient de deux
+entiers **relatifs**, le second non nul. Tous les décimaux en sont, et
+$\tfrac13$ aussi bien que $-\tfrac{7}{5}$.
 :::
 
 ::: prolongement
