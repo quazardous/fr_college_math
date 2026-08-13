@@ -274,6 +274,41 @@ Paul Olivier), format court — autour de cinq minutes, dix au plus.
 
 `tools/yt-search.mjs "requête"` liste des candidats avec durée et nombre de vues.
 
+## Le site
+
+```bash
+node tools/site.mjs          # engendre site/
+python3 -m http.server -d site 8765
+```
+
+Troisième sortie des mêmes sources, après le PDF séparé et le classeur relié.
+`tools/balisage.mjs` analyse le Markdown une seule fois ; `fiche2tex.mjs` en
+émet du LaTeX, `fiche2html.mjs` du HTML. Il n'y a donc qu'une grammaire, et
+rien ne peut diverger entre le PDF et le site.
+
+Ce que le site règle, et que le PDF ne peut pas :
+
+- **les figures TikZ** ne tournent pas dans un navigateur. `tools/figures.mjs`
+  les compile toutes en **une seule passe** — le paquet `preview` en mode
+  `tightpage` donne une page par figure — puis `pdftocairo` en tire des SVG où
+  le texte est vectorisé : aucune police à télécharger. Le nom du fichier porte
+  le document d'origine et la macro, et le SVG embarque le LaTeX qui l'a
+  produit, dans ses balises `<title>` et `<desc>` ;
+- **les maths** sont rendues à la construction par KaTeX, en **MathML**. Le
+  lecteur ne télécharge ni script ni police mathématique : le navigateur fait
+  le rendu lui-même ;
+- **les QR codes** deviennent des liens, avec une vignette récupérée une fois
+  et servie depuis le site — aucune requête vers YouTube au chargement ;
+- **le style** vient de `design.yaml`, traduit en propriétés CSS par
+  `tools/design.mjs --css`. `web/style.css` est la seule feuille écrite à la
+  main, et ne contient aucune couleur littérale.
+
+Un service worker met les 120 fichiers en cache à la première visite : le site
+se lit sans réseau, et s'installe comme une application. Le nom du cache porte
+l'empreinte du contenu, si bien qu'une nouvelle version remplace l'ancienne.
+
+`site/` est engendré, et ignoré par git au même titre que `build/` et `pdf/`.
+
 ## Publier
 
 `pdf/` n'est pas versionné : les PDF sont engendrés depuis les sources et
@@ -284,7 +319,8 @@ git tag v1.2 && git push origin v1.2
 ```
 
 `.github/workflows/pdf.yml` installe Tectonic, construit tout, vérifie les PDF
-et les attache à la release. Un déclenchement manuel du workflow produit les
+et les attache à la release. Il déploie aussi le site sur **GitHub Pages** —
+à chaque poussée sur `main`, tag ou non. Un déclenchement manuel du workflow produit les
 mêmes fichiers en artefact du run, sans créer de release.
 
 Les numéros de version des documents — la mention `version 1.0 · CC BY-SA 4.0`

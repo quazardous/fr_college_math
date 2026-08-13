@@ -4,7 +4,11 @@ Des fiches de cours, des séances chronométrées et un recueil de problèmes, e
 **PDF A4 prêts à imprimer**. Écrits pour être relus vite : ce qui compte est
 en encadré, ce qui se trompe une fois sur trois est signalé comme tel.
 
-**[⬇ Télécharger la dernière version](../../releases/latest)**
+**[📱 Lire en ligne](https://quazardous.github.io/fr_college_math/)** — sur
+téléphone, tablette ou ordinateur, sans rien installer. Le site se consulte
+**hors ligne** une fois visité, et s'installe comme une application.
+
+**[⬇ Télécharger les PDF](../../releases/latest)** — pour imprimer.
 
 Commencer par **`00-sommaire.pdf`**, la carte des révisions : elle dit quelles
 leçons rapportent le plus, et dans quel ordre les reprendre quand le temps
@@ -104,6 +108,18 @@ restent la propriété de leurs auteurs. Les **programmes officiels** sur
 lesquels s'appuie le contenu sont des actes officiels, librement réutilisables.
 Les **polices** embarquées (GUST Font License, SIL OFL 1.1) autorisent
 l'embarquement sans rien imposer au document.
+
+## Site ou PDF ?
+
+Les deux sortent des mêmes sources, et disent la même chose.
+
+| | Site | PDF |
+|---|---|---|
+| Lire sur un téléphone | ✅ le texte s'adapte | ❌ de l'A4 au pincement |
+| Imprimer | ❌ | ✅ c'est son métier |
+| Vidéos | liens et vignettes | QR codes à scanner |
+| Corrigés du recueil | repliés sous l'énoncé | document séparé |
+| Sans réseau | ✅ une fois visité | ✅ une fois téléchargé |
 
 ## Pour aller plus loin
 

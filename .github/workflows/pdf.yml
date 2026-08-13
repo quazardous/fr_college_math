@@ -11,11 +11,20 @@ name: PDF
 
 on:
   push:
+    branches: [main]
     tags: ['v*']
   workflow_dispatch:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
+
+# Un seul déploiement à la fois, et on laisse finir celui qui est en cours
+# plutôt que de le couper au milieu.
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   construire:
@@ -58,6 +67,15 @@ jobs:
           path: pdf/*.pdf
           if-no-files-found: error
 
+      # Le site : mêmes sources, troisième sortie.
+      - name: Construire le site
+        run: node tools/site.mjs
+
+      - name: Artefact Pages
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
       - name: Publier sur la release
         if: startsWith(github.ref, 'refs/tags/')
         env:
@@ -69,3 +87,14 @@ jobs:
           else
             gh release create "$tag" pdf/*.pdf --title "$tag" --generate-notes
           fi
+
+  publier:
+    needs: construire
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - name: Déployer sur GitHub Pages
+        id: deploiement
+        uses: actions/deploy-pages@v5
