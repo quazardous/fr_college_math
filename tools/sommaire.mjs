@@ -127,19 +127,43 @@ export function corpsSommaire({ fiches, problemes, recueil, niveaux }, { avecPag
   }
 
   /* ------------------------------------------------------- s'entraîner */
-  if (problemes.length || recueil) {
+  // Un corrigé n'est pas un document qu'on choisit de réviser : il accompagne
+  // son énoncé. Le lister sur sa propre ligne doublait le tableau pour rien —
+  // il est replié sous l'énoncé, avec sa page quand le document en a.
+  const estCorrige = (d) => /-corrige\.md$/.test(d.fichier);
+  // Les séances suivent les classes, de la 6e à la 3e, comme le tableau qui
+  // suit — et non l'ordre alphabétique des fichiers, qui mettrait la 3e en tête.
+  const rangNiveau = (d) => {
+    const n = (Array.isArray(d.niveaux) ? d.niveaux : [d.niveaux]).map(String);
+    const i = ORDRE_NIVEAUX.findIndex((x) => n.includes(x));
+    return i === -1 ? 99 : i;
+  };
+  const enonces = problemes
+    .filter((d) => !estCorrige(d))
+    .sort((a, b) => rangNiveau(a) - rangNiveau(b) || a.fichier.localeCompare(b.fichier));
+  const corrigeDe = (d) =>
+    problemes.find((x) => x.fichier === d.fichier.replace(/\.md$/, '-corrige.md'));
+
+  if (enonces.length || recueil) {
     p("\\section{S'entraîner}");
     p(`\\begin{tableaufiche}{@{}Y G{16mm} G{14mm}${colPage}@{}}`);
     p(
       `\\ligneentete \\entetecell{Document} & \\entetecell{Niveau} & \\entetecell{Durée}${enttPage}\\\\`
     );
-    for (const d of problemes) {
-      p(`\\textbf{${ech(d.titre)}} & ${niv(d.niveaux)} & ${ech(formaterDuree(d.duree))}${page(base(d))}\\\\`);
+    const mentionCorrige = (b) =>
+      ` \\newline {\\fsBadgeSource\\color{encredouce}corrigé ${avecPages ? `p.~\\pageref{doc:${b}}` : 'inclus'}}`;
+    for (const d of enonces) {
+      const c = corrigeDe(d);
+      p(
+        `\\textbf{${ech(d.titre)}}${c ? mentionCorrige(base(c)) : ''} & ` +
+          `${niv(d.niveaux)} & ${ech(formaterDuree(d.duree))}${page(base(d))}\\\\`
+      );
     }
     if (recueil) {
       p(
         `\\textbf{${ech(recueil.titre)}} \\newline ` +
-          `{\\fsBadgeSource\\color{encredouce}${recueil.nombre} problèmes, du guidé vers l'ouvert} & ` +
+          `{\\fsBadgeSource\\color{encredouce}${recueil.nombre} problèmes, du guidé vers l'ouvert · ` +
+          `corrigé ${avecPages ? 'p.~\\pageref{doc:recueil-corrige}' : 'inclus'}} & ` +
           `${niv(recueil.niveaux)} & ${ech(formaterDuree(recueil.duree))}${page('recueil')}\\\\`
       );
     }
@@ -149,7 +173,6 @@ export function corpsSommaire({ fiches, problemes, recueil, niveaux }, { avecPag
   /* ------------------------------------------------------- plan par niveau */
   // Rien n'est nommé à la main : le plan se recalcule quand une fiche change
   // de priorité ou de niveau, et quand une séance apparaît.
-  const enonces = problemes.filter((d) => !/-corrige\.md$/.test(d.fichier));
   p('\\section{Par où commencer selon ta classe}');
   p('\\begin{tableaufiche}{@{}G{13mm} Y G{40mm}@{}}');
   p(
