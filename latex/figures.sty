@@ -26,28 +26,41 @@
   figcote/.style    = {figleg, text=accent},
 }
 
+% Quadrillage au pas de l'unité de la figure.
+%
+% Le « step » de TikZ vaut 1 cm par défaut, indépendamment de x= et y= : un
+% repère posé en x=8mm voyait donc ses traits dériver des graduations, d'un
+% millimètre à chaque case. Le style lit l'unité réelle dans \pgf@xx, si bien
+% qu'un quadrillage reste aligné quelle que soit l'échelle choisie.
+\tikzset{quadrillage/.style={figtrait, very thin, step={\the\pgf@xx}}}
+
 % ---------------------------------------------------------------------
 % \droitegraduee[largeur]{min}{max}{pas}{repères}{tikz en plus}
 %   repères : liste « valeur/étiquette », séparée par des virgules.
 %   Le dernier argument est injecté tel quel dans le tikzpicture ; il est
 %   obligatoire, et vaut {} quand on n'ajoute rien.
-%   Ex. \droitegraduee[110]{0}{5}{1}{2.5/$\frac{5}{2}$, 4/$4$}{}
+%   Ex. \droitegraduee[110mm]{0}{5}{1}{2.5/$\frac{5}{2}$, 4/$4$}{}
 % ---------------------------------------------------------------------
+% La largeur est posée comme VECTEUR UNITÉ de l'axe des x : les coordonnées
+% sont alors les valeurs de la droite elle-même, et la figure mesure exactement
+% la largeur demandée. La version précédente calculait une échelle qu'elle
+% appliquait à des coordonnées sans unité — donc interprétées en centimètres :
+% \droitegraduee[110]{0}{3}{1} produisait une droite de 110 cm de large, dont
+% seule l'amorce tenait sur la page.
 \newcommand{\droitegraduee}[6][120mm]{%
-  \begin{tikzpicture}
-    \pgfmathsetmacro{\ech}{#1/(#3-#2)}
-    \def\X##1{##1*\ech-#2*\ech}
-    % axe
-    \draw[figaccent,-{Stealth[length=2mm]}] (\X{#2},0) -- (\X{#3}+6mm,0);
+  \pgfmathsetlengthmacro{\unitedroite}{(#1)/(#3-#2)}%
+  \begin{tikzpicture}[x=\unitedroite]
+    % axe, prolongé de 6 mm au-delà de la dernière graduation pour la pointe
+    \draw[figaccent,-{Stealth[length=2mm]}] (#2,0) -- (#3,0) -- ++(6mm,0);
     % graduations principales
     \foreach \v in {#2,\the\numexpr#2+#4\relax,...,#3}{
-      \draw[figaccent] (\X{\v},1.4mm) -- (\X{\v},-1.4mm);
-      \node[figval,below=0.6mm] at (\X{\v},-1.4mm) {\v};}
+      \draw[figaccent] (\v,1.4mm) -- (\v,-1.4mm);
+      \node[figval,below=0.6mm] at (\v,-1.4mm) {\v};}
     % repères mis en avant
     \foreach \v/\lab in {#5}{
-      \fill[prioritetrois] (\X{\v},0) circle (0.9mm);
+      \fill[prioritetrois] (\v,0) circle (0.9mm);
       \node[figleg,text=prioritetrois,above=1.2mm,font=\sffamily\bfseries\fontsize{7.4}{9}\selectfont]
-        at (\X{\v},0) {\lab};}
+        at (\v,0) {\lab};}
     #6
   \end{tikzpicture}}
 
@@ -102,7 +115,7 @@
 % ---------------------------------------------------------------------
 \newcommand{\repereplan}[4][8mm]{%
   \begin{tikzpicture}[x=#1,y=#1]
-    \draw[figtrait,very thin] (0,0) grid (#2,#3);
+    \draw[quadrillage] (0,0) grid (#2,#3);
     \draw[figaccent,-{Stealth[length=2mm]}] (0,0) -- ({#2+0.5},0) node[figleg,right] {$x$};
     \draw[figaccent,-{Stealth[length=2mm]}] (0,0) -- (0,{#3+0.5}) node[figleg,above] {$y$};
     \foreach \i in {1,...,#2} \node[figval,below=0.4mm] at (\i,0) {\i};
@@ -131,9 +144,11 @@
     \draw[fig] (A)--(B)--(C)--(D)--cycle;
     \draw[fig] (B)--(B')--(C')--(C);
     \draw[fig] (D)--(D')--(C');
+    % Une cote par direction, et chacune de son côté : à droite, la hauteur
+    % et la profondeur se recouvraient jusqu'à se lire comme une seule.
     \node[figcote,below] at (\L/2,0) {#2 #5};
-    \node[figcote,right] at (\L,\H/2) {#4 #5};
-    \node[figcote,above right] at (\L+\dx/2,\dy/2) {#3 #5};
+    \node[figcote,left]  at (0,\H/2) {#4 #5};
+    \node[figcote,right] at (\L+\dx,\dy/2) {#3 #5};
   \end{tikzpicture}}
 
 % ---------------------------------------------------------------------
@@ -171,7 +186,8 @@
     \draw[fig] (A)--(B)--(C)--cycle;
     \draw[fig] (B)--(B')--(C')--(C);
     \node[figcote,below] at (\B/2,0) {base};
-    \node[figcote,above right] at (\B+\dx/2,\dy/2) {hauteur du prisme};
+    % Posée en travers du solide, la légende passait sur les arêtes.
+    \node[figcote,right] at (\B+\dx,\dy/2) {hauteur};
   \end{tikzpicture}}
 
 % ---------------------------------------------------------------------
@@ -365,7 +381,7 @@
     \node[figleg,above]       at (C) {$C$};
     \node[figleg,left]        at (I) {$I$};
     \node[figleg,right]       at (J) {$J$};
-    \node[figcote,text=prioritetrois,above] at ($(I)!0.5!(J)+(0,0.1)$)
+    \node[figcote,text=prioritetrois,below] at (1.7,-0.15)
       {$IJ = \frac{AB}{2}$ et $(IJ)\parallel(AB)$};
   \end{tikzpicture}}
 

@@ -66,7 +66,7 @@ Avec un carreau pour $\dfrac14$ :
 - $\dfrac74$ au septième, soit entre 1 et 2 ;
 - $\dfrac52 = \dfrac{10}{4}$ au dixième, soit entre 2 et 3.
 
-!fig \droitegraduee[110]{0}{3}{1}{0.75/$\frac34$, 1.75/$\frac74$, 2.5/$\frac52$}{}
+!fig \droitegraduee[110mm]{0}{3}{1}{0.75/$\frac34$, 1.75/$\frac74$, 2.5/$\frac52$}{}
 
 Mettre les trois fractions sur le même dénominateur $4$ **avant** de placer
 évite tout tâtonnement.

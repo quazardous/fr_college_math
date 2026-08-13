@@ -75,7 +75,7 @@ C'est exactement ce que le programme de 6e demande de comprendre.
 Une fraction est un nombre : elle a donc une place sur la droite graduée.
 Pour $\tfrac54$, on partage chaque unité en 4, puis on compte 5 graduations.
 
-!fig \droitegraduee[110]{0}{3}{1}{1.25/$\frac{5}{4}$, 2.5/$\frac{5}{2}$}{}
+!fig \droitegraduee[110mm]{0}{3}{1}{1.25/$\frac{5}{4}$, 2.5/$\frac{5}{2}$}{}
 
 ::: retenir
 Une fraction peut être un **entier** ($\tfrac{8}{4}=2$), un **décimal**

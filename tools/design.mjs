@@ -20,6 +20,46 @@ const conf = yaml.load(fs.readFileSync(path.join(racine, 'design.yaml'), 'utf8')
 const lignes = [];
 const ecrire = (s = '') => lignes.push(s);
 
+/* ------------------------------------------------------------------ *
+ * Sortie web : les mêmes jetons, en propriétés CSS personnalisées
+ *
+ * Les tailles sont converties en multiples du corps : le PDF pose un corps
+ * à 11 pt et une section à 13,4 pt ; le site pose un corps à 17 px et une
+ * section à 1,218 rem. Le rapport est le même, l'échelle suit l'écran.
+ * ------------------------------------------------------------------ */
+function versCss() {
+  const w = conf.web ?? {};
+  const corps = conf.polices.tailles.corps;
+  const l = [];
+  const e = (s = '') => l.push(s);
+
+  e('/* =====================================================================');
+  e(' *  FICHIER ENGENDRÉ — ne pas modifier à la main.');
+  e(' *  Source : design.yaml   Générateur : tools/design.mjs --css');
+  e(' * ===================================================================== */');
+  e();
+  e(':root {');
+  e(`  --base: ${w.base ?? 17}px;`);
+  e(`  --largeur-lecture: ${w.largeur_lecture ?? 40}rem;`);
+  e();
+  for (const [nom, pile] of Object.entries(w.familles ?? {})) {
+    e(`  --pile-${nom}: ${pile};`);
+  }
+  e();
+  for (const [nom, hex] of Object.entries(conf.couleurs)) {
+    e(`  --c-${nomCouleur(nom)}: #${hex};`);
+  }
+  e();
+  for (const [nom, valeur] of Object.entries(conf.polices.tailles)) {
+    const taille = typeof valeur === 'object' ? valeur.taille : valeur;
+    const inter = typeof valeur === 'object' && valeur.interligne ? valeur.interligne : facteur;
+    e(`  --fs-${nomCouleur(nom)}: ${+(taille / corps).toFixed(4)}rem;`);
+    e(`  --lh-${nomCouleur(nom)}: ${inter};`);
+  }
+  e('}');
+  return l.join('\n') + '\n';
+}
+
 ecrire('% =====================================================================');
 ecrire('%  FICHIER ENGENDRÉ — ne pas modifier à la main.');
 ecrire('%  Source : design.yaml   Générateur : tools/design.mjs');
@@ -86,6 +126,17 @@ ecrire(`\\newcommand{\\filetencart}{${m.filet_encart}pt}`);
 ecrire();
 ecrire('\\endinput');
 
-const sortie = path.join(racine, 'latex', 'design.tex');
-fs.writeFileSync(sortie, lignes.join('\n') + '\n');
-console.log(`design.yaml → ${path.relative(racine, sortie)}  (${Object.keys(conf.polices.tailles).length} tailles, ${Object.keys(conf.couleurs).length} couleurs)`);
+/* ------------------------------------------------------------------ *
+ * Écriture — LaTeX par défaut, CSS sur demande
+ * ------------------------------------------------------------------ */
+const css = process.argv.indexOf('--css');
+const sortie =
+  css > -1
+    ? process.argv[css + 1] ?? path.join(racine, 'site', 'design.css')
+    : path.join(racine, 'latex', 'design.tex');
+
+fs.mkdirSync(path.dirname(sortie), { recursive: true });
+fs.writeFileSync(sortie, css > -1 ? versCss() : lignes.join('\n') + '\n');
+console.log(
+  `design.yaml → ${path.relative(racine, sortie)}  (${Object.keys(conf.polices.tailles).length} tailles, ${Object.keys(conf.couleurs).length} couleurs)`
+);

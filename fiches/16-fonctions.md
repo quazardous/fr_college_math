@@ -90,7 +90,7 @@ Une fonction peut se donner par une **formule**, un **tableau** ou une
 
 ```tikz
 \begin{tikzpicture}[x=8mm,y=8mm]
-  \draw[figtrait,very thin] (0,0) grid (6,5);
+  \draw[quadrillage] (0,0) grid (6,5);
   \draw[figaccent,-{Stealth[length=2mm]}] (0,0) -- (6.7,0) node[figleg,right] {$x$};
   \draw[figaccent,-{Stealth[length=2mm]}] (0,0) -- (0,5.7) node[figleg,above] {$y$};
   \foreach \i in {1,...,6} \node[figval,below=0.4mm] at (\i,0) {\i};

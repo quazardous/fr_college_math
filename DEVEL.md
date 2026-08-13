@@ -215,6 +215,25 @@ pastille. Dans le corps de l'encadré, ou dans un titre de section, aucun souci.
 
 Elles sont définies et documentées dans `latex/figures.sty`.
 
+Un style s'y ajoute, pour les figures écrites à la main : `quadrillage`.
+
+```latex
+\draw[quadrillage] (0,0) grid (6,5);
+```
+
+Le `step` de TikZ vaut **1 cm par défaut, indépendamment de `x=` et `y=`** :
+un repère posé en `x=8mm` voit donc ses traits dériver des graduations, d'un
+millimètre à chaque case. Le style lit l'unité réelle de la figure, et reste
+aligné quelle que soit l'échelle.
+
+Deux réflexes du même ordre, pour les cotes :
+
+- une cote le long d'un segment se pose avec `sloped` sur le chemin lui-même,
+  jamais avec un `rotate=` calculé à la main — un angle recopié finit par
+  croiser le trait qu'il devait longer ;
+- deux cotes du même côté d'un solide finissent par se recouvrir : une par
+  direction, et chacune de son côté.
+
 Pour une figure unique à un seul document — la plupart des figures de problèmes —
 mieux vaut un bloc ` ```tikz ` que d'enrichir la bibliothèque. Le bloc brut est
 d'ailleurs **obligatoire** dans ce cas : hors de lui, le précompilateur

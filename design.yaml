@@ -101,6 +101,26 @@ couleurs:
   priorite_1: "46697D"     # complément
   priorite_1_fond: "F0F4F7"
 
+# =====================================================================
+#  Sortie web — le site engendré par tools/site.mjs
+#
+#  Le site ne peut pas embarquer les polices TeX : elles vivent dans la
+#  distribution Tectonic, pas dans le dépôt. On vise donc les piles système
+#  les plus proches. Sur mobile, ce sont de toute façon elles qui rendent le
+#  mieux, et elles ne coûtent pas un octet de téléchargement.
+#
+#  Les tailles ci-dessus sont réutilisées telles quelles : `tools/design.mjs`
+#  les convertit en multiples du corps, si bien qu'un titre de section reste
+#  proportionné au texte comme dans le PDF.
+# =====================================================================
+web:
+  base: 17            # taille du corps en pixels — confortable au doigt
+  largeur_lecture: 40 # largeur maximale d'une colonne de texte, en rem
+  familles:
+    texte: 'Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif'
+    titres: 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif'
+    machine: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace'
+
 mise_en_page:
   format: a4paper
   marges: { haut: 17, bas: 19, gauche: 17, droite: 17 }   # en mm
