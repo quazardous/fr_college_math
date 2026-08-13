@@ -48,6 +48,7 @@ const total = fiches.reduce((s, f) => s + (parseInt(f.duree) || 0), 0);
 p(`\\duree{${total} min}`);
 p('\\domaine{Toutes les fiches}');
 p('\\nomcourt{Carte des révisions}');
+p("\\versiondoc{1.0}");
 p('', '\\begin{document}', '\\entetefiche', '');
 
 /* --------------------------------------------------------- légende */

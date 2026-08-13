@@ -233,6 +233,7 @@ const nomcourt =
     ? `${meta.surtitre.split('·')[0].trim()} · ${meta.titre}`
     : meta.titre);
 pousser(`\\nomcourt{${enLigne(nomcourt)}}`);
+pousser(`\\versiondoc{${txt(meta.version ?? '1.0')}}`);
 pousser('', '\\begin{document}', '\\entetefiche', '');
 
 if (meta.automatismes?.items?.length) {

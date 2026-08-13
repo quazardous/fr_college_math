@@ -66,6 +66,10 @@
 \newcommand{\@priorite}{2}  \newcommand{\priorite}[1]{\renewcommand{\@priorite}{#1}}
 % Nom court du document, porté par le pied de page de toutes les pages.
 \newcommand{\@nomcourt}{}  \newcommand{\nomcourt}[1]{\renewcommand{\@nomcourt}{#1}}
+% Version du document, déclarée dans l'en-tête YAML de la source. Elle
+% s'affiche en page 1, à la place du nom court — lequel n'y ferait que
+% répéter le grand titre.
+\newcommand{\@versiondoc}{} \newcommand{\versiondoc}[1]{\renewcommand{\@versiondoc}{#1}}
 
 \newcommand{\couleurpriorite}{%
   \ifnum\@priorite=3 prioritetrois\else\ifnum\@priorite=2 prioritedeux\else prioriteun\fi\fi}
@@ -119,8 +123,13 @@
 % Page 1 : le titre s'affiche déjà en grand dans le cartouche, inutile de le
 % répéter en pied. Le nom court sert à identifier une feuille détachée, donc
 % seulement à partir de la page 2.
+\newcommand{\piedversion}{%
+  \sffamily\fsPiedPage\color{encredouce}%
+  \ifx\@versiondoc\empty\else version~\@versiondoc\fi}
+
 \fancypagestyle{premiere}{%
   \fancyhf{}\renewcommand{\headrulewidth}{0pt}%
+  \fancyfoot[L]{\piedversion}%
   \fancyfoot[R]{\pieddroit}}
 
 % ---------------------------------------------------------------- cartouche de tête

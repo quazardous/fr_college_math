@@ -61,10 +61,18 @@ YAML et relancer `./build.sh`.
 De même, `pdf/00-sommaire.pdf` est **engendré** depuis les en-têtes des fiches :
 modifier la priorité d'une fiche met la carte des révisions à jour toute seule.
 
-À partir de la page 2, le pied de page porte le **nom court** du document, pour
-qu'une feuille détachée reste identifiable. Il se déduit du surtitre
-(`Fiche 1 · Nombres et calculs` donne l'étiquette `Fiche 1`), ou se fixe
-explicitement avec `nomcourt:` dans l'en-tête YAML.
+Le pied de page dit deux choses différentes selon la page :
+
+- **page 1** — la *version* du document, déclarée par `version:` dans l'en-tête
+  YAML (`1.0` par défaut). Le titre étant déjà en grand juste au-dessus, la
+  place est libre pour dire quel tirage on a entre les mains ;
+- **pages suivantes** — le *nom court*, pour qu'une feuille détachée reste
+  identifiable. Il se déduit du surtitre (`Fiche 1 · Nombres et calculs` donne
+  l'étiquette `Fiche 1`), ou se fixe avec `nomcourt:`.
+
+La version ne bouge pas toute seule : c'est à l'auteur de l'incrémenter quand
+le contenu change. Une version qui s'incrémenterait à chaque compilation ne
+distinguerait plus une correction d'une simple réimpression.
 
 ## Écrire une fiche
 
@@ -78,6 +86,7 @@ accroche: La grande nouveauté de la 5e.
 niveaux: [5e]
 priorite: 2          # 3 incontournable · 2 important · 1 complément
 nomcourt: Fiche 4 · Relatifs   # pied de page dès la page 2 (facultatif)
+version: 1.0                   # affichée en pied de page 1 (défaut : 1.0)
 pourquoi: Notion neuve, sans laquelle rien ne fonctionne en 4e.
 duree: 25 min
 domaine: Nombres et calculs
