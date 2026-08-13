@@ -2,7 +2,7 @@
 /**
  * Assemble TOUS les documents en un seul PDF, depuis les mêmes sources.
  *
- *   node tools/complet.mjs fiches problemes build/00-complet.tex
+ *   node tools/complet.mjs fiches problemes build/math-college-fr-complet.tex
  *
  * Le principe : chaque source sait déjà se compiler seule, et le
  * précompilateur en produit un document autonome. On récupère de chacun

@@ -103,14 +103,14 @@ if [ -d problemes/recueil ] && retenu "recueil"; then
 fi
 
 # Le classeur complet : les mêmes sources, reliées, avec un sommaire paginé.
-if retenu "00-complet"; then
-  if a_jour pdf/00-complet.pdf fiches/*.md problemes/*.md \
+if retenu "math-college-fr-complet"; then
+  if a_jour pdf/math-college-fr-complet.pdf fiches/*.md problemes/*.md \
        problemes/recueil problemes/recueil/*.md tools/complet.mjs; then
     IGNORES=$((IGNORES+1))
   else
     echo "→ classeur complet"
-    node tools/complet.mjs fiches problemes build/00-complet.tex
-    A_FAIRE+=("build/00-complet.tex")
+    node tools/complet.mjs fiches problemes build/math-college-fr-complet.tex
+    A_FAIRE+=("build/math-college-fr-complet.tex")
   fi
 fi
 
@@ -172,7 +172,7 @@ if [ -z "$FILTRE" ]; then
     [ -e "$vieux" ] || continue
     base="$(basename "$vieux")"; base="${base%.*}"
     case "$base" in
-      00-sommaire|00-complet) [ -d fiches ] && continue ;;
+      00-sommaire|math-college-fr-complet) [ -d fiches ] && continue ;;
       recueil|recueil-corrige) [ -d problemes/recueil ] && continue ;;
     esac
     if [ ! -e "fiches/$base.md" ] && [ ! -e "problemes/$base.md" ] &&

@@ -26,8 +26,9 @@ Les PDF arrivent dans `pdf/`. Deux entrées possibles :
 
 - **`pdf/00-sommaire.pdf`** — la carte des révisions, qui dit dans quel ordre
   lire les autres ;
-- **`pdf/00-complet.pdf`** — le classeur entier en un seul document, engendré
-  depuis les **mêmes sources**, avec un sommaire donnant les numéros de page.
+- **`pdf/math-college-fr-complet.pdf`** — le classeur entier en un seul
+  document, engendré depuis les **mêmes sources**, avec un sommaire donnant
+  les numéros de page.
 
 Un document n'est reconstruit que si sa source, ou l'un des fichiers du socle
 (classe LaTeX, figures, `design.yaml`, précompilateur), est plus récent que son
@@ -95,7 +96,7 @@ problemes/recueil/   un fichier par problème
       ├─ tools/fiche2tex.mjs ───────────►  build/*.tex
       ├─ tools/recueil.mjs ─────────────►  build/recueil*.tex
       ├─ tools/sommaire.mjs ────────────►  build/00-sommaire.tex
-      ├─ tools/complet.mjs ─────────────►  build/00-complet.tex
+      ├─ tools/complet.mjs ─────────────►  build/math-college-fr-complet.tex
       │
       └─ tectonic (XeLaTeX) ────────────►  pdf/*.pdf
 
@@ -111,13 +112,13 @@ YAML et relancer `./build.sh`.
 De même, `pdf/00-sommaire.pdf` est **engendré** depuis les en-têtes des fiches :
 modifier la priorité d'une fiche met la carte des révisions à jour toute seule.
 
-`pdf/00-complet.pdf` recycle la chaîne entière plutôt que d'en doubler une
-partie : `tools/complet.mjs` fait précompiler chaque source comme d'habitude,
-récupère de chacune son préambule de métadonnées et son corps, puis rejoue les
-métadonnées avant chaque `\entetefiche`. Les cartouches, les jauges et les
-pieds de page suivent donc document par document, et le sommaire — celui de
-`tools/sommaire.mjs`, avec une colonne en plus — pointe des `\pageref` vers les
-ancres posées à chaque changement de document.
+`pdf/math-college-fr-complet.pdf` recycle la chaîne entière plutôt que d'en
+doubler une partie : `tools/complet.mjs` fait précompiler chaque source comme
+d'habitude, récupère de chacune son préambule de métadonnées et son corps, puis
+rejoue les métadonnées avant chaque `\entetefiche`. Les cartouches, les jauges
+et les pieds de page suivent donc document par document, et le sommaire — celui
+de `tools/sommaire.mjs`, avec une colonne en plus — pointe des `\pageref` vers
+les ancres posées à chaque changement de document.
 
 Le pied de page dit deux choses différentes selon la page :
 
@@ -132,8 +133,9 @@ La version ne bouge pas toute seule : c'est à l'auteur de l'incrémenter quand
 le contenu change. Une version qui s'incrémenterait à chaque compilation ne
 distinguerait plus une correction d'une simple réimpression.
 
-Dans `00-complet.pdf`, cette règle s'inverse : la version, la date de tirage,
-l'auteur, l'adresse du dépôt et les licences sont annoncés une seule fois sur
+Dans `math-college-fr-complet.pdf`, cette règle s'inverse : la version, la date
+de tirage, l'auteur, l'adresse du dépôt et les licences sont annoncés une fois
+sur
 la **page de garde**, et chaque première page de document garde donc son titre
 en pied — c'est ce que fait `\sanspiedversion`. L'auteur et l'adresse du dépôt
 ne sont pas saisis dans le générateur : ils sont lus dans `package.json`, seul
