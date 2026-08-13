@@ -323,24 +323,26 @@
 % ---------------------------------------------------------------------
 \newcommand{\figuretranslation}{%
   \begin{tikzpicture}[x=9mm,y=9mm]
-    \coordinate (A) at (0,0); \coordinate (B) at (1.6,0.4); \coordinate (C) at (0.5,1.5);
-    \coordinate (v) at (3.2,0.9);
+    % La translation est horizontale, et aucun côté du triangle n'approche
+    % cette direction : sans quoi les flèches se confondraient avec un côté.
+    \coordinate (A) at (0,0); \coordinate (B) at (1.5,0.9); \coordinate (C) at (0.2,1.7);
+    \coordinate (v) at (4.4,0);
     \coordinate (A') at ($(A)+(v)$);
     \coordinate (B') at ($(B)+(v)$);
     \coordinate (C') at ($(C)+(v)$);
-    \fill[accentclair,opacity=0.7] (A)--(B)--(C)--cycle;
+    \fill[accentclair,opacity=0.75] (A)--(B)--(C)--cycle;
     \draw[fig] (A)--(B)--(C)--cycle;
-    \fill[prioritetroisfond,opacity=0.9] (A')--(B')--(C')--cycle;
+    \fill[prioritetroisfond] (A')--(B')--(C')--cycle;
     \draw[figfort] (A')--(B')--(C')--cycle;
     \foreach \P/\Q in {A/A',B/B',C/C'}{
-      \draw[figtrait,dashed,-{Stealth[length=1.8mm]}] (\P) -- (\Q);}
+      \draw[figtrait,dashed,-{Stealth[length=1.9mm]}] (\P) -- (\Q);}
     \node[figleg,below left]  at (A)  {$A$};
     \node[figleg,below right] at (B)  {$B$};
     \node[figleg,above left]  at (C)  {$C$};
     \node[figleg,below left]  at (A') {$A'$};
     \node[figleg,below right] at (B') {$B'$};
     \node[figleg,above left]  at (C') {$C'$};
-    \node[figcote,text=prioritetrois,above] at ($(B)!0.5!(B')+(0,0.15)$)
+    \node[figcote,text=prioritetrois,above] at ($(C)!0.5!(C')+(0,0.5)$)
       {même direction, même sens, même longueur};
   \end{tikzpicture}}
 
