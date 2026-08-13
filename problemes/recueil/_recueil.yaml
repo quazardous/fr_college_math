@@ -2,7 +2,7 @@ titre: Recueil de problèmes
 titre_corrige: Recueil de problèmes — corrigé
 surtitre: Trois heures · 6e, 5e et 4e
 accroche: >-
-  Dix-huit problèmes, de plus en plus ouverts. Les premiers indiquent le
+  Vingt-trois problèmes, de plus en plus ouverts. Les premiers indiquent le
   chemin ; les derniers ne donnent que la question. Chacun signale les notions
   qu'il mobilise, de la 6e à la 4e.
 accroche_corrige: >-
@@ -12,7 +12,7 @@ niveaux: [6e, 5e, 4e]
 priorite: 3
 pourquoi: >-
   Chercher sans être guidé est ce que le programme appelle « résolution de problèmes ».
-duree: 3 h
+duree: 3 h 30
 domaine: Résolution de problèmes
 
 types:

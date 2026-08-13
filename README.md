@@ -132,7 +132,9 @@ Ce qui se trompe une fois sur trois.
 | `::: type Titre … :::` | encadré : `definition`, `retenir`, `methode`, `piege`, `prolongement`, `exo`, `solution` |
 | `:cols G{30mm} Y Y` | largeurs du tableau qui suit (`G` fixe, `Y` extensible, `Z` centrée) |
 | `\| a \| b \|` | tableau, première ligne en en-tête |
-| `!fig \macro{…}` | figure centrée |
+| `!fig \macro{…}` | figure centrée, tirée de `figures.sty` |
+| ` ```tikz … ``` ` | figure TikZ écrite à la main, centrée |
+| ` ```latex … ``` ` | LaTeX brut, transmis tel quel |
 | `!saut` | saut de page |
 | `[[6e]]` `[[5e]]` `[[4e]]` | pastille de niveau, teinte croissante |
 | `->` | flèche |
@@ -154,6 +156,11 @@ pastille. Dans le corps de l'encadré, ou dans un titre de section, aucun souci.
 · `\tableaunumeration` · `\tableaucarres`
 
 Elles sont définies et documentées dans `latex/figures.sty`.
+
+Pour une figure unique à un seul document — la plupart des figures de problèmes —
+mieux vaut un bloc ` ```tikz ` que d'enrichir la bibliothèque. Le bloc brut est
+d'ailleurs **obligatoire** dans ce cas : hors de lui, le précompilateur
+transformerait `->` en flèche et échapperait les `%` des commentaires TikZ.
 
 ## Ajouter un problème au recueil
 

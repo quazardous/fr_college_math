@@ -19,6 +19,8 @@
  *   :cols G{30mm} Y Y                  largeurs du tableau qui suit
  *   | a | b |                          tableau, 1re ligne = en-tête
  *   !fig \droitegraduee{0}{5}{1}{}{}   figure centrée
+ *   ```tikz … ```                     figure TikZ écrite à la main, centrée
+ *   ```latex … ```                    LaTeX brut, transmis tel quel
  *   !saut                              saut de page
  *   [[5e]]                             pastille de niveau
  *   ->                                 flèche
@@ -102,7 +104,7 @@ function compiler(texte) {
   };
 
   const estStructure = (x) =>
-    /^(#{2,3}\s|:::|\||!fig |!saut|:cols |\/\/)/.test(x.trim()) || x.trim() === '$$';
+    /^(#{2,3}\s|:::|\||!fig |!saut|:cols |\/\/|```)/.test(x.trim()) || x.trim() === '$$';
 
   const rendreListe = (bloc) => {
     const numerotee = /^\s*\d+\.\s/.test(bloc[0]);
@@ -149,6 +151,20 @@ function compiler(texte) {
       const s = l.slice(6).trim();
       colonnes = s.startsWith('@{}') ? s : `@{}${s}@{}`;
       i++;
+      continue;
+    }
+
+    // Bloc brut : ```tikz … ``` (centré) ou ```latex … ``` (tel quel).
+    // Indispensable pour les figures écrites à la main : sans lui, « -> »
+    // deviendrait une flèche de texte et « % » serait échappé.
+    const cloture = l.match(/^```(\w*)\s*$/);
+    if (cloture) {
+      const genre = cloture[1];
+      i++;
+      const dedans = avaler((x) => !/^```\s*$/.test(x.trim()));
+      i++;
+      if (genre === 'tikz') out.push('\\begin{center}', ...dedans, '\\end{center}');
+      else out.push(...dedans);
       continue;
     }
 
