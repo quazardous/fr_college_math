@@ -90,6 +90,10 @@ jobs:
 
   publier:
     needs: construire
+    # Pages n'accepte de déploiement que depuis la branche par défaut : sur un
+    # tag, le job échouerait sur les règles de protection de l'environnement.
+    # Le site est de toute façon redéployé à chaque poussée sur main.
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
