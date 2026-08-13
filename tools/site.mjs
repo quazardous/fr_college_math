@@ -3,7 +3,7 @@
  * Assemble le site — troisième sortie des mêmes sources, après le PDF séparé
  * et le classeur relié.
  *
- *   node tools/site.mjs [dossier de sortie]      (défaut : site/)
+ *   node tools/site.mjs [dossier de sortie]   (défaut : build/site/)
  *
  * Ce que le site fait mieux que le PDF, et qui justifie qu'il existe :
  *
@@ -32,7 +32,7 @@ import crypto from 'node:crypto';
 
 const ici = path.dirname(fileURLToPath(import.meta.url));
 const racine = path.resolve(ici, '..');
-const sortie = path.resolve(process.argv[2] ?? path.join(racine, 'site'));
+const sortie = path.resolve(process.argv[2] ?? path.join(racine, 'build', 'site'));
 
 const paquet = JSON.parse(fs.readFileSync(path.join(racine, 'package.json'), 'utf8'));
 const DEPOT = paquet.homepage ?? '';
@@ -41,15 +41,50 @@ const conf = yaml.load(fs.readFileSync(path.join(racine, 'design.yaml'), 'utf8')
 const ACCENT = `#${conf.couleurs.accent}`;
 const PDF = (base) => `${DEPOT}/releases/latest/download/${base}.pdf`;
 
-const ctx = contexte(path.join(racine, 'fiches'), path.join(racine, 'problemes'));
+const ctx = contexte(
+  path.join(racine, 'contenu', 'fiches'),
+  path.join(racine, 'contenu', 'seances'),
+  path.join(racine, 'contenu', 'problemes')
+);
 
 /* ------------------------------------------------------------------ *
  * Le gabarit d'une page
  * ------------------------------------------------------------------ */
+const BURGER =
+  '<svg class="burger" viewBox="0 0 18 14" width="18" height="14" aria-hidden="true">' +
+  '<rect width="18" height="2"/><rect y="6" width="18" height="2"/><rect y="12" width="18" height="2"/></svg>';
+
+const CROIX =
+  '<svg class="burger" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">' +
+  '<path d="M1.4 0 8 6.6 14.6 0 16 1.4 9.4 8l6.6 6.6-1.4 1.4L8 9.4 1.4 16 0 14.6 6.6 8 0 1.4Z"/></svg>';
+
+/** La barre latérale des écrans larges. */
+const barreLaterale = (titre, items) =>
+  items.length
+    ? `<aside class="plan"><p class="plan-titre">${titre}</p><ol>` +
+      items.map((x) => `<li><a href="#${x.id}">${x.texte}</a></li>`).join('') +
+      '</ol></aside>'
+    : '';
+
+/**
+ * Le même plan, en menu déroulant pour les écrans étroits. <details> suffit :
+ * le site n'embarque qu'un seul script, le service worker, et un menu n'est
+ * pas une raison d'en ajouter un second.
+ */
+const menuDeroulant = (titre, items) =>
+  items.length
+    ? `<details class="menu"><summary>` +
+      `<span class="menu-etat menu-ouvrir">${BURGER}<span>${titre}</span></span>` +
+      `<span class="menu-etat menu-fermer">${CROIX}<span>Fermer</span></span>` +
+      `</summary><ol>` +
+      items.map((x) => `<li><a href="#${x.id}">${x.texte}</a></li>`).join('') +
+      '</ol></details>'
+    : '';
+
 const echapperAttr = (s) =>
   String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 
-function page({ titre, description, corps, plan = '', fil, pdf, accueil = false }) {
+function page({ titre, description, corps, plan = '', menu = '', fil, pdf, accueil = false }) {
   return `<!doctype html>
 <html lang="fr">
 <head>
@@ -63,7 +98,7 @@ function page({ titre, description, corps, plan = '', fil, pdf, accueil = false 
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-${accueil ? '' : `<nav><a href="index.html">← Toutes les fiches</a>${fil ? ` <span class="fil">· ${fil}</span>` : ''}</nav>`}
+${accueil ? '' : `<nav>${menu}<a href="index.html">← Toutes les fiches</a>${fil ? ` <span class="fil">· ${fil}</span>` : ''}</nav>`}
 <main class="page${plan ? ' page--plan' : ''}">
 ${plan}
 <div class="corps">
@@ -78,7 +113,13 @@ chaîne de production sous licence MIT · <a href="${DEPOT}">sources sur GitHub<
 <script>
 // Le seul script du site, et il ne sert qu'à une chose : rendre les pages
 // déjà visitées lisibles sans réseau.
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+//
+// Pas en développement : un cache qui sert obstinément la version précédente
+// transforme chaque retouche de style en énigme. La production est en https,
+// le serveur local en http — la distinction suffit.
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  navigator.serviceWorker.register('sw.js');
+}
 </script>
 </body>
 </html>
@@ -89,8 +130,8 @@ if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
  * Figures
  * ------------------------------------------------------------------ */
 const sources = [
-  ...ctx.fiches.map((f) => path.join(racine, 'fiches', f.fichier)),
-  ...ctx.problemes.map((d) => path.join(racine, 'problemes', d.fichier)),
+  ...ctx.fiches.map((f) => path.join(racine, 'contenu', 'fiches', f.fichier)),
+  ...ctx.problemes.map((d) => path.join(racine, 'contenu', 'seances', d.fichier)),
   ...(ctx.recueil
     ? fs
         .readdirSync(ctx.recueil.dossier)
@@ -158,21 +199,25 @@ console.log(
  * ------------------------------------------------------------------ */
 const manquantes = [];
 
+const documents = [];
+
 for (const [dossier, docs] of [
-  ['fiches', ctx.fiches],
-  ['problemes', ctx.problemes],
+  ['contenu/fiches', ctx.fiches],
+  ['contenu/seances', ctx.problemes],
 ]) {
   for (const d of docs) {
     const b = baseDe(d);
     const r = versHtml(path.join(racine, dossier, d.fichier), { figures, vignettes });
     manquantes.push(...r.manquantes);
+    documents.push({ base: b, titre: d.titre, numero: /^\d\d-/.test(b) ? b.slice(0, 2) : '', html: r.html });
     fs.writeFileSync(
       path.join(sortie, `${b}.html`),
       page({
         titre: d.titre,
         description: d.accroche,
         corps: r.html,
-        plan: r.plan,
+        plan: barreLaterale('Dans cette page', r.sections),
+        menu: menuDeroulant('Dans cette page', r.sections),
         fil: d.surtitre ? enLigne(d.surtitre) : '',
         pdf: PDF(b),
       })
@@ -238,6 +283,7 @@ if (ctx.recueil) {
     l.push('</article>');
   });
 
+  documents.push({ base: 'recueil', titre: ctx.recueil.titre, numero: '', html: l.join('\n') });
   fs.writeFileSync(
     path.join(sortie, 'recueil.html'),
     page({
@@ -359,6 +405,128 @@ execFileSync('node', [path.join(ici, 'design.mjs'), '--css', path.join(sortie, '
   stdio: 'pipe',
 });
 fs.copyFileSync(path.join(racine, 'web', 'style.css'), path.join(sortie, 'style.css'));
+
+/* ------------------------------------------------------------------ *
+ * La page unique — un seul fichier HTML, à copier sur une clé
+ *
+ * Tout le monde n'a pas Internet à la maison. Ce fichier contient l'intégralité
+ * du contenu, figures et vignettes comprises : il s'ouvre par un double-clic,
+ * depuis une clé USB ou une pièce jointe, et ne demande rien à personne.
+ *
+ * C'est un actif de release, pas une page du site : il double le contenu, et
+ * n'a donc rien à faire dans ce qui est déployé sur Pages.
+ * ------------------------------------------------------------------ */
+
+// Les identifiants des SVG doivent être renommés figure par figure. pdftocairo
+// nomme ses glyphes « glyph-0-0 » dans chaque fichier : réunis dans un même
+// document, tous les <use> pointeraient vers les glyphes de la PREMIÈRE figure,
+// et les autres afficheraient n'importe quoi.
+let compteurFig = 0;
+function incorporerSvg(html) {
+  return html.replace(/<img src="figures\/([^"]+)\.svg"[^>]*>/g, (_, nom) => {
+    const chemin = path.join(sortie, 'figures', `${nom}.svg`);
+    if (!fs.existsSync(chemin)) return '';
+    const prefixe = `f${++compteurFig}-`;
+    return fs
+      .readFileSync(chemin, 'utf8')
+      .replace(/<\?xml[^>]*\?>\s*/g, '')
+      .replace(/<!DOCTYPE[^>]*>\s*/g, '')
+      .replace(/\bid="([^"]+)"/g, (_m, id) => `id="${prefixe}${id}"`)
+      .replace(/href="#([^"]+)"/g, (_m, id) => `href="#${prefixe}${id}"`)
+      .replace(/url\(#([^)]+)\)/g, (_m, id) => `url(#${prefixe}${id})`)
+      .replace(/<svg /, '<svg class="fig-incorporee" ');
+  });
+}
+
+function incorporerVignettes(html) {
+  return html.replace(/<img class="video-vignette" src="vignettes\/([^"]+)\.jpg"/g, (m, id) => {
+    const chemin = path.join(sortie, 'vignettes', `${id}.jpg`);
+    if (!fs.existsSync(chemin)) return m;
+    const b64 = fs.readFileSync(chemin).toString('base64');
+    return `<img class="video-vignette" src="data:image/jpeg;base64,${b64}"`;
+  });
+}
+
+const styles =
+  fs.readFileSync(path.join(sortie, 'design.css'), 'utf8') +
+  '\n' +
+  fs.readFileSync(path.join(sortie, 'style.css'), 'utf8') +
+  `
+/* Une figure incorporée porte ses dimensions en points : on les borne. */
+.fig-incorporee { max-width: 100%; height: auto; }
+.doc-separateur { margin: 4rem 0 0; border: 0; border-top: 1px solid var(--c-trait); }
+`;
+
+// La page unique reprend la structure du site — bandeau collant, plan latéral,
+// grille adaptative — et hérite donc du même CSS. Son plan liste les documents
+// plutôt que les sections : à vingt-neuf documents, c'est la bonne échelle.
+const itemsUnique = documents.map((d) => ({
+  id: `doc-${d.base}`,
+  texte: `${d.numero ? `${d.numero}. ` : ''}${enLigne(d.titre)}`,
+}));
+const planUnique = barreLaterale('Les documents', itemsUnique);
+const menuUnique = menuDeroulant('Les documents', itemsUnique);
+
+const unique = [];
+unique.push('<header class="tete" id="haut">');
+unique.push('<p class="surtitre">Tout le contenu, hors ligne</p>');
+unique.push(`<h1>${SITE}</h1>`);
+unique.push(
+  `<p class="accroche">Les ${ctx.fiches.length} fiches, les séances et le recueil, ` +
+    `réunis dans un seul fichier — figures comprises. Rien à installer, rien à ` +
+    `télécharger de plus : il s'ouvre depuis une clé USB comme depuis un disque dur.</p>`
+);
+unique.push('</header>');
+unique.push('<h2 id="sommaire">Sommaire</h2><div class="sommaire">');
+for (const d of documents) {
+  unique.push(
+    `<a class="doc" href="#doc-${d.base}"><span class="doc-titre">` +
+      `${d.numero ? `<span class="doc-num">${d.numero}</span>` : ''}${enLigne(d.titre)}</span></a>`
+  );
+}
+unique.push('</div>');
+for (const d of documents) {
+  unique.push('<hr class="doc-separateur">');
+  unique.push(`<article id="doc-${d.base}">`);
+  unique.push(incorporerVignettes(incorporerSvg(d.html)));
+  unique.push('<p class="retour"><a href="#sommaire">↑ Retour au sommaire</a></p>');
+  unique.push('</article>');
+}
+
+const dossierHtml = path.join(racine, 'build', 'html');
+fs.mkdirSync(dossierHtml, { recursive: true });
+const cibleUnique = path.join(dossierHtml, 'math-college-fr-hors-ligne.html');
+fs.writeFileSync(
+  cibleUnique,
+  `<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${SITE} — tout le contenu, hors ligne</title>
+<style>
+${styles}
+</style>
+</head>
+<body>
+<nav>${menuUnique}<span class="fil">${SITE} · tout le contenu, hors ligne</span></nav>
+<main class="page page--plan">
+${planUnique}
+<div class="corps">
+${unique.join('\n')}
+</div>
+</main>
+<footer class="page">
+<p>Contenu sous licence CC BY-SA 4.0 · sources : ${DEPOT}</p>
+</footer>
+</body>
+</html>
+`
+);
+console.log(
+  `page unique : ${path.relative(racine, cibleUnique)} ` +
+    `(${(fs.statSync(cibleUnique).size / 1e6).toFixed(1)} Mo, ${compteurFig} figures incorporées)`
+);
 
 /* ------------------------------------------------------------------ *
  * Hors ligne

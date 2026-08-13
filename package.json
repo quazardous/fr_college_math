@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "./build.sh",
-    "check": "node tools/verifier.mjs pdf/*.pdf"
+    "check": "node tools/verifier.mjs build/pdf/*.pdf"
   },
   "dependencies": {
     "js-yaml": "^4.1.0",

@@ -2,7 +2,7 @@
 /**
  * Assemble TOUS les documents en un seul PDF, depuis les mêmes sources.
  *
- *   node tools/complet.mjs fiches problemes build/math-college-fr-complet.tex
+ *   node tools/complet.mjs contenu/fiches contenu/seances contenu/problemes sortie.tex
  *
  * Le principe : chaque source sait déjà se compiler seule, et le
  * précompilateur en produit un document autonome. On récupère de chacun
@@ -25,13 +25,13 @@ import { fileURLToPath } from 'node:url';
 import { ORDRE_NIVEAUX, base, contexte, corpsSommaire, dureeTotale, niv } from './sommaire.mjs';
 
 const ici = path.dirname(fileURLToPath(import.meta.url));
-const [, , dossierFiches, dossierProblemes, sortie] = process.argv;
+const [, , dossierFiches, dossierSeances, dossierProblemes, sortie] = process.argv;
 if (!sortie) {
-  console.error('usage: complet.mjs <fiches> <problemes> <sortie.tex>');
+  console.error('usage: complet.mjs <fiches> <seances> <problemes> <sortie.tex>');
   process.exit(1);
 }
 
-const ctx = contexte(dossierFiches, dossierProblemes);
+const ctx = contexte(dossierFiches, dossierSeances, dossierProblemes);
 
 /* ------------------------------------------------------------------ *
  * Découpe d'un document autonome en préambule + corps
@@ -81,7 +81,7 @@ for (const f of ctx.fiches) {
   morceaux.push({ base: base(f), ...decouper(precompiler(path.join(dossierFiches, f.fichier)), f.fichier) });
 }
 for (const d of problemesTries) {
-  morceaux.push({ base: base(d), ...decouper(precompiler(path.join(dossierProblemes, d.fichier)), d.fichier) });
+  morceaux.push({ base: base(d), ...decouper(precompiler(path.join(dossierSeances, d.fichier)), d.fichier) });
 }
 
 if (ctx.recueil) {

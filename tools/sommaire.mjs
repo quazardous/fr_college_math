@@ -4,7 +4,7 @@
  * de toutes les fiches. Rien n'est saisi deux fois : changer la priorité dans
  * une fiche met le sommaire à jour au prochain build.
  *
- *   node tools/sommaire.mjs fiches problemes build/00-sommaire.tex
+ *   node tools/sommaire.mjs contenu/fiches contenu/seances contenu/problemes sortie.tex
  *
  * Le fichier sert aussi de bibliothèque : `tools/complet.mjs` importe
  * `contexte()` et `corpsSommaire()` pour rebâtir les mêmes tableaux en tête du
@@ -42,9 +42,8 @@ export function lireEntetes(dossier) {
 
 /** Le recueil n'est pas un .md : son chapeau vit dans _recueil.yaml, et son
  *  nombre de problèmes se compte sur le disque. */
-export function lireRecueil(dossierProblemes) {
-  const dossier = path.join(dossierProblemes ?? '', 'recueil');
-  const chapeau = path.join(dossier, '_recueil.yaml');
+export function lireRecueil(dossier) {
+  const chapeau = path.join(dossier ?? '', '_recueil.yaml');
   if (!fs.existsSync(chapeau)) return null;
   const r = yaml.load(fs.readFileSync(chapeau, 'utf8'));
   r.dossier = dossier;
@@ -52,9 +51,9 @@ export function lireRecueil(dossierProblemes) {
   return r;
 }
 
-export function contexte(dossierFiches, dossierProblemes) {
+export function contexte(dossierFiches, dossierSeances, dossierProblemes) {
   const fiches = lireEntetes(dossierFiches);
-  const problemes = lireEntetes(dossierProblemes);
+  const problemes = lireEntetes(dossierSeances);
   const recueil = lireRecueil(dossierProblemes);
 
   // Les niveaux couverts par le projet : l'union de ceux que déclarent les
@@ -232,8 +231,8 @@ const appeleDirectement =
   process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 
 if (appeleDirectement) {
-  const [, , dossierFiches, dossierProblemes, sortie] = process.argv;
-  const ctx = contexte(dossierFiches, dossierProblemes);
+  const [, , dossierFiches, dossierSeances, dossierProblemes, sortie] = process.argv;
+  const ctx = contexte(dossierFiches, dossierSeances, dossierProblemes);
 
   const l = [];
   const p = (...x) => l.push(...x);

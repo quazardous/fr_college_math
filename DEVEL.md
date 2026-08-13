@@ -10,6 +10,25 @@ Le principe qui gouverne tout le dépôt : **rien n'est saisi deux fois.** Une
 durée, une priorité, un niveau, une couleur ne sont écrits qu'à un seul
 endroit, et tout ce qui en dépend s'en déduit à la construction.
 
+## L'arborescence
+
+```
+contenu/      les sources, et rien d'autre
+  fiches/       les fiches de cours
+  seances/      les séances chronométrées et leurs corrigés
+  problemes/    le recueil, un fichier par problème
+latex/        classe, figures, jetons engendrés
+web/          la feuille de style du site
+tools/        la chaîne de production
+build/        TOUT ce qui est engendré — le seul dossier ignoré par git
+  tex/          les .tex intermédiaires
+  pdf/          les PDF
+  site/         le site déployé sur Pages
+  html/         le fichier unique, hors ligne
+```
+
+Un `rm -rf build` ne détruit rien d'irremplaçable : tout s'y reconstruit.
+
 ## Prérequis
 
 Prérequis : `node`, `poppler-utils` et
@@ -49,7 +68,7 @@ problème change.
 ## Vérifier les PDF
 
 ```bash
-npm run check           # ou : node tools/verifier.mjs pdf/*.pdf
+npm run check           # ou : node tools/verifier.mjs build/pdf/*.pdf
 ```
 
 Une compilation verte ne garantit pas un PDF sain. `tools/verifier.mjs`
@@ -72,23 +91,27 @@ dans la CI, avant la publication de la release.
 ## Comment c'est fait
 
 ```
-design.yaml          jetons de design : polices, tailles, couleurs, marges
-      │
-      ├─ tools/design.mjs ──────────────►  latex/design.tex
-      │
-fiches/*.md          une fiche = un Markdown + son en-tête YAML
-problemes/*.md       séance d'une heure, énoncés et corrigé
-problemes/recueil/   un fichier par problème
-      │
-      ├─ tools/fiche2tex.mjs ───────────►  build/*.tex
-      ├─ tools/recueil.mjs ─────────────►  build/recueil*.tex
-      ├─ tools/sommaire.mjs ────────────►  build/00-sommaire.tex
-      ├─ tools/complet.mjs ─────────────►  build/math-college-fr-complet.tex
-      │
-      └─ tectonic (XeLaTeX) ────────────►  pdf/*.pdf
+design.yaml               jetons de design : polices, tailles, couleurs
+      ├─ tools/design.mjs ─────────────►  latex/design.tex   (LaTeX)
+      └─ tools/design.mjs --css ───────►  build/site/design.css
 
-latex/fiche.cls      structure et mise en page — aucune valeur de style
-latex/figures.sty    figures TikZ réutilisables
+contenu/fiches/*.md       une fiche = un Markdown + son en-tête YAML
+contenu/seances/*.md      une séance d'une heure, et son corrigé
+contenu/problemes/*.md    un fichier par problème du recueil
+      │
+      ├─ tools/balisage.mjs ── l'analyse, commune aux deux sorties
+      │     ├─ tools/fiche2tex.mjs ────►  build/tex/*.tex ─(tectonic)─► build/pdf/*.pdf
+      │     └─ tools/fiche2html.mjs ───►  build/site/*.html
+      │
+      ├─ tools/recueil.mjs ────────────►  build/tex/recueil*.tex
+      ├─ tools/sommaire.mjs ───────────►  build/tex/00-sommaire.tex
+      ├─ tools/complet.mjs ────────────►  build/tex/math-college-fr-complet.tex
+      ├─ tools/figures.mjs ────────────►  build/site/figures/*.svg
+      └─ tools/site.mjs ───────────────►  build/site/  et  build/html/
+
+latex/fiche.cls           structure et mise en page — aucune valeur de style
+latex/figures.sty         figures TikZ réutilisables
+web/style.css             la seule feuille de style écrite à la main
 ```
 
 **Aucune valeur de style n'est écrite dans le LaTeX.** Polices, tailles,
@@ -130,7 +153,7 @@ endroit du projet qui les déclare déjà.
 
 ## Écrire une fiche
 
-Un fichier `fiches/NN-nom.md`, avec un en-tête YAML puis du Markdown étendu.
+Un fichier `contenu/fiches/NN-nom.md`, avec un en-tête YAML puis du Markdown étendu.
 
 ```markdown
 ---
@@ -241,7 +264,7 @@ transformerait `->` en flèche et échapperait les `%` des commentaires TikZ.
 
 ## Ajouter un problème au recueil
 
-Un fichier `problemes/recueil/NN-nom.md`. Le préfixe numérique fixe l'ordre :
+Un fichier `contenu/problemes/NN-nom.md`. Le préfixe numérique fixe l'ordre :
 `1x` applications guidées, `2x` problèmes à étapes, `3x` problèmes ouverts.
 
 ```markdown

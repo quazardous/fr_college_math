@@ -1,7 +1,7 @@
 # Licence du contenu pédagogique
 
 Les **fiches de révision, énoncés de problèmes et corrigés** de ce dépôt —
-tout ce qui se trouve dans `fiches/` et `problemes/`, ainsi que les PDF
+tout ce qui se trouve dans `contenu/fiches/` et `contenu/problemes/`, ainsi que les PDF
 correspondants dans `pdf/` — sont mis à disposition sous licence
 
 **Creative Commons Attribution – Partage dans les Mêmes Conditions 4.0

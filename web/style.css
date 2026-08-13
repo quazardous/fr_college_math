@@ -41,7 +41,8 @@ h1, h2, h3, .surtitre, .encadre-titre, .cartouche, .jauge, nav, .video, th {
 nav {
   position: sticky;
   top: 0;
-  z-index: 2;
+  /* au-dessus du panneau du menu, pour rester touchable quand il est ouvert */
+  z-index: 10;
   background: #fff;
   border-bottom: 1px solid var(--c-traitfin);
   padding: 0.55rem 1.1rem;
@@ -425,4 +426,116 @@ footer a { color: var(--c-accent); }
     grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
     column-gap: 2.6rem;
   }
+}
+
+/* Le retour au sommaire, dans la page unique. */
+.retour { margin-top: 2rem; font-family: var(--pile-titres); font-size: var(--fs-badgesource); }
+.retour a { color: var(--c-accent); text-decoration: none; }
+.retour a:hover, .retour a:focus { text-decoration: underline; }
+
+/* =====================================================================
+ *  Menu déroulant — écrans étroits
+ *
+ *  Le plan latéral n'a pas la place de s'afficher sous 64 rem : il se replie
+ *  alors derrière le bandeau, sous un bouton à trois traits. Aucun script :
+ *  <details> fait exactement ce qu'il faut, et reste utilisable au clavier.
+ * ===================================================================== */
+
+nav { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
+
+.menu { order: -1; }
+.menu > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.25rem 0.5rem 0.25rem 0;
+  color: var(--c-accent);
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+.menu > summary::-webkit-details-marker { display: none; }
+.menu > summary::marker { content: ''; }
+.burger { fill: currentColor; flex: 0 0 auto; }
+
+/* Ouvert, le bouton devient une croix : c'est le même point de l'écran qui
+   ouvre et qui referme, et on le retrouve sans le chercher. */
+.menu-etat { display: inline-flex; align-items: center; gap: 0.45rem; }
+.menu-fermer { display: none; }
+.menu[open] .menu-ouvrir { display: none; }
+.menu[open] .menu-fermer { display: inline-flex; }
+
+/* Ouvert, le menu couvre la page entière : à cette largeur, un panneau qui
+   ne prendrait qu'une moitié d'écran laisserait le texte se battre avec lui. */
+/* Le panneau est un descendant du bandeau : sans cela il recouvrirait la
+   barre qui le porte, bouton de fermeture compris. */
+nav > *:not(.menu),
+.menu > summary {
+  position: relative;
+  z-index: 11;
+}
+.menu[open] > summary { border-bottom: 1px solid var(--c-traitfin); }
+
+.menu[open] > ol {
+  position: fixed;
+  inset: 0;
+  z-index: 9;
+  margin: 0;
+  padding: 3.4rem 1.1rem 2.5rem;
+  background: #fff;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.menu ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: menu;
+}
+.menu li { counter-increment: menu; }
+.menu a {
+  display: block;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--c-traitfin);
+  font-size: var(--fs-badgesource);
+  color: var(--c-encre);
+  text-decoration: none;
+}
+.menu a::before { content: counter(menu) ". "; color: var(--c-trait); }
+.menu a:hover, .menu a:focus { color: var(--c-accent); }
+
+/* Au-delà, c'est la barre latérale qui prend le relais. */
+@media (min-width: 64rem) { .menu { display: none; } }
+
+/* =====================================================================
+ *  Agrandir une figure
+ *
+ *  Sur un téléphone, une figure tient dans la largeur de l'écran — donc
+ *  petite. Un appui la déploie en plein écran, un second la referme. La
+ *  bascule est une case à cocher masquée : aucun script, et le fichier unique
+ *  hors ligne se comporte exactement comme le site.
+ * ===================================================================== */
+
+.fig-bascule { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.fig > label { display: block; cursor: zoom-in; }
+.fig-bascule:focus-visible + label { outline: 2px solid var(--c-accent); outline-offset: 3px; }
+
+.fig-bascule:checked + label {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.975);
+  cursor: zoom-out;
+}
+.fig-bascule:checked + label img,
+.fig-bascule:checked + label svg {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
 }

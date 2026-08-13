@@ -64,7 +64,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: pdf
-          path: pdf/*.pdf
+          path: build/pdf/*.pdf
           if-no-files-found: error
 
       # Le site : mêmes sources, troisième sortie.
@@ -74,7 +74,7 @@ jobs:
       - name: Artefact Pages
         uses: actions/upload-pages-artifact@v5
         with:
-          path: site
+          path: build/site
 
       - name: Publier sur la release
         if: startsWith(github.ref, 'refs/tags/')
@@ -83,9 +83,9 @@ jobs:
         run: |
           tag="${GITHUB_REF_NAME}"
           if gh release view "$tag" >/dev/null 2>&1; then
-            gh release upload "$tag" pdf/*.pdf --clobber
+            gh release upload "$tag" build/pdf/*.pdf build/html/*.html --clobber
           else
-            gh release create "$tag" pdf/*.pdf --title "$tag" --generate-notes
+            gh release create "$tag" build/pdf/*.pdf build/html/*.html --title "$tag" --generate-notes
           fi
 
   publier:

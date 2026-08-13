@@ -8,10 +8,14 @@
 #
 #  Chaîne :
 #    design.yaml   --(tools/design.mjs)-->   latex/design.tex
-#    fiches/*.md   --(tools/fiche2tex.mjs)--> build/*.tex
-#    build/*.tex   --(tectonic, XeLaTeX)-->   pdf/*.pdf
+#    contenu/{fiches,seances}/*.md --(fiche2tex.mjs)--> build/tex/*.tex
+#    contenu/problemes/*.md        --(recueil.mjs)---> build/tex/recueil*.tex
+#    build/tex/*.tex --(tectonic, XeLaTeX)--> build/pdf/*.pdf
 #
-#  Les .tex écrits à la main dans fiches/ sont compilés directement.
+#  Tout ce qui est engendré vit sous build/ : build/tex, build/pdf,
+#  build/site et build/html. Un seul dossier à ignorer, un seul à effacer.
+#
+#  Les .tex écrits à la main dans contenu/fiches/ sont compilés directement.
 #
 #  Un document n'est reconstruit que si sa source — ou l'un des fichiers
 #  du socle : classe, figures, jetons de design, précompilateur — est plus
@@ -29,6 +33,14 @@ if [ -z "$TECTONIC" ]; then
   exit 1
 fi
 
+SRC=contenu
+FICHES="$SRC/fiches"
+SEANCES="$SRC/seances"
+PROBLEMES="$SRC/problemes"
+TEX=build/tex
+PDF=build/pdf
+export PDF
+
 FORCE=0
 FILTRE=""
 for arg in "$@"; do
@@ -39,7 +51,7 @@ for arg in "$@"; do
   esac
 done
 
-mkdir -p build pdf
+mkdir -p build/tex build/pdf
 
 # Fichiers dont dépend TOUT document : les toucher invalide tous les PDF.
 SOCLE=(build.sh design.yaml latex/fiche.cls latex/figures.sty
@@ -68,59 +80,59 @@ echo "→ jetons de design"
 node tools/design.mjs
 
 echo "→ précompilation"
-for src in fiches/*.md problemes/*.md; do
+for src in "$FICHES"/*.md "$SEANCES"/*.md; do
   [ -e "$src" ] || continue
   base="$(basename "$src" .md)"
   retenu "$base" || continue
-  if a_jour "pdf/$base.pdf" "$src"; then IGNORES=$((IGNORES+1)); continue; fi
-  node tools/fiche2tex.mjs "$src" "build/$base.tex"
-  A_FAIRE+=("build/$base.tex")
+  if a_jour "$PDF/$base.pdf" "$src"; then IGNORES=$((IGNORES+1)); continue; fi
+  node tools/fiche2tex.mjs "$src" "$TEX/$base.tex"
+  A_FAIRE+=("$TEX/$base.tex")
   printf '  · %s\n' "$base.md"
 done
 
 # Le sommaire est engendré depuis les en-têtes de TOUS les documents : il
 # vieillit dès qu'une priorité, un niveau ou une durée bouge quelque part.
 if retenu "00-sommaire"; then
-  if a_jour pdf/00-sommaire.pdf fiches/*.md problemes/*.md \
-       problemes/recueil problemes/recueil/_recueil.yaml; then
+  if a_jour "$PDF/00-sommaire.pdf" "$FICHES"/*.md "$SEANCES"/*.md \
+       "$PROBLEMES" "$PROBLEMES"/_recueil.yaml; then
     IGNORES=$((IGNORES+1))
   else
     echo "→ sommaire"
-    node tools/sommaire.mjs fiches problemes build/00-sommaire.tex
-    A_FAIRE+=("build/00-sommaire.tex")
+    node tools/sommaire.mjs "$FICHES" "$SEANCES" "$PROBLEMES" $TEX/00-sommaire.tex
+    A_FAIRE+=("$TEX/00-sommaire.tex")
   fi
 fi
 
-if [ -d problemes/recueil ] && retenu "recueil"; then
-  if a_jour pdf/recueil.pdf problemes/recueil problemes/recueil/*.md &&
-     a_jour pdf/recueil-corrige.pdf problemes/recueil problemes/recueil/*.md; then
+if [ -d "$PROBLEMES" ] && retenu "recueil"; then
+  if a_jour "$PDF/recueil.pdf" "$PROBLEMES" "$PROBLEMES"/*.md &&
+     a_jour "$PDF/recueil-corrige.pdf" "$PROBLEMES" "$PROBLEMES"/*.md; then
     IGNORES=$((IGNORES+2))
   else
     echo "→ assemblage du recueil"
-    node tools/recueil.mjs problemes/recueil build/recueil.tex build/recueil-corrige.tex
-    A_FAIRE+=("build/recueil.tex" "build/recueil-corrige.tex")
+    node tools/recueil.mjs "$PROBLEMES" $TEX/recueil.tex $TEX/recueil-corrige.tex
+    A_FAIRE+=("$TEX/recueil.tex" "$TEX/recueil-corrige.tex")
   fi
 fi
 
 # Le classeur complet : les mêmes sources, reliées, avec un sommaire paginé.
 if retenu "math-college-fr-complet"; then
-  if a_jour pdf/math-college-fr-complet.pdf fiches/*.md problemes/*.md \
-       problemes/recueil problemes/recueil/*.md tools/complet.mjs; then
+  if a_jour "$PDF/math-college-fr-complet.pdf" "$FICHES"/*.md "$SEANCES"/*.md \
+       "$PROBLEMES" "$PROBLEMES"/*.md tools/complet.mjs; then
     IGNORES=$((IGNORES+1))
   else
     echo "→ classeur complet"
-    node tools/complet.mjs fiches problemes build/math-college-fr-complet.tex
-    A_FAIRE+=("build/math-college-fr-complet.tex")
+    node tools/complet.mjs "$FICHES" "$SEANCES" "$PROBLEMES" $TEX/math-college-fr-complet.tex
+    A_FAIRE+=("$TEX/math-college-fr-complet.tex")
   fi
 fi
 
 # Les .tex écrits à la main, sans passage par le précompilateur.
-for src in fiches/*.tex problemes/*.tex; do
+for src in "$FICHES"/*.tex "$SEANCES"/*.tex; do
   [ -e "$src" ] || continue
   base="$(basename "$src" .tex)"
   retenu "$base" || continue
-  [ -e "build/$base.tex" ] && continue
-  if a_jour "pdf/$base.pdf" "$src"; then IGNORES=$((IGNORES+1)); continue; fi
+  [ -e "$TEX/$base.tex" ] && continue
+  if a_jour "$PDF/$base.pdf" "$src"; then IGNORES=$((IGNORES+1)); continue; fi
   A_FAIRE+=("$src")
 done
 
@@ -129,9 +141,9 @@ compiler() {
   local src="$1" base
   base="$(basename "$src" .tex)"
   local journal pages poids
-  if journal="$("$TECTONIC" -X compile "$src" --outdir pdf -Z search-path=latex 2>&1)"; then
-    pages="$(pdfinfo "pdf/$base.pdf" 2>/dev/null | awk '/^Pages/{print $2}')"
-    poids="$(du -h "pdf/$base.pdf" | cut -f1)"
+  if journal="$("$TECTONIC" -X compile "$src" --outdir "$PDF" -Z search-path=latex 2>&1)"; then
+    pages="$(pdfinfo "$PDF/$base.pdf" 2>/dev/null | awk '/^Pages/{print $2}')"
+    poids="$(du -h "$PDF/$base.pdf" | cut -f1)"
     printf '  ✓ %-40s %3s p.  %s\n' "$base" "${pages:-?}" "$poids"
     # Une compilation peut réussir en posant des carrés vides à la place des
     # caractères absents des polices. Le journal le dit ; personne ne le lisait.
@@ -168,15 +180,15 @@ fi
 # Purge des fichiers engendrés dont la source a disparu : sans cela, un
 # document renommé ou supprimé laisserait derrière lui un .tex et un PDF.
 if [ -z "$FILTRE" ]; then
-  for vieux in pdf/*.pdf build/*.tex; do
+  for vieux in "$PDF"/*.pdf "$TEX"/*.tex; do
     [ -e "$vieux" ] || continue
     base="$(basename "$vieux")"; base="${base%.*}"
     case "$base" in
-      00-sommaire|math-college-fr-complet) [ -d fiches ] && continue ;;
-      recueil|recueil-corrige) [ -d problemes/recueil ] && continue ;;
+      00-sommaire|math-college-fr-complet) [ -d "$FICHES" ] && continue ;;
+      recueil|recueil-corrige) [ -d "$PROBLEMES" ] && continue ;;
     esac
-    if [ ! -e "fiches/$base.md" ] && [ ! -e "problemes/$base.md" ] &&
-       [ ! -e "fiches/$base.tex" ] && [ ! -e "problemes/$base.tex" ]; then
+    if [ ! -e "$FICHES/$base.md" ] && [ ! -e "$SEANCES/$base.md" ] &&
+       [ ! -e "$FICHES/$base.tex" ] && [ ! -e "$SEANCES/$base.tex" ]; then
       rm -f "$vieux"
       printf '  ⌫ %-40s supprimé (source disparue)\n' "$vieux"
     fi
@@ -185,8 +197,8 @@ fi
 
 echo
 if [ "$IGNORES" -gt 0 ]; then
-  echo "PDF dans ./pdf/  —  $IGNORES déjà à jour (./build.sh --force pour tout refaire)"
+  echo "PDF dans ./$PDF/  —  $IGNORES déjà à jour (./build.sh --force pour tout refaire)"
 else
-  echo "PDF dans ./pdf/"
+  echo "PDF dans ./$PDF/"
 fi
 exit $statut

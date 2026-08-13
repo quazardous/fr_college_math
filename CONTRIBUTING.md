@@ -21,7 +21,7 @@ illisibles comptent aussi.
 1. **Fork** puis une branche : `git checkout -b corrige-fiche-12`.
 2. Modifie la **source**, jamais le PDF — les PDF sont engendrés, et toute
    retouche directe serait écrasée à la construction suivante.
-   Les sources vivent dans `fiches/`, `problemes/` et `problemes/recueil/`.
+   Les sources vivent dans `contenu/fiches/`, `contenu/problemes/` et `contenu/problemes/recueil/`.
 3. Vérifie que tout se construit :
 
    ```bash
