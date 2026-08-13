@@ -31,6 +31,7 @@
 import fs from 'node:fs';
 import * as yaml from 'js-yaml';
 import { formaterDuree } from './duree.mjs';
+import { analyser } from './balisage.mjs';
 
 const [, , entree, sortie] = process.argv;
 if (!entree) {
@@ -92,133 +93,78 @@ function enLigne(ligne) {
  * Compilateur du corps — réentrant, pour pouvoir traiter l'intérieur
  * d'un encadré comme un document à part entière.
  * ------------------------------------------------------------------ */
-const ENCADRES = new Set(['definition', 'retenir', 'methode', 'piege', 'prolongement', 'exo', 'solution']);
-
+/* ------------------------------------------------------------------ *
+ * Émission du LaTeX depuis l'arbre de balisage
+ * ------------------------------------------------------------------ */
 function compiler(texte) {
-  const lignes = texte.split(/\r?\n/);
+  return emettre(analyser(texte));
+}
+
+function emettre(noeuds) {
   const out = [];
-  let i = 0;
-  let colonnes = null;
+  for (const n of noeuds) {
+    switch (n.t) {
+      case 'vide':
+        out.push('');
+        break;
 
-  const avaler = (test) => {
-    const bloc = [];
-    while (i < lignes.length && test(lignes[i])) bloc.push(lignes[i++]);
-    return bloc;
-  };
+      case 'titre':
+        out.push(`\\${n.niveau === 2 ? 'section' : 'subsection'}{${enLigne(n.texte)}}`);
+        break;
 
-  const estStructure = (x) =>
-    /^(#{2,3}\s|:::|\||!fig |!saut|:cols |\/\/|```)/.test(x.trim()) || x.trim() === '$$';
+      case 'encadre':
+        out.push(`\\begin{${n.genre}}${n.titre ? `[${enLigne(n.titre)}]` : ''}`);
+        out.push(emettre(n.enfants).join('\n').trim());
+        out.push(`\\end{${n.genre}}`);
+        break;
 
-  const rendreListe = (bloc) => {
-    const numerotee = /^\s*\d+\.\s/.test(bloc[0]);
-    const env = numerotee ? 'enumerate' : 'itemize';
-    const opts = numerotee ? '[leftmargin=6mm,label=\\textbf{\\arabic*.}]' : '';
-    out.push(`\\begin{${env}}${opts}`);
-    // On accumule le texte brut de chaque item, et on ne le transforme
-    // qu'une fois complet : sinon un **gras** à cheval sur deux lignes
-    // ne serait pas reconnu.
-    let courant = null;
-    for (const l of bloc) {
-      const debut = l.match(/^\s*(?:[-*]|\d+\.)\s+(.*)$/);
-      if (debut) {
-        if (courant !== null) out.push(`  \\item ${enLigne(courant)}`);
-        courant = debut[1];
-      } else if (courant !== null) {
-        courant += ' ' + l.trim();
+      case 'liste': {
+        const env = n.numerotee ? 'enumerate' : 'itemize';
+        const opts = n.numerotee ? '[leftmargin=6mm,label=\\textbf{\\arabic*.}]' : '';
+        out.push(`\\begin{${env}}${opts}`);
+        for (const it of n.items) out.push(`  \\item ${enLigne(it)}`);
+        out.push(`\\end{${env}}`);
+        break;
       }
+
+      case 'tableau': {
+        const spec = n.colonnes
+          ? n.colonnes.startsWith('@{}')
+            ? n.colonnes
+            : `@{}${n.colonnes}@{}`
+          : `@{}${n.entete.map(() => 'Y').join(' ')}@{}`;
+        out.push(`\\begin{tableaufiche}{${spec}}`);
+        out.push(
+          `\\ligneentete ${n.entete.map((c) => `\\entetecell{${enLigne(c)}}`).join(' & ')}\\\\`
+        );
+        for (const r of n.rangees) out.push(`${r.map(enLigne).join(' & ')}\\\\`);
+        out.push('\\end{tableaufiche}');
+        break;
+      }
+
+      case 'fig':
+        out.push('\\begin{center}', n.macro, '\\end{center}');
+        break;
+
+      // Le bloc TikZ est centré ; le bloc LaTeX brut est transmis tel quel.
+      case 'brut':
+        if (n.genre === 'tikz') out.push('\\begin{center}', ...n.lignes, '\\end{center}');
+        else out.push(...n.lignes);
+        break;
+
+      case 'saut':
+        out.push('\\clearpage');
+        break;
+
+      case 'maths':
+        out.push(`\\[${n.lignes.join('\n')}\\]`);
+        break;
+
+      case 'para':
+        out.push(enLigne(n.texte));
+        break;
     }
-    if (courant !== null) out.push(`  \\item ${enLigne(courant)}`);
-    out.push(`\\end{${env}}`);
-  };
-
-  const rendreTableau = (bloc) => {
-    const cellules = (l) => l.trim().replace(/^\||\|$/g, '').split('|').map((c) => c.trim());
-    const rangees = bloc.filter((l) => !/^\s*\|?\s*:?-{2,}/.test(l)).map(cellules);
-    const entete = rangees.shift();
-    const spec = colonnes ?? `@{}${entete.map(() => 'Y').join(' ')}@{}`;
-    colonnes = null;
-    out.push(`\\begin{tableaufiche}{${spec}}`);
-    out.push(`\\ligneentete ${entete.map((c) => `\\entetecell{${enLigne(c)}}`).join(' & ')}\\\\`);
-    for (const r of rangees) out.push(`${r.map(enLigne).join(' & ')}\\\\`);
-    out.push(`\\end{tableaufiche}`);
-  };
-
-  while (i < lignes.length) {
-    const l = lignes[i];
-
-    if (!l.trim()) { i++; out.push(''); continue; }
-
-    if (l.trim().startsWith('//')) { i++; continue; }
-
-    if (l.startsWith(':cols ')) {
-      const s = l.slice(6).trim();
-      colonnes = s.startsWith('@{}') ? s : `@{}${s}@{}`;
-      i++;
-      continue;
-    }
-
-    // Bloc brut : ```tikz … ``` (centré) ou ```latex … ``` (tel quel).
-    // Indispensable pour les figures écrites à la main : sans lui, « -> »
-    // deviendrait une flèche de texte et « % » serait échappé.
-    const cloture = l.match(/^```(\w*)\s*$/);
-    if (cloture) {
-      const genre = cloture[1];
-      i++;
-      const dedans = avaler((x) => !/^```\s*$/.test(x.trim()));
-      i++;
-      if (genre === 'tikz') out.push('\\begin{center}', ...dedans, '\\end{center}');
-      else out.push(...dedans);
-      continue;
-    }
-
-    if (l.startsWith('!fig ')) {
-      out.push('\\begin{center}', l.slice(5).trim(), '\\end{center}');
-      i++;
-      continue;
-    }
-
-    if (l.trim() === '!saut') { out.push('\\clearpage'); i++; continue; }
-
-    const ouverture = l.match(/^:::\s*(\w+)\s*(.*)$/);
-    if (ouverture && ENCADRES.has(ouverture[1])) {
-      const [, type, titre] = ouverture;
-      i++;
-      const dedans = avaler((x) => x.trim() !== ':::');
-      i++;
-      out.push(`\\begin{${type}}${titre ? `[${enLigne(titre)}]` : ''}`);
-      out.push(compiler(dedans.join('\n')).join('\n').trim());
-      out.push(`\\end{${type}}`);
-      continue;
-    }
-
-    const titre = l.match(/^(#{2,3})\s+(.*)$/);
-    if (titre) {
-      out.push(`\\${titre[1].length === 2 ? 'section' : 'subsection'}{${enLigne(titre[2])}}`);
-      i++;
-      continue;
-    }
-
-    if (l.trim() === '$$') {
-      i++;
-      const dedans = avaler((x) => x.trim() !== '$$');
-      i++;
-      out.push(`\\[${dedans.join('\n')}\\]`);
-      continue;
-    }
-
-    if (l.trim().startsWith('|')) {
-      rendreTableau(avaler((x) => x.trim().startsWith('|')));
-      continue;
-    }
-
-    if (/^\s*(?:[-*]|\d+\.)\s+/.test(l)) {
-      rendreListe(avaler((x) => x.trim() !== '' && !estStructure(x)));
-      continue;
-    }
-
-    out.push(enLigne(avaler((x) => x.trim() !== '' && !estStructure(x)).join('\n')));
   }
-
   return out;
 }
 
