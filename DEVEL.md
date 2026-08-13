@@ -181,6 +181,12 @@ videos:
     chaine: Yvan Monka
     duree: "8:47"
     vues: "1 100 000"
+
+liens:                           # sites à visiter — même carte que les vidéos
+  - url: https://scratch.mit.edu
+    titre: Scratch — programmer par blocs
+    source: MIT Media Lab
+    image: https://scratch.mit.edu/images/scratch-og.png   # facultatif, distante
 ---
 
 ## Un titre de section
@@ -213,6 +219,7 @@ Ce qui se trompe une fois sur trois.
 | `!fig \macro{…}` | figure centrée, tirée de `figures.sty` |
 | ` ```tikz … ``` ` | figure TikZ écrite à la main, centrée |
 | ` ```latex … ``` ` | LaTeX brut, transmis tel quel |
+| `[texte](https://…)` | lien — coloré et cliquable dans le PDF, cliquable sur le site |
 | `!saut` | saut de page |
 | `✔` | coche de contrôle (relayée par `\coche`, aucune police du document n'ayant le glyphe) |
 | `[[6e]]` `[[5e]]` `[[4e]]` `[[3e]]` | pastille de niveau, teinte croissante |

@@ -23,7 +23,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { contexte, base as baseDe } from './sommaire.mjs';
+import { ORDRE_NIVEAUX, contexte, base as baseDe } from './sommaire.mjs';
 import { formaterDuree } from './duree.mjs';
 import { recolter, produire } from './figures.mjs';
 import { versHtml, enLigne, niveaux } from './fiche2html.mjs';
@@ -58,27 +58,46 @@ const CROIX =
   '<svg class="burger" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">' +
   '<path d="M1.4 0 8 6.6 14.6 0 16 1.4 9.4 8l6.6 6.6-1.4 1.4L8 9.4 1.4 16 0 14.6 6.6 8 0 1.4Z"/></svg>';
 
-/** La barre latérale des écrans larges. */
-const barreLaterale = (titre, items) =>
-  items.length
-    ? `<aside class="plan"><p class="plan-titre">${titre}</p><ol>` +
-      items.map((x) => `<li><a href="#${x.id}">${x.texte}</a></li>`).join('') +
-      '</ol></aside>'
-    : '';
+const CHEVRON =
+  '<svg class="chevron" viewBox="0 0 12 12" width="12" height="12" aria-hidden="true">' +
+  '<path d="M4 1 9 6l-5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
 
 /**
- * Le même plan, en menu déroulant pour les écrans étroits. <details> suffit :
- * le site n'embarque qu'un seul script, le service worker, et un menu n'est
- * pas une raison d'en ajouter un second.
+ * La liste de navigation — une seule, que la barre latérale des écrans larges
+ * et le menu déroulant des écrans étroits habillent différemment. Deux
+ * fabrications séparées finiraient par diverger, et c'est déjà arrivé.
+ *
+ * Un item peut porter des sous-items : ils se déplient sous un chevron posé à
+ * droite de la ligne, le lien restant cliquable à côté. Imbriquer l'un dans
+ * l'autre rendrait l'une des deux cibles inatteignable au doigt.
  */
+const listeNavigation = (items) =>
+  '<ol class="nav-liste">' +
+  items
+    .map((x) => {
+      const lien = `<a class="nav-lien" href="#${x.id}">${x.texte}</a>`;
+      if (!x.sous?.length) return `<li class="nav-ligne">${lien}</li>`;
+      return (
+        `<li class="nav-ligne">${lien}` +
+        `<details class="nav-sous"><summary aria-label="Sections">${CHEVRON}</summary><ol>` +
+        x.sous.map((y) => `<li><a href="#${y.id}">${y.texte}</a></li>`).join('') +
+        '</ol></details></li>'
+      );
+    })
+    .join('') +
+  '</ol>';
+
+const barreLaterale = (titre, items) =>
+  items.length
+    ? `<aside class="plan"><p class="plan-titre">${titre}</p>${listeNavigation(items)}</aside>`
+    : '';
+
 const menuDeroulant = (titre, items) =>
   items.length
     ? `<details class="menu"><summary>` +
       `<span class="menu-etat menu-ouvrir">${BURGER}<span>${titre}</span></span>` +
       `<span class="menu-etat menu-fermer">${CROIX}<span>Fermer</span></span>` +
-      `</summary><ol>` +
-      items.map((x) => `<li><a href="#${x.id}">${x.texte}</a></li>`).join('') +
-      '</ol></details>'
+      `</summary>${listeNavigation(items)}</details>`
     : '';
 
 const echapperAttr = (s) =>
@@ -205,20 +224,45 @@ console.log(
 const manquantes = [];
 
 const documents = [];
+let fragments = 0; // pour préfixer les compteurs de chaque problème du recueil
+
+const rangSeance = (d) => {
+  const n = (Array.isArray(d.niveaux) ? d.niveaux : [d.niveaux]).map(String);
+  const i = ORDRE_NIVEAUX.findIndex((x) => n.includes(x));
+  return [i === -1 ? 99 : i, /-corrige\.md$/.test(d.fichier) ? 1 : 0];
+};
+const seances = [...ctx.problemes].sort((a, b) => {
+  const [ra, ca] = rangSeance(a);
+  const [rb, cb] = rangSeance(b);
+  return ra - rb || ca - cb || a.fichier.localeCompare(b.fichier);
+});
 
 for (const [dossier, docs] of [
   ['contenu/fiches', ctx.fiches],
-  ['contenu/seances', ctx.problemes],
+  ['contenu/seances', seances],
 ]) {
   for (const d of docs) {
     const b = baseDe(d);
-    const r = versHtml(path.join(racine, dossier, d.fichier), { figures, vignettes });
+    const r = versHtml(path.join(racine, dossier, d.fichier), { figures, vignettes, prefixe: b });
     manquantes.push(...r.manquantes);
+
+    // Le renvoi entre un énoncé et son corrigé appartient à la page, pas au
+    // sommaire : c'est en finissant la séance qu'on veut le corrigé.
+    const corrige = docs.find((x) => x.fichier === d.fichier.replace(/\.md$/, '-corrige.md'));
+    const enonce = /-corrige\.md$/.test(d.fichier)
+      ? docs.find((x) => x.fichier === d.fichier.replace(/-corrige\.md$/, '.md'))
+      : null;
+    const renvoi = corrige
+      ? `<p><a class="impression" href="${baseDe(corrige)}.html">Voir le corrigé →</a></p>`
+      : enonce
+        ? `<p><a class="impression" href="${baseDe(enonce)}.html">← Revenir à l'énoncé</a></p>`
+        : '';
     documents.push({
       base: b,
       titre: d.titre,
       numero: /^\d\d-/.test(b) ? b.slice(0, 2) : '',
       meta: `${niveaux(d.niveaux)} · ${enLigne(formaterDuree(d.duree))}`,
+      sections: r.sections,
       html: r.html,
     });
     fs.writeFileSync(
@@ -226,7 +270,7 @@ for (const [dossier, docs] of [
       page({
         titre: d.titre,
         description: d.accroche,
-        corps: r.html,
+        corps: r.html + renvoi,
         plan: barreLaterale('Dans cette page', r.sections),
         menu: menuDeroulant('Dans cette page', r.sections),
         fil: d.surtitre ? enLigne(d.surtitre) : '',
@@ -299,6 +343,7 @@ if (ctx.recueil) {
     titre: ctx.recueil.titre,
     numero: '',
     meta: `${niveaux(ctx.recueil.niveaux)} · ${enLigne(formaterDuree(ctx.recueil.duree))} · ${ctx.recueil.nombre} problèmes`,
+    sections: [],
     html: l.join('\n'),
   });
   fs.writeFileSync(
@@ -321,7 +366,9 @@ if (ctx.recueil) {
 function rendreFragment(markdown) {
   const tmp = path.join(sortie, '.fragment.md');
   fs.writeFileSync(tmp, `---\ntitre: x\n---\n${markdown}\n`);
-  const r = versHtml(tmp, { figures });
+  // Chaque fragment repart de zéro pour ses compteurs : sans préfixe, tous
+  // les problèmes du recueil nommeraient leur première figure « fig1 ».
+  const r = versHtml(tmp, { figures, prefixe: `r${++fragments}` });
   manquantes.push(...r.manquantes);
   fs.rmSync(tmp, { force: true });
   // On retire l'en-tête fabriqué : seul le corps nous intéresse.
@@ -378,12 +425,14 @@ if (enonces.length || ctx.recueil) {
   idx.push('<div class="sommaire">');
   for (const d of enonces) {
     const c = ctx.problemes.find((x) => x.fichier === d.fichier.replace(/\.md$/, '-corrige.md'));
-    idx.push('<div class="doc-groupe">');
     idx.push(
-      lien(baseDe(d), enLigne(d.titre), `${niveaux(d.niveaux)} · ${enLigne(formaterDuree(d.duree))}`)
+      lien(
+        baseDe(d),
+        enLigne(d.titre),
+        `${niveaux(d.niveaux)} · ${enLigne(formaterDuree(d.duree))}` +
+          (c ? ' · corrigé inclus' : '')
+      )
     );
-    if (c) idx.push(`<a class="doc-annexe" href="${baseDe(c)}.html">Voir le corrigé →</a>`);
-    idx.push('</div>');
   }
   if (ctx.recueil) {
     idx.push(
@@ -478,10 +527,11 @@ const styles =
 // grille adaptative — et hérite donc du même CSS. Son plan liste les documents
 // plutôt que les sections : à vingt-neuf documents, c'est la bonne échelle.
 const itemsUnique = [
-  { id: 'haut', texte: 'Sommaire' },
+  { id: 'haut', texte: '↑ Sommaire' },
   ...documents.map((d) => ({
     id: `doc-${d.base}`,
     texte: `${d.numero ? `${d.numero}. ` : ''}${enLigne(d.titre)}`,
+    sous: d.sections ?? [],
   })),
 ];
 const planUnique = barreLaterale('Les documents', itemsUnique);

@@ -12,6 +12,12 @@ pourquoi: >-
 duree: 15 min
 domaine: Pensée informatique
 
+liens:
+  - url: https://scratch.mit.edu
+    titre: Scratch — programmer par blocs
+    source: MIT Media Lab · dans le navigateur, sans rien installer
+    image: https://scratch.mit.edu/images/scratch-og.png
+
 automatismes:
   colonnes: 2
   items:
@@ -111,7 +117,7 @@ L'étape 100 comporterait donc $1+3\times 100 = 301$ carreaux — sans rien dess
 C'est le pas décisif vers le calcul littéral de la fiche 5.
 :::
 
-## [[4e]] Variables et conditions
+## Variables et conditions [[4e]]
 
 ::: definition La variable informatique
 Une **variable** est une case mémoire portant un nom, dont le contenu peut
@@ -144,4 +150,14 @@ $\geqslant$, $\leqslant$, $=$, différent de.
 - Repérer ce qui entre dans un programme et ce qui en sort.
 - Modifier un paramètre d'un programme existant et prévoir l'effet.
 - Remplacer des répétitions par une boucle.
+:::
+
+::: prolongement Programmer pour de vrai
+Tout ce qui précède se manipule en quelques minutes dans **Scratch**, l'atelier
+de programmation par blocs utilisé au collège : on y assemble les instructions
+comme des pièces de puzzle, et on voit le résultat bouger à l'écran.
+
+Reprends-y le carré de la méthode ci-dessus, puis change l'angle et le nombre
+de répétitions : c'est en voyant la figure se déformer qu'on comprend pourquoi
+l'angle de rotation n'est pas l'angle de la figure.
 :::

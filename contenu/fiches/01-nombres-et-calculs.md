@@ -126,7 +126,7 @@ explicitement ce réflexe de vérification.
 - [[5e]] **Diviser par un décimal** : on multiplie *les deux* nombres par $10$, $100$…
   pour rendre le diviseur entier, par exemple $\dfrac{7{,}2}{0{,}4}=\dfrac{72}{4}=18$.
 
-### [[5e]] Multiples, diviseurs et critères de divisibilité
+### Multiples, diviseurs et critères de divisibilité [[5e]]
 
 Si $a = b\times c$, alors $a$ est un **multiple** de $b$ et de $c$, et $b$ et $c$
 sont des **diviseurs** de $a$.
@@ -140,7 +140,7 @@ sont des **diviseurs** de $a$.
 | 9 | la **somme des chiffres** est divisible par 9 | $18$ est divisible par 9 : oui |
 | 10 | se termine par $0$ | $4536$ : non |
 
-## [[5e]] Priorités opératoires
+## Priorités opératoires [[5e]]
 
 ::: retenir L'ordre, dans tous les cas
 1. les **parenthèses**, en commençant par les plus intérieures ;
@@ -163,7 +163,7 @@ multiplier par 4, retirer 3 » devient $(n+2)\times 4 - 3$.
 Les parenthèses sont ici **indispensables** : sans elles, $n+2\times 4-3$ ne
 décrit plus le même programme.
 
-## [[5e]] Distributivité
+## Distributivité [[5e]]
 
 ::: retenir
 $$k\times(a+b)=k\times a+k\times b \qquad\qquad k\times(a-b)=k\times a-k\times b$$
@@ -174,7 +174,7 @@ C'est d'abord un outil de **calcul mental** :
 $$7\times 102 = 7\times(100+2)=700+14=714 \qquad
   25\times 98 = 25\times(100-2)=2500-50=2450$$
 
-## [[5e]] Carrés et cubes
+## Carrés et cubes [[5e]]
 
 $a^{2}=a\times a$ (« $a$ au carré ») \qquad $a^{3}=a\times a\times a$ (« $a$ au cube »).
 

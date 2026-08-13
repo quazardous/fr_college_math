@@ -116,7 +116,7 @@ plus chaque part est petite. C'est contre-intuitif parce que $8>4$.
 
 On additionne les numérateurs, on garde le dénominateur : $\dfrac{2}{5}+\dfrac{1}{5}=\dfrac{3}{5}$.
 
-### [[5e]] Dénominateurs quelconques
+### Dénominateurs quelconques [[5e]]
 
 ::: methode
 1. Trouver un dénominateur commun (souvent, le plus grand suffit).
@@ -168,7 +168,7 @@ $$10\,\% = \text{diviser par }10 \qquad
 Le reste s'en déduit : 30 % = trois fois 10 % ; 5 % = la moitié de 10 %.
 :::
 
-## [[4e]] Multiplier, inverser, diviser
+## Multiplier, inverser, diviser [[4e]]
 
 ::: retenir Multiplier, c'est le cas facile
 On multiplie les numérateurs entre eux, et les dénominateurs entre eux.

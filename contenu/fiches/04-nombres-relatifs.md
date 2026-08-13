@@ -169,7 +169,7 @@ En 5e, on additionne et on soustrait les relatifs — **c'est tout**.
 La multiplication et la division arrivent en 4e : c'est la section suivante.
 :::
 
-## [[4e]] Multiplier et diviser
+## Multiplier et diviser [[4e]]
 
 ::: retenir La règle des signes
 $$(+)\times(+) = + \qquad (-)\times(-) = + \qquad

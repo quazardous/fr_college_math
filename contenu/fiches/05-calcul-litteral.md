@@ -163,7 +163,7 @@ Pour $4x=20$ et $x=5$ : $4\times 5 = 20$. ✔ La vérification coûte cinq secon
 et rattrape presque toutes les erreurs.
 :::
 
-## [[4e]] Les équations à deux étapes
+## Les équations à deux étapes [[4e]]
 
 En 4e, la lettre peut apparaître **des deux côtés** du signe égal, et l'équation
 demande deux opérations au lieu d'une.

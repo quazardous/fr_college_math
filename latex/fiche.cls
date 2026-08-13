@@ -54,6 +54,7 @@
   \def\pastilleniveau#1#2#3{#3e}%
   \def\ieme{e}%
   \def\motcle#1{#1}%
+  \def\lienweb#1{#1}%
   \def\coche{}%
   \def\fleche{ - }%
   \def\jauge{}%
@@ -408,6 +409,33 @@
     \end{minipage}
   \end{tcolorbox}\hfill}
 
+% \ressource{url}{titre}{source}{note}
+% Même carte que les vidéos, pour un site à visiter plutôt qu'une vidéo à
+% regarder. L'URL est lue par \urldef côté générateur : elle arrive ici déjà
+% neutralisée, souligné compris.
+\newcommand{\ressource}[4]{%
+  \begin{tcolorbox}[enhanced,sharp corners,boxrule=0.4pt,colframe=trait,
+      colback=white,left=2.4mm,right=2.4mm,top=2.2mm,bottom=2.2mm,
+      width=0.487\linewidth,box align=top,nobeforeafter,valign=center]
+    \begin{minipage}[c]{16.5mm}\qrcode[height=16.5mm,level=M]{#1}\end{minipage}%
+    \hspace{2.4mm}%
+    \begin{minipage}[c]{\dimexpr\linewidth-19.8mm\relax}
+      {\sffamily\fsVideoTitre\bfseries #2\par}
+      \vspace{0.7mm}
+      {\sffamily\fsVideoMeta\color{encredouce}#3\par}
+      \vspace{0.5mm}
+      {\ttfamily\fsVideoLien\color{accent}#4\par}
+    \end{minipage}
+  \end{tcolorbox}\hfill}
+
+\newenvironment{ressources}
+  {\needspace{6\baselineskip}\par\vspace{2mm}
+   {\sffamily\fsSection\bfseries\color{encre}Aller y voir\par}
+   \vspace{0.5mm}{\color{accent}\rule{\linewidth}{\filetsection}}\par\vspace{1.4mm}
+   {\fsEncartCorps Des sites à ouvrir dans un navigateur, sans rien installer.\par}%
+   \vspace{1.2mm}\par\noindent}
+  {\par}
+
 % ---------------------------------------------------------------- divers
 % Pastille de niveau. L'argument est le chiffre seul : \niv{5}.
 % Quatre teintes de l'accent, de la plus claire (6e) à la plus dense (3e) :
@@ -425,6 +453,9 @@
 % La coche qui clôt un contrôle de résultat. Ni Pagella ni Fira n'ont le
 % glyphe U+2714 : sans ce relais, le caractère sortait en carré vide.
 \newcommand{\coche}{\raisebox{-0.1ex}{\color{accent}\ding{51}}}
+% Un lien reste lisible sur le papier : c'est la couleur qui le signale,
+% pas le soulignement.
+\newcommand{\lienweb}[1]{\textcolor{accent}{#1}}
 \newcommand{\motcle}[1]{\textbf{#1}}
 \newcommand{\separateur}{\par\vspace{1.2mm}{\color{trait}\rule{\linewidth}{0.4pt}}\par\vspace{1mm}}
 \newcommand{\fleche}{\ensuremath{\rightarrow}}

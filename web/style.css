@@ -168,6 +168,7 @@ code {
 .ecart { display: inline-block; width: 1.2em; }
 .ecart--large { width: 2.2em; }
 .coche { color: var(--c-accent); font-weight: 700; }
+.lien { color: var(--c-accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
 
 /* ------------------------------------------------------------------ encadrés */
 .encadre, .automatismes {
@@ -268,6 +269,13 @@ math[display="block"] { display: block; margin: 0.9rem auto; overflow-x: auto; }
 .video-vignette { width: 7.5rem; height: auto; flex: 0 0 auto; }
 .video-texte { min-width: 0; }
 .video-titre { display: block; font-weight: 700; font-size: var(--fs-videotitre); }
+.video-url {
+  display: block;
+  margin-top: 0.15rem;
+  font-family: var(--pile-machine);
+  font-size: var(--fs-videolien);
+  color: var(--c-accent);
+}
 .video-meta {
   display: block;
   margin-top: 0.2rem;
@@ -401,26 +409,6 @@ footer a { color: var(--c-accent); }
   text-transform: uppercase;
   color: var(--c-encredouce);
 }
-.plan ol {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  counter-reset: plan;
-}
-.plan li { margin: 0; counter-increment: plan; }
-.plan a {
-  display: block;
-  padding: 0.3rem 0 0.3rem 1.5rem;
-  border-left: 2px solid var(--c-traitfin);
-  font-family: var(--pile-titres);
-  font-size: var(--fs-badgesource);
-  line-height: 1.35;
-  color: var(--c-encredouce);
-  text-decoration: none;
-  text-indent: -1.5rem;
-}
-.plan a::before { content: counter(plan) ". "; color: var(--c-trait); }
-.plan a:hover, .plan a:focus { border-left-color: var(--c-accent); color: var(--c-accent); }
 
 /* L'index se range en colonnes dès qu'il y a la place. */
 @media (min-width: 48rem) {
@@ -492,7 +480,7 @@ nav > *:not(.menu),
   z-index: 11;
 }
 
-.menu[open] > ol {
+.menu[open] > .nav-liste {
   position: fixed;
   inset: 0;
   z-index: 9;
@@ -502,25 +490,6 @@ nav > *:not(.menu),
   overflow-y: auto;
   overscroll-behavior: contain;
 }
-.menu ol {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  counter-reset: menu;
-}
-.menu li { counter-increment: menu; }
-.menu li:first-child { counter-increment: none; }
-.menu li:first-child a::before { content: '↑ '; }
-.menu a {
-  display: block;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--c-traitfin);
-  font-size: var(--fs-badgesource);
-  color: var(--c-encre);
-  text-decoration: none;
-}
-.menu a::before { content: counter(menu) ". "; color: var(--c-trait); }
-.menu a:hover, .menu a:focus { color: var(--c-accent); }
 
 /* Au-delà, c'est la barre latérale qui prend le relais. */
 @media (min-width: 64rem) { .menu { display: none; } }
@@ -557,3 +526,70 @@ nav > *:not(.menu),
   width: auto;
   height: auto;
 }
+
+
+/* =====================================================================
+ *  La liste de navigation
+ *
+ *  Un seul jeu de styles pour la barre latérale des écrans larges et pour le
+ *  menu déroulant des écrans étroits : c'est la même liste, au même format,
+ *  et deux habillages qui divergeraient finiraient par se contredire.
+ * ===================================================================== */
+
+.nav-liste {
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+/* Pas de numérotation automatique : les fiches portent déjà la leur, et un
+   second compteur les aurait décalées d'un cran. */
+.nav-ligne { position: relative; }
+.nav-lien {
+  display: block;
+  padding: 0.7rem 3rem 0.7rem 0;
+  border-bottom: 1px solid var(--c-traitfin);
+  font-family: var(--pile-titres);
+  font-size: var(--fs-badgesource);
+  line-height: 1.35;
+  color: var(--c-encre);
+  text-decoration: none;
+}
+.nav-lien:hover, .nav-lien:focus { color: var(--c-accent); }
+
+/* Le chevron est posé sur la droite de la ligne : le lien du document et le
+   dépliage de ses sections sont deux cibles distinctes. */
+.nav-sous > summary {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 2.8rem;
+  color: var(--c-encredouce);
+  cursor: pointer;
+  list-style: none;
+}
+.nav-sous > summary::-webkit-details-marker { display: none; }
+.nav-sous > summary::marker { content: ''; }
+.nav-sous > summary:hover { color: var(--c-accent); }
+.chevron { transition: transform 0.15s ease; }
+.nav-sous[open] > summary .chevron { transform: rotate(90deg); }
+
+.nav-sous > ol {
+  margin: 0;
+  padding: 0.2rem 0 0.6rem 1.2rem;
+  border-left: 2px solid var(--c-traitfin);
+  list-style: none;
+}
+.nav-sous > ol a {
+  display: block;
+  padding: 0.45rem 0;
+  font-family: var(--pile-titres);
+  font-size: var(--fs-badgesource);
+  color: var(--c-encredouce);
+  text-decoration: none;
+}
+.nav-sous > ol a::before { content: '· '; color: var(--c-trait); }
+.nav-sous > ol a:hover, .nav-sous > ol a:focus { color: var(--c-accent); }

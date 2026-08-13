@@ -155,7 +155,7 @@ probabilités théoriques à mesure que le nombre d'essais augmente. Sur dix
 lancers, l'écart peut être grand ; sur mille, il devient très petit.
 :::
 
-## [[4e]] Médiane, étendue, moyenne pondérée
+## Médiane, étendue, moyenne pondérée [[4e]]
 
 ::: definition La médiane
 La **médiane** partage la série en deux moitiés de même effectif : autant de
@@ -196,7 +196,7 @@ $$\frac{8\times 3 + 12\times 5 + 15\times 2}{3+5+2}
 = \frac{24+60+30}{10} = \frac{114}{10} = 11{,}4$$
 :::
 
-## [[4e]] L'évènement contraire et les deux épreuves
+## L'évènement contraire et les deux épreuves [[4e]]
 
 ::: retenir
 L'**évènement contraire** de $A$ est celui qui se produit exactement quand $A$

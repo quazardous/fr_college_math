@@ -103,7 +103,7 @@ obtenu par produit en croix ne vaut donc pas la démarche attendue.
 Le nom de chaque grandeur, avec son unité, figure explicitement dans le tableau.
 Le programme y insiste : c'est ce qui donne du sens aux nombres.
 
-### [[5e]] Par un graphique
+### Par un graphique [[5e]]
 
 ::: retenir La signature graphique de la proportionnalité
 Les points sont **alignés** *et* l'alignement **passe par l'origine**.
@@ -136,7 +136,7 @@ L'erreur classique est d'oublier la conversion : 25 000 cm ne font pas 25 000 m.
 On convertit *toujours* avant de conclure.
 :::
 
-### [[5e]] La vitesse moyenne
+### La vitesse moyenne [[5e]]
 
 La vitesse est le coefficient entre la distance et la durée :
 
@@ -149,7 +149,7 @@ $$v = \frac{d}{t} \qquad d = v\times t \qquad t = \frac{d}{v}$$
 sont en base 60, pas en base 10. C'est l'une des erreurs les plus coûteuses du collège.
 :::
 
-## [[5e]] L'expression « en fonction de »
+## L'expression « en fonction de » [[5e]]
 
 En 5e, on commence à dire qu'une grandeur **dépend** d'une autre : « le prix
 *en fonction de* la quantité ». On produit alors une formule simple, un tableau
@@ -160,7 +160,7 @@ $$\text{prix} = 1{,}25 \times \text{nombre de croissants}$$
 La proportionnalité devient ainsi le premier exemple de fonction, notion qui
 sera étudiée en 4e et en 3e.
 
-## [[4e]] Ratios, grandeurs quotients et coefficient multiplicateur
+## Ratios, grandeurs quotients et coefficient multiplicateur [[4e]]
 
 ::: definition Le ratio
 Un **ratio** compare des parts entre elles, sans dire le total.
