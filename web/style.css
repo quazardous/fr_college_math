@@ -480,12 +480,20 @@ nav > *:not(.menu),
   z-index: 11;
 }
 
+/* Le panneau part sous le bandeau, quelle que soit sa hauteur : un décalage
+   fixe masquait le premier item dès que le titre passait sur deux lignes.
+   Le « 100 % » d'un calc de hauteur se résout sur le bloc conteneur — ici le
+   bandeau lui-même, qui est collant donc positionné. */
 .menu[open] > .nav-liste {
-  position: fixed;
-  inset: 0;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
   z-index: 9;
+  height: calc(100dvh - 100%);
+  max-height: 100dvh;
   margin: 0;
-  padding: 3.4rem 1.1rem 2.5rem;
+  padding: 0.4rem 1.1rem 2.5rem;
   background: #fff;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -593,3 +601,9 @@ nav > *:not(.menu),
 }
 .nav-sous > ol a::before { content: '· '; color: var(--c-trait); }
 .nav-sous > ol a:hover, .nav-sous > ol a:focus { color: var(--c-accent); }
+
+/* Sous 30 rem, le fil d'ariane pousse le bandeau sur deux lignes pour une
+   information que le titre de la page donne déjà. */
+@media (max-width: 30rem) {
+  nav .fil { display: none; }
+}

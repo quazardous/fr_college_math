@@ -303,6 +303,7 @@ if (ctx.recueil) {
   l.push(`<p class="accroche">${enLigne(ctx.recueil.accroche ?? '')}</p>`);
   l.push('</header>');
 
+  const partiesRecueil = [];
   let typeCourant = null;
   fichiers.forEach((f, i) => {
     const brut = fs.readFileSync(path.join(dossier, f), 'utf8');
@@ -317,13 +318,17 @@ if (ctx.recueil) {
       typeCourant = meta.type;
       const t = ctx.recueil.types?.[typeCourant];
       if (t) {
-        l.push(`<h2>${enLigne(t.titre)}</h2>`);
+        const idPartie = `partie-${typeCourant}`;
+        partiesRecueil.push({ id: idPartie, texte: enLigne(t.titre), sous: [] });
+        l.push(`<h2 id="${idPartie}">${enLigne(t.titre)}</h2>`);
         if (t.intro) l.push(`<p>${enLigne(t.intro)}</p>`);
       }
     }
 
     const d = meta.difficulte ?? 3;
-    l.push('<article class="probleme">');
+    const idPb = `pb-${i + 1}`;
+    partiesRecueil.at(-1)?.sous.push({ id: idPb, texte: `${i + 1}. ${enLigne(meta.titre)}` });
+    l.push(`<article class="probleme" id="${idPb}">`);
     l.push(`<h3>${i + 1}. ${enLigne(meta.titre)}</h3>`);
     l.push(
       `<p class="doc-meta">difficulté ${d}/5 · ${enLigne(formaterDuree(meta.duree))}` +
@@ -352,6 +357,8 @@ if (ctx.recueil) {
       titre: ctx.recueil.titre,
       description: ctx.recueil.accroche,
       corps: l.join('\n'),
+      plan: barreLaterale('Les problèmes', partiesRecueil),
+      menu: menuDeroulant('Les problèmes', partiesRecueil),
       fil: `${fichiers.length} problèmes`,
       pdf: PDF('recueil'),
     })
