@@ -209,7 +209,13 @@ for (const [dossier, docs] of [
     const b = baseDe(d);
     const r = versHtml(path.join(racine, dossier, d.fichier), { figures, vignettes });
     manquantes.push(...r.manquantes);
-    documents.push({ base: b, titre: d.titre, numero: /^\d\d-/.test(b) ? b.slice(0, 2) : '', html: r.html });
+    documents.push({
+      base: b,
+      titre: d.titre,
+      numero: /^\d\d-/.test(b) ? b.slice(0, 2) : '',
+      meta: `${niveaux(d.niveaux)} · ${enLigne(formaterDuree(d.duree))}`,
+      html: r.html,
+    });
     fs.writeFileSync(
       path.join(sortie, `${b}.html`),
       page({
@@ -283,7 +289,13 @@ if (ctx.recueil) {
     l.push('</article>');
   });
 
-  documents.push({ base: 'recueil', titre: ctx.recueil.titre, numero: '', html: l.join('\n') });
+  documents.push({
+    base: 'recueil',
+    titre: ctx.recueil.titre,
+    numero: '',
+    meta: `${niveaux(ctx.recueil.niveaux)} · ${enLigne(formaterDuree(ctx.recueil.duree))} · ${ctx.recueil.nombre} problèmes`,
+    html: l.join('\n'),
+  });
   fs.writeFileSync(
     path.join(sortie, 'recueil.html'),
     page({
@@ -481,7 +493,8 @@ unique.push('<h2 id="sommaire">Sommaire</h2><div class="sommaire">');
 for (const d of documents) {
   unique.push(
     `<a class="doc" href="#doc-${d.base}"><span class="doc-titre">` +
-      `${d.numero ? `<span class="doc-num">${d.numero}</span>` : ''}${enLigne(d.titre)}</span></a>`
+      `${d.numero ? `<span class="doc-num">${d.numero}</span>` : ''}${enLigne(d.titre)}</span>` +
+      `<span class="doc-meta">${d.meta ?? ''}</span></a>`
   );
 }
 unique.push('</div>');

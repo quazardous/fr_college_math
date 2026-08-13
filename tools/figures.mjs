@@ -170,7 +170,11 @@ export function produire(figures, dossier, { tectonic } = {}) {
   const source = path.join(tmp, 'figures.tex');
   fs.writeFileSync(source, tex);
 
-  const bin = tectonic || process.env.TECTONIC || path.join(os.homedir(), '.local/bin/tectonic');
+  // Comme build.sh : la variable d'environnement, puis l'installation par
+  // défaut, puis le PATH — sur un runner d'intégration continue, Tectonic est
+  // dans /usr/local/bin et n'a aucune raison d'être sous ~/.local.
+  const perso = path.join(os.homedir(), '.local/bin/tectonic');
+  const bin = tectonic || process.env.TECTONIC || (fs.existsSync(perso) ? perso : 'tectonic');
   execFileSync(
     bin,
     ['-X', 'compile', source, '--outdir', tmp, '-Z', `search-path=${path.join(racine, 'latex')}`],
