@@ -1,13 +1,16 @@
-# Fiches de révision — mathématiques 6e, 5e et 4e
+# Fiches de révision — mathématiques 6e, 5e, 4e et 3e
 
-Treize fiches de cours, deux séances chronométrées et un recueil de problèmes,
+Treize fiches de cours, trois séances chronométrées et un recueil de problèmes,
 produits en **PDF A4** prêts à imprimer. Contenu calé sur les programmes
 officiels :
 
 - **6e** — arrêté du 10 avril 2025, programme de mathématiques du cycle 3
   (BO n° 16 du 17 avril 2025) ;
-- **5e et 4e** — arrêté du 18 février 2026, programme du cycle 4
+- **5e, 4e et 3e** — arrêté du 18 février 2026, programme du cycle 4
   (BO n° 10 du 5 mars 2026).
+
+Les fiches de cours couvrent la 6e, la 5e et la 4e. La 3e n'a pour l'instant
+que sa séance de révision et sa part du recueil.
 
 Le vocabulaire des rubriques reprend celui des textes officiels :
 *Automatismes*, *Objectifs d'apprentissage*, *Prolongements possibles*.
@@ -22,6 +25,18 @@ La seule couche ajoutée est l'**indice de priorité**, signalé comme tel.
 
 Les PDF arrivent dans `pdf/`. Commencer par `pdf/00-sommaire.pdf`, qui dit
 dans quel ordre lire les autres.
+
+`pdf/` n'est **pas versionné** : les PDF sont engendrés depuis les sources et
+publiés en actifs de release. Pour les récupérer sans rien installer, prendre
+la [dernière release](../../releases/latest). Pour en publier un lot :
+
+```bash
+git tag v1.1 && git push origin v1.1
+```
+
+`.github/workflows/pdf.yml` construit alors tout et attache les PDF à la
+release `v1.1`. Un déclenchement manuel du workflow produit les mêmes fichiers
+en artefact du run, sans créer de release.
 
 Prérequis : `node` et [Tectonic](https://tectonic-typesetting.github.io).
 Aucune installation de TeX Live n'est nécessaire — Tectonic est un binaire
@@ -137,7 +152,7 @@ Ce qui se trompe une fois sur trois.
 | ` ```tikz … ``` ` | figure TikZ écrite à la main, centrée |
 | ` ```latex … ``` ` | LaTeX brut, transmis tel quel |
 | `!saut` | saut de page |
-| `[[6e]]` `[[5e]]` `[[4e]]` | pastille de niveau, teinte croissante |
+| `[[6e]]` `[[5e]]` `[[4e]]` `[[3e]]` | pastille de niveau, teinte croissante |
 | `->` | flèche |
 | `6e` `5e` | exposant automatique |
 | `// texte` | commentaire, absent du PDF |
@@ -203,7 +218,7 @@ Paul Olivier), format court — autour de cinq minutes, dix au plus.
 | Échelle | Palette | Ce qu'elle dit |
 |---|---|---|
 | **Priorité** | rouge / ambre / bleu-gris, jauge à 3 crans | ce qui rapporte le plus à réviser |
-| **Niveau** | trois teintes du bleu d'accent, pastille | l'année où la notion est au programme |
+| **Niveau** | quatre teintes du bleu d'accent, pastille | l'année où la notion est au programme |
 
 Elles sont délibérément distinctes : une notion de 4e n'est pas plus importante
 qu'une notion de 6e, elle est seulement plus tardive.
@@ -214,7 +229,7 @@ Double licence, parce que le code et le contenu n'ont pas les mêmes usages :
 
 | Ce qui est couvert | Licence | Fichier |
 |---|---|---|
-| Fiches, énoncés, corrigés (`fiches/`, `problemes/`, `pdf/`) | **CC BY-SA 4.0** | [`LICENSE-CONTENU.md`](LICENSE-CONTENU.md) |
+| Fiches, énoncés, corrigés (`fiches/`, `problemes/`, PDF publiés) | **CC BY-SA 4.0** | [`LICENSE-CONTENU.md`](LICENSE-CONTENU.md) |
 | Classe LaTeX, figures, chaîne de production | **MIT** | [`LICENSE`](LICENSE) |
 
 Ni l'une ni l'autre ne s'étend aux **vidéos** pointées par les QR codes, qui

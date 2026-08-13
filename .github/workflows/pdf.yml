@@ -1,0 +1,66 @@
+# =====================================================================
+#  Produit les PDF et les attache à la release.
+#
+#  Les PDF ne sont plus versionnés : ils sont engendrés depuis les
+#  sources Markdown à chaque tag, et publiés comme actifs de release.
+#
+#    git tag v1.1 && git push origin v1.1   -> release v1.1 + PDF
+#    déclenchement manuel                   -> PDF en artefact du run
+# =====================================================================
+name: PDF
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  construire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Dépendances Node
+        run: npm install --no-audit --no-fund
+
+      # pdfinfo sert au compte de pages affiché par build.sh ; sans lui la
+      # compilation marche quand même, mais le journal devient muet.
+      - name: poppler-utils
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+
+      # Binaire unique : Tectonic télécharge à la demande les seuls paquets
+      # TeX utilisés. Pas de TeX Live à installer.
+      - name: Tectonic
+        run: |
+          curl --proto '=https' --tlsv1.2 -fsSL https://drop-sh.fullyjustified.net | sh
+          sudo mv tectonic /usr/local/bin/
+          tectonic --version
+
+      - name: Construire
+        run: ./build.sh
+
+      - name: Artefact du run
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf
+          path: pdf/*.pdf
+          if-no-files-found: error
+
+      - name: Publier sur la release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" pdf/*.pdf --clobber
+          else
+            gh release create "$tag" pdf/*.pdf --title "$tag" --generate-notes
+          fi
