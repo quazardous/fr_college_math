@@ -28,7 +28,7 @@ jobs:
           node-version: '22'
 
       - name: Dépendances Node
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
 
       # pdfinfo sert au compte de pages affiché par build.sh ; sans lui la
       # compilation marche quand même, mais le journal devient muet.

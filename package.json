@@ -14,6 +14,7 @@
     "check": "node tools/verifier.mjs pdf/*.pdf"
   },
   "dependencies": {
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "katex": "^0.16.28"
   }
 }
