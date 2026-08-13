@@ -16,6 +16,9 @@
 html {
   font-size: var(--base);
   -webkit-text-size-adjust: 100%;
+  /* Le bandeau est collant : sans cette marge, une ancre déposerait son titre
+     juste dessous, à moitié caché. */
+  scroll-padding-top: 3.6rem;
 }
 
 body {
@@ -467,14 +470,24 @@ nav { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
 
 /* Ouvert, le menu couvre la page entière : à cette largeur, un panneau qui
    ne prendrait qu'une moitié d'écran laisserait le texte se battre avec lui. */
-/* Le panneau est un descendant du bandeau : sans cela il recouvrirait la
-   barre qui le porte, bouton de fermeture compris. */
+/* Le panneau est un descendant du bandeau : sans cela il recouvrirait la barre
+   qui le porte, bouton de fermeture compris. Remonter les enfants ne suffit
+   pas — le FOND du bandeau, lui, reste peint à son niveau à lui, et la liste
+   défilait derrière le texte de la barre. D'où ce calque intermédiaire :
+   au-dessus du panneau, sous les liens. */
+nav::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: #fff;
+  border-bottom: 1px solid var(--c-traitfin);
+}
 nav > *:not(.menu),
 .menu > summary {
   position: relative;
   z-index: 11;
 }
-.menu[open] > summary { border-bottom: 1px solid var(--c-traitfin); }
 
 .menu[open] > ol {
   position: fixed;
