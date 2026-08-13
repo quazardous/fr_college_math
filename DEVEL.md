@@ -182,7 +182,7 @@ videos:
     duree: "8:47"
     vues: "1 100 000"
 
-liens:                           # sites à visiter — même carte que les vidéos
+liens:                           # sites à visiter — mêmes cartes, même section
   - url: https://scratch.mit.edu
     titre: Scratch — programmer par blocs
     source: MIT Media Lab

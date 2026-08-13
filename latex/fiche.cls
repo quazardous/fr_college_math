@@ -387,10 +387,11 @@
 % ---------------------------------------------------------------- vidéos
 \newenvironment{videos}
   {\needspace{6\baselineskip}\par\vspace{2mm}
-   {\sffamily\fsSection\bfseries\color{encre}Regarder la leçon\par}
+   {\sffamily\fsSection\bfseries\color{encre}Pour voir et revoir\par}
    \vspace{0.5mm}{\color{accent}\rule{\linewidth}{\filetsection}}\par\vspace{1.4mm}
    {\fsEncartCorps Scanne un QR code avec l'appareil photo du téléphone.
-    Vidéos courtes, choisies sur des chaînes de référence.\par}\vspace{1.2mm}\par\noindent}
+    Vidéos courtes, choisies sur des chaînes de référence ; sites à ouvrir
+    dans un navigateur, sans rien installer.\par}\vspace{1.2mm}\par\noindent}
   {\par}
 
 % \video{identifiant}{titre}{chaîne}{durée}{vues}
@@ -428,13 +429,6 @@
     \end{minipage}
   \end{tcolorbox}\hfill}
 
-\newenvironment{ressources}
-  {\needspace{6\baselineskip}\par\vspace{2mm}
-   {\sffamily\fsSection\bfseries\color{encre}Aller y voir\par}
-   \vspace{0.5mm}{\color{accent}\rule{\linewidth}{\filetsection}}\par\vspace{1.4mm}
-   {\fsEncartCorps Des sites à ouvrir dans un navigateur, sans rien installer.\par}%
-   \vspace{1.2mm}\par\noindent}
-  {\par}
 
 % ---------------------------------------------------------------- divers
 % Pastille de niveau. L'argument est le chiffre seul : \niv{5}.
