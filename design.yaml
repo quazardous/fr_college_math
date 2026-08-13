@@ -1,0 +1,107 @@
+# =====================================================================
+#  design.yaml — jetons de design des fiches (source unique de vérité)
+#
+#  Rien n'est codé en dur dans la classe LaTeX : ce fichier est traduit
+#  en `latex/design.tex` par `tools/design.mjs`, appelé par ./build.sh.
+#  Modifier ici, relancer ./build.sh, et tous les PDF suivent.
+#
+#  Tailles en points typographiques. L'interligne est calculé par
+#  `interligne` sauf si une valeur explicite est donnée.
+# =====================================================================
+
+polices:
+  # Familles livrées avec TeX : pas de dépendance aux polices du système,
+  # et pas de police variable (que xdvipdfmx ne sait pas embarquer).
+  familles:
+    texte:
+      fichier: texgyrepagella
+      extension: .otf
+      normal: "*-regular"
+      gras: "*-bold"
+      italique: "*-italic"
+      gras_italique: "*-bolditalic"
+    titres:
+      fichier: FiraSans
+      extension: .otf
+      normal: "*-Regular"
+      gras: "*-Bold"
+      italique: "*-Italic"
+      gras_italique: "*-BoldItalic"
+    machine:
+      fichier: FiraMono
+      extension: .otf
+      normal: "*-Regular"
+      gras: "*-Bold"
+      echelle: 0.86
+    math: texgyrepagella-math.otf
+
+  interligne: 1.22          # facteur appliqué par défaut aux tailles
+
+  tailles:
+    corps: 11
+    accroche: 10.6
+
+    # -- cartouche de tête
+    titre_fiche: { taille: 21.5, interligne: 1.16 }
+    surtitre: 8.4
+    etiquette: 7.2          # « PRIORITÉ », « NIVEAU », …
+    cartouche_valeur: 9.8
+    cartouche_domaine: 8.6
+    cartouche_pourquoi: 8.2
+
+    # -- titres de section
+    section: { taille: 13.4, interligne: 1.18 }
+    sous_section: 10.8
+
+    # -- encadrés
+    encart_etiquette: 8.4   # « MÉTHODE », « PIÈGE FRÉQUENT », …
+    encart_corps: 10.4      # le texte à l'intérieur d'un encadré
+    automatismes_titre: 8.8
+    automatismes_soustitre: 7.8
+    automatismes_corps: 10.2
+    badge_source: 7         # étiquette de provenance « BO 6e »
+    badge_niveau: 7.4       # pastille « 5e » dans un titre
+
+    # -- tableaux
+    tableau: 9.6
+    tableau_entete: 8.4
+
+    # -- cartes vidéo
+    video_titre: 9
+    video_meta: 7.8
+    video_lien: 7.2
+
+    # -- filets de page
+    entete_page: 8.2
+    pied_page: 7.4
+
+    # -- figures TikZ
+    figure_legende: 7.6
+    figure_valeur: 8
+
+couleurs:
+  encre: "1A2430"          # texte courant
+  encre_douce: "4C5F70"    # texte secondaire
+  trait: "D5DEE4"
+  trait_fin: "E7EDF1"
+  fond_tendre: "F3F7F9"    # lignes alternées des tableaux
+  accent: "1D4E6F"         # bleu structurel : filets, titres, liens
+  accent_clair: "E3EDF3"
+
+  # Gradation de priorité — reprise à l'identique dans la jauge,
+  # l'en-tête de page et les encadrés.
+  priorite_3: "B3122B"     # incontournable
+  priorite_3_fond: "FDF0F1"
+  priorite_2: "A86200"     # important
+  priorite_2_fond: "FDF5E9"
+  priorite_1: "46697D"     # complément
+  priorite_1_fond: "F0F4F7"
+
+mise_en_page:
+  format: a4paper
+  marges: { haut: 17, bas: 19, gauche: 17, droite: 17 }   # en mm
+  ecart_entete: 4.5
+  ecart_pied: 10
+  interligne_paragraphe: 0.9    # en ex
+  filet_section: 1.1            # épaisseur du filet sous un titre, en pt
+  filet_encart: 2.2             # épaisseur de la barre latérale d'un encadré

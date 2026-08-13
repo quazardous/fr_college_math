@@ -1,0 +1,216 @@
+\documentclass{fiche}
+
+\surtitre{Fiche 1 · Nombres et calculs}
+\titrefiche{Nombres décimaux et calculs}
+\accroche{Tout le reste du programme repose là-dessus. Un calcul mal posé fait rater
+un problème de géométrie ou de proportionnalité même quand le raisonnement est juste.}
+\niveaux{6\ieme{} · 5\ieme{}}
+\priorite{3}
+\pourquoi{Outil de tous les autres chapitres : aucun exercice de collège ne s'en passe.}
+\duree{25 min}
+\domaine{Nombres, calcul et résolution de problèmes}
+
+\begin{document}
+\entetefiche
+
+\begin{automatismes}[2]
+  \auto[6\ieme]{$\dfrac{1}{10}=0{,}1$ \quad $\dfrac{1}{100}=0{,}01$ \quad $\dfrac{1}{1000}=0{,}001$}
+  \auto[6\ieme]{$1=\dfrac{10}{10}=\dfrac{100}{100}=\dfrac{1000}{1000}$}
+  \auto[6\ieme]{Multiplier ou diviser un décimal par $10$, $100$, $1000$}
+  \auto[5\ieme]{$0{,}6\times 7=4{,}2$ \quad $40\times 0{,}03=1{,}2$}
+  \auto[5\ieme]{$2{,}7+1{,}4$ \quad $3{,}4-0{,}8$ de tête}
+  \auto[5\ieme]{Factoriser avec les tables : $21=3\times 7$}
+  \auto[5\ieme]{Connaître les carrés des entiers de $0$ à $12$, et $10^{3}=1000$}
+  \auto[5\ieme]{Connaître les critères de divisibilité par $3$ et par $9$}
+  \auto[règle]{Priorités : parenthèses \fleche{} puissances \fleche{} $\times\,\div$ \fleche{} $+\,-$}
+  \auto[5\ieme]{$k(a+b)=ka+kb$ \quad et \quad $k(a-b)=ka-kb$}
+\end{automatismes}
+
+\section{Lire et écrire un nombre décimal}
+
+\begin{definition}[Nombre décimal]
+Un \motcle{nombre décimal} est un nombre qui peut s'écrire sous la forme d'une
+\motcle{fraction décimale}, c'est-à-dire avec un dénominateur $10$, $100$, $1000$…
+\[
+4{,}107 \;=\; \frac{4107}{1000} \;=\; 4+\frac{1}{10}+\frac{0}{100}+\frac{7}{1000}
+\]
+\end{definition}
+
+\begin{center}
+\begin{tikzpicture}[x=13mm,y=7mm]
+  \foreach \i/\n in {0/centaines,1/dizaines,2/unités}{
+    \draw[trait] (\i,0) rectangle (\i+1,1);
+    \node[font=\sffamily\fontsize{6.4}{7}\selectfont,text=encredouce] at (\i+0.5,1.32) {\n};}
+  \foreach \i/\n in {3/dixièmes,4/centièmes,5/millièmes}{
+    \draw[trait] (\i+0.16,0) rectangle (\i+1.16,1);
+    \node[font=\sffamily\fontsize{6.4}{7}\selectfont,text=encredouce] at (\i+0.66,1.32) {\n};}
+  \node at (2.5,0.5) {\large 4};
+  \node[text=prioritetrois,font=\bfseries] at (3.08,0.12) {\large ,};
+  \node at (3.66,0.5) {\large 1};  \node at (4.66,0.5) {\large 0};  \node at (5.66,0.5) {\large 7};
+  \draw[accent,line width=0.9pt] (0,0) -- (0,1);
+  \node[font=\sffamily\fontsize{7}{8}\selectfont,text=accent] at (1.3,-0.55) {partie entière};
+  \node[font=\sffamily\fontsize{7}{8}\selectfont,text=accent] at (4.7,-0.55) {partie décimale};
+\end{tikzpicture}
+\end{center}
+
+\begin{piege}[Le piège le plus fréquent de toute la 6\ieme]
+$3{,}7 > 3{,}17$ ! On ne compare \emph{pas} les parties décimales comme des entiers.\\
+\textbf{Méthode sûre :} compléter avec des zéros pour avoir autant de décimales
+($3{,}70$ contre $3{,}17$), puis comparer chiffre par chiffre.
+\end{piege}
+
+\section{Comparer, encadrer, arrondir}
+
+\textbf{Comparer} : d'abord la partie entière ; si elle est égale, on compare les
+dixièmes, puis les centièmes, etc.
+
+\begin{tableaufiche}{@{}>{\bfseries}G{26mm} Y Y Y@{}}
+\ligneentete \entetecell{Nombre} & \entetecell{À l'unité} & \entetecell{Au dixième} & \entetecell{Au centième}\\
+Encadrer $7{,}368$ & $7 < 7{,}368 < 8$ & $7{,}3 < 7{,}368 < 7{,}4$ & $7{,}36 < 7{,}368 < 7{,}37$\\
+Arrondir $7{,}368$ & $\approx 7$ & $\approx 7{,}4$ & $\approx 7{,}37$\\
+\end{tableaufiche}
+
+\begin{methode}[Arrondir]
+On regarde le chiffre \textbf{juste après} le rang demandé. S'il vaut $5$ ou plus,
+on augmente de $1$ le chiffre du rang ; sinon on le garde tel quel.
+\end{methode}
+
+\textbf{Intercaler} un nombre entre $2{,}3$ et $2{,}4$ : il suffit d'ajouter une
+décimale, par exemple $2{,}35$. \emph{Entre deux décimaux, il y en a toujours une infinité.}
+
+\section{Multiplier et diviser par 10, 100, 1000 — et par 0,1 ; 0,01 ; 0,001}
+
+\begin{tableaufiche}{@{}>{\bfseries}G{17mm} Y Y@{}}
+\ligneentete \entetecell{Opération} & \entetecell{Ce que ça fait} & \entetecell{Exemple}\\
+$\times 10$   & la virgule se décale d'un rang vers la droite & $4{,}56\times 10=45{,}6$\\
+$\times 100$  & deux rangs vers la droite                     & $4{,}56\times 100=456$\\
+$\div 10$     & un rang vers la gauche                        & $4{,}56\div 10=0{,}456$\\
+$\times 0{,}1$   & \textbf{revient à diviser par 10}          & $4{,}56\times 0{,}1=0{,}456$\\
+$\times 0{,}01$  & \textbf{revient à diviser par 100}         & $4{,}56\times 0{,}01=0{,}0456$\\
+\end{tableaufiche}
+
+\begin{piege}
+Multiplier ne rend pas toujours plus grand : multiplier par $0{,}1$ \emph{diminue}.
+\end{piege}
+
+\section{Les quatre opérations}
+
+\subsection{Le vocabulaire (exigé en 5\ieme)}
+
+\begin{tableaufiche}{@{}G{16mm} G{24mm} Y@{}}
+\ligneentete \entetecell{Opération} & \entetecell{Le résultat} & \entetecell{Les nombres s'appellent}\\
+$a+b$ & une \textbf{somme}    & des \textbf{termes}\\
+$a-b$ & une \textbf{différence} & des \textbf{termes}\\
+$a\times b$ & un \textbf{produit} & des \textbf{facteurs}\\
+$a\div b$ & un \textbf{quotient} & dividende et diviseur\\
+\end{tableaufiche}
+
+\subsection{Multiplier deux décimaux}
+
+\begin{methode}
+\begin{enumerate}[leftmargin=6mm,label=\textbf{\arabic*.}]
+  \item On calcule \textbf{sans les virgules}.
+  \item On compte le nombre total de décimales des deux facteurs.
+  \item On place la virgule pour en avoir autant dans le résultat.
+\end{enumerate}
+\vspace{0.8mm}
+$2{,}4\times 1{,}5$ : \quad $24\times 15=360$, et $1+1=2$ décimales,
+donc $2{,}4\times 1{,}5 = 3{,}60 = 3{,}6$.
+\end{methode}
+
+\textbf{Contrôle par ordre de grandeur} — $2{,}4\approx 2$ et $1{,}5\approx 1{,}5$ :
+le résultat doit être proche de $3$. C'est le cas. Le programme demande
+explicitement ce réflexe de vérification.
+
+\subsection{Diviser}
+
+\begin{itemize}
+  \item \textbf{Division euclidienne} (entiers) : $17 = 3\times 5 + 2$, avec toujours
+        \textbf{reste $<$ diviseur}.
+  \item \textbf{Division décimale} : on continue après la virgule en abaissant des zéros.
+  \item \niv{5\ieme} \textbf{Diviser par un décimal} : on multiplie \emph{les deux}
+        nombres par $10$, $100$… pour rendre le diviseur entier.
+        \[\frac{7{,}2}{0{,}4}=\frac{72}{4}=18\]
+\end{itemize}
+
+\subsection{\niv{5\ieme} Multiples, diviseurs et critères de divisibilité}
+
+Si $a = b\times c$, alors $a$ est un \motcle{multiple} de $b$ et de $c$, et $b$ et $c$
+sont des \motcle{diviseurs} de $a$.
+
+\begin{tableaufiche}{@{}>{\bfseries}G{22mm} Y >{\itshape}Y@{}}
+\ligneentete \entetecell{Divisible par} & \entetecell{Critère} & \entetecell{Exemple}\\
+2  & se termine par $0,2,4,6,8$ & $4536$ : oui\\
+3  & la \textbf{somme des chiffres} est divisible par 3 & $4{+}5{+}3{+}6=18$ : oui\\
+5  & se termine par $0$ ou $5$ & $4536$ : non\\
+9  & la \textbf{somme des chiffres} est divisible par 9 & $18$ est divisible par 9 : oui\\
+10 & se termine par $0$ & $4536$ : non\\
+\end{tableaufiche}
+
+\section{\niv{5\ieme} Priorités opératoires}
+
+\begin{retenir}[L'ordre, dans tous les cas]
+\begin{enumerate}[leftmargin=6mm,label=\textbf{\arabic*.}]
+  \item les \textbf{parenthèses}, en commençant par les plus intérieures ;
+  \item les \textbf{puissances} (carrés, cubes) ;
+  \item les \textbf{multiplications et divisions}, de gauche à droite ;
+  \item les \textbf{additions et soustractions}, de gauche à droite.
+\end{enumerate}
+\end{retenir}
+
+\[
+7 + 3\times(12-4)\div 2 \;=\; 7+3\times 8\div 2 \;=\; 7+24\div 2 \;=\; 7+12 \;=\; 19
+\]
+
+\begin{piege}
+$12\div 4\times 3$ vaut $9$, et non $1$ : à priorité égale, on va \textbf{de gauche à droite}.
+\end{piege}
+
+\textbf{Traduire un programme de calcul en une seule expression} est un objectif
+d'apprentissage explicite de la 5\ieme :
+
+\begin{quote}
+« Choisir un nombre, lui ajouter 2, multiplier par 4, retirer 3 »
+\quad devient \quad $(n+2)\times 4 - 3$.
+\end{quote}
+
+Ici les parenthèses sont \textbf{indispensables} : sans elles, $n+2\times 4-3$ ne
+décrit plus le même programme.
+
+\section{\niv{5\ieme} Distributivité}
+
+\begin{retenir}
+\[k\times(a+b)=k\times a+k\times b \qquad\qquad k\times(a-b)=k\times a-k\times b\]
+\end{retenir}
+
+C'est d'abord un outil de \textbf{calcul mental} :
+\[7\times 102 = 7\times(100+2)=700+14=714 \qquad
+  25\times 98 = 25\times(100-2)=2500-50=2450\]
+
+\section{\niv{5\ieme} Carrés et cubes}
+
+$a^{2}=a\times a$ (« $a$ au carré ») \qquad $a^{3}=a\times a\times a$ (« $a$ au cube »).
+
+\par\vspace{0.6mm}\noindent\footnotesize
+\begin{tabular}{@{}>{\bfseries}l|*{13}{>{\centering\arraybackslash}p{6.6mm}}@{}}
+\rowcolor{accent} \entetecell{$n$} & \entetecell{0} & \entetecell{1} & \entetecell{2} & \entetecell{3} & \entetecell{4} & \entetecell{5} & \entetecell{6} & \entetecell{7} & \entetecell{8} & \entetecell{9} & \entetecell{10} & \entetecell{11} & \entetecell{12}\\
+$n^{2}$ & 0 & 1 & 4 & 9 & 16 & 25 & 36 & 49 & 64 & 81 & 100 & 121 & 144\\
+\end{tabular}\par\vspace{1.2mm}
+
+\begin{piege}
+$5+3^{2}=5+9=14$ : la puissance passe \emph{avant} l'addition.
+Alors que $(5+3)^{2}=8^{2}=64$.
+\end{piege}
+
+\begin{prolongement}
+Le programme suggère d'aborder les \textbf{nombres premiers} en prolongement :
+le crible d'Ératosthène, et le fait qu'il en existe une infinité — une des plus
+anciennes démonstrations connues, dans les \emph{Éléments} d'Euclide.
+\end{prolongement}
+
+\begin{videos}
+  \video{lzsYQYvEKss}{Numération et nombres décimaux — 6\ieme}{Les Bons Profs}{3:28}{188 000}
+  \video{TJH-fiwAt5s}{Calculs avec des priorités — 5\ieme}{Yvan Monka}{4:54}{354 000}
+\end{videos}
+
+\end{document}

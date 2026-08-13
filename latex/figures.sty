@@ -1,0 +1,264 @@
+% =====================================================================
+%  figures.sty — bibliothèque de figures récurrentes des fiches 6e / 5e
+%
+%  Chaque macro est paramétrée pour être réutilisée telle quelle d'une
+%  fiche à l'autre : droite graduée, repère, schéma en barres, solides
+%  en perspective cavalière, triangle codé, disque.
+%  Chargée automatiquement par fiche.cls.
+% =====================================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{figures}[2026/08/13 Figures recurrentes fiches maths college]
+
+\RequirePackage{tikz}
+\RequirePackage{pgfmath}
+\usetikzlibrary{calc,angles,quotes,arrows.meta,decorations.pathreplacing,
+                decorations.markings,patterns,positioning,shapes.geometric}
+
+% Styles communs à toutes les figures
+\tikzset{
+  fig/.style        = {line width=0.7pt, color=encre},
+  figtrait/.style   = {line width=0.5pt, color=encredouce},
+  figaccent/.style  = {line width=0.9pt, color=accent},
+  figfort/.style    = {line width=1.1pt, color=prioritetrois},
+  figleg/.style     = {font=\sffamily\fontsize{7}{8.4}\selectfont, text=encredouce},
+  figval/.style     = {font=\sffamily\fontsize{7.4}{9}\selectfont, text=encre},
+  figpoint/.style   = {circle, fill=prioritetrois, inner sep=0pt, minimum size=1.6mm},
+  figcote/.style    = {figleg, text=accent},
+}
+
+% ---------------------------------------------------------------------
+% \droitegraduee[largeur]{min}{max}{pas}{repères}
+%   repères : liste « valeur/étiquette », séparée par des virgules.
+%   Ex. \droitegraduee{0}{5}{1}{2.5/$\frac{5}{2}$, 4/$4$}
+% ---------------------------------------------------------------------
+\newcommand{\droitegraduee}[6][120mm]{%
+  \begin{tikzpicture}
+    \pgfmathsetmacro{\ech}{#1/(#3-#2)}
+    \def\X##1{##1*\ech-#2*\ech}
+    % axe
+    \draw[figaccent,-{Stealth[length=2mm]}] (\X{#2},0) -- (\X{#3}+6mm,0);
+    % graduations principales
+    \foreach \v in {#2,\the\numexpr#2+#4\relax,...,#3}{
+      \draw[figaccent] (\X{\v},1.4mm) -- (\X{\v},-1.4mm);
+      \node[figval,below=0.6mm] at (\X{\v},-1.4mm) {\v};}
+    % repères mis en avant
+    \foreach \v/\lab in {#5}{
+      \fill[prioritetrois] (\X{\v},0) circle (0.9mm);
+      \node[figleg,text=prioritetrois,above=1.2mm,font=\sffamily\bfseries\fontsize{7.4}{9}\selectfont]
+        at (\X{\v},0) {\lab};}
+    #6
+  \end{tikzpicture}}
+
+% ---------------------------------------------------------------------
+% \droitegradueerelatifs[largeur]{min}{max}{repères}
+%   Droite graduée centrée sur zéro, pour les nombres relatifs.
+% ---------------------------------------------------------------------
+\newcommand{\droitegradueerelatifs}[4][130]{%
+  \begin{tikzpicture}[x=1mm,y=1mm]
+    \pgfmathsetmacro{\ech}{#1/(#3-#2)}
+    \pgfmathsetmacro{\xfin}{(#3-#2)*\ech}
+    \pgfmathsetmacro{\xz}{(0-#2)*\ech}
+    \draw[figaccent,{Stealth[length=2mm]}-{Stealth[length=2mm]}] (-5,0) -- (\xfin+5,0);
+    \foreach \v in {#2,...,#3}{
+      \pgfmathsetmacro{\xv}{(\v-#2)*\ech}
+      \draw[figaccent] (\xv,1.4) -- (\xv,-1.4);
+      \node[figval,below=0.6mm] at (\xv,-1.4) {\v};}
+    \draw[figfort] (\xz,2.6) -- (\xz,-2.6);
+    \node[text=prioritetrois,above=2.6mm,font=\sffamily\bfseries\fontsize{7.4}{9}\selectfont]
+      at (\xz,0) {0};
+    \node[figleg] at (\xz/2,8) {nombres négatifs};
+    \node[figleg] at (\xz+(\xfin-\xz)/2,8) {nombres positifs};
+    \foreach \v/\lab in {#4}{
+      \pgfmathsetmacro{\xv}{(\v-#2)*\ech}
+      \fill[prioritetrois] (\xv,0) circle (0.9mm);
+      \node[text=prioritetrois,above=1.4mm,
+            font=\sffamily\bfseries\fontsize{7.4}{9}\selectfont] at (\xv,0) {\lab};}
+  \end{tikzpicture}}
+
+% ---------------------------------------------------------------------
+% \schemabarres{légende1/part1, légende2/part2, ...}{total}
+%   Modèle pré-algébrique en barres, explicitement au programme de 6e.
+% ---------------------------------------------------------------------
+\newcommand{\schemabarres}[3][110]{%
+  \begin{tikzpicture}[x=1mm,y=1mm]
+    \pgfmathsetmacro{\lg}{#1}
+    \pgfmathsetmacro{\tot}{#3}
+    \pgfmathsetmacro{\xcur}{0}
+    \foreach \lab/\p in {#2}{
+      \pgfmathsetmacro{\w}{\p/\tot*\lg}
+      \pgfmathsetmacro{\xb}{\xcur+\w}
+      \filldraw[fill=accentclair,draw=accent,line width=0.6pt]
+        (\xcur,0) rectangle (\xb,7);
+      \node[figval] at ({(\xcur+\xb)/2},3.5) {\lab};
+      \global\let\xcur\xb}
+    \draw[decorate,decoration={brace,amplitude=1.6mm,mirror},figtrait] (0,-1.4) -- (\lg,-1.4);
+    \node[figleg,below=2mm] at (\lg/2,-1.4) {total : #3};
+  \end{tikzpicture}}
+
+% ---------------------------------------------------------------------
+% \repereplan{xmax}{ymax}{points}   points : « x/y/étiquette »
+% ---------------------------------------------------------------------
+\newcommand{\repereplan}[4][8mm]{%
+  \begin{tikzpicture}[x=#1,y=#1]
+    \draw[figtrait,very thin] (0,0) grid (#2,#3);
+    \draw[figaccent,-{Stealth[length=2mm]}] (0,0) -- (#2+0.5,0) node[figleg,right] {$x$};
+    \draw[figaccent,-{Stealth[length=2mm]}] (0,0) -- (0,#3+0.5) node[figleg,above] {$y$};
+    \foreach \i in {1,...,#2} \node[figval,below=0.4mm] at (\i,0) {\i};
+    \foreach \j in {1,...,#3} \node[figval,left=0.4mm]  at (0,\j) {\j};
+    \node[figval,below left=0.4mm] at (0,0) {0};
+    \foreach \a/\b/\lab in {#4}{
+      \fill[prioritetrois] (\a,\b) circle (0.9mm);
+      \node[figleg,text=prioritetrois,above right=0.2mm,
+            font=\sffamily\bfseries\fontsize{7.4}{9}\selectfont] at (\a,\b) {\lab};}
+  \end{tikzpicture}}
+
+% ---------------------------------------------------------------------
+% \pavedroit{longueur}{profondeur}{hauteur}{unité}
+%   Perspective cavalière : arêtes cachées en pointillés.
+% ---------------------------------------------------------------------
+\newcommand{\pavedroit}[5][7mm]{%
+  \begin{tikzpicture}[x=#1,y=#1]
+    \pgfmathsetmacro{\L}{#2} \pgfmathsetmacro{\P}{#3} \pgfmathsetmacro{\H}{#4}
+    \pgfmathsetmacro{\dx}{\P*0.45} \pgfmathsetmacro{\dy}{\P*0.30}
+    \coordinate (A) at (0,0);          \coordinate (B) at (\L,0);
+    \coordinate (C) at (\L,\H);        \coordinate (D) at (0,\H);
+    \coordinate (A') at (\dx,\dy);     \coordinate (B') at (\L+\dx,\dy);
+    \coordinate (C') at (\L+\dx,\H+\dy); \coordinate (D') at (\dx,\H+\dy);
+    \fill[accentclair,opacity=0.55] (A)--(B)--(C)--(D)--cycle;
+    \draw[fig,dashed,figtrait] (A')--(B') (A')--(D') (A')--(A);
+    \draw[fig] (A)--(B)--(C)--(D)--cycle;
+    \draw[fig] (B)--(B')--(C')--(C);
+    \draw[fig] (D)--(D')--(C');
+    \node[figcote,below] at (\L/2,0) {#2 #5};
+    \node[figcote,right] at (\L,\H/2) {#4 #5};
+    \node[figcote,above right] at (\L+\dx/2,\dy/2) {#3 #5};
+  \end{tikzpicture}}
+
+% ---------------------------------------------------------------------
+% \cylindrerev{rayon}{hauteur}{unité}
+% ---------------------------------------------------------------------
+\newcommand{\cylindrerev}[4][7mm]{%
+  \begin{tikzpicture}[x=#1,y=#1]
+    \pgfmathsetmacro{\R}{#2} \pgfmathsetmacro{\H}{#3}
+    \pgfmathsetmacro{\ry}{\R*0.34}
+    \fill[accentclair,opacity=0.55] (-\R,0) rectangle (\R,\H);
+    \draw[fig] (-\R,0) -- (-\R,\H);
+    \draw[fig] (\R,0) -- (\R,\H);
+    \draw[fig] (0,\H) ellipse ({\R} and {\ry});
+    \draw[fig] (-\R,0) arc (180:360:{\R} and {\ry});
+    \draw[fig,dashed,figtrait] (-\R,0) arc (180:0:{\R} and {\ry});
+    \draw[figfort,{Stealth[length=1.6mm]}-] (0,\H) -- (\R,\H)
+      node[figcote,midway,above,text=prioritetrois] {$R=#2$ #4};
+    \fill[prioritetrois] (0,\H) circle (0.7mm);
+    \draw[figaccent,{Stealth[length=1.6mm]}-{Stealth[length=1.6mm]}]
+      (\R+0.55,0) -- (\R+0.55,\H) node[figcote,midway,right] {$h=#3$ #4};
+  \end{tikzpicture}}
+
+% ---------------------------------------------------------------------
+% \prismedroit{base}{hauteur}{unité}  — prisme droit à base triangulaire
+% ---------------------------------------------------------------------
+\newcommand{\prismedroit}[4][7mm]{%
+  \begin{tikzpicture}[x=#1,y=#1]
+    \pgfmathsetmacro{\B}{#2} \pgfmathsetmacro{\H}{#3}
+    \pgfmathsetmacro{\dx}{\H*0.42} \pgfmathsetmacro{\dy}{\H*0.28}
+    \coordinate (A) at (0,0); \coordinate (B) at (\B,0); \coordinate (C) at (\B*0.36,\B*0.78);
+    \coordinate (A') at (\dx,\dy); \coordinate (B') at (\B+\dx,\dy);
+    \coordinate (C') at (\B*0.36+\dx,\B*0.78+\dy);
+    \fill[accentclair,opacity=0.6] (A)--(B)--(C)--cycle;
+    \draw[fig,dashed,figtrait] (A')--(B') (A')--(C') (A)--(A');
+    \draw[fig] (A)--(B)--(C)--cycle;
+    \draw[fig] (B)--(B')--(C')--(C);
+    \node[figcote,below] at (\B/2,0) {base};
+    \node[figcote,above right] at (\B+\dx/2,\dy/2) {hauteur du prisme};
+  \end{tikzpicture}}
+
+% ---------------------------------------------------------------------
+% \disqueraye{rayon}{unité}  — disque avec rayon et diamètre codés
+% ---------------------------------------------------------------------
+\newcommand{\disqueraye}[3][9mm]{%
+  \begin{tikzpicture}[x=#1,y=#1]
+    \pgfmathsetmacro{\R}{#2}
+    \fill[accentclair,opacity=0.7] (0,0) circle (\R);
+    \draw[fig] (0,0) circle (\R);
+    \fill[encre] (0,0) circle (0.7mm) node[figleg,below left=0.3mm] {$O$};
+    \draw[figfort] (0,0) -- (\R,0) node[figcote,midway,above,text=prioritetrois] {$R$};
+    \draw[figaccent] (-\R,0) -- (\R,0);
+    \node[figcote,below] at (0,-0.1) {$D=2R$};
+  \end{tikzpicture}}
+
+% ---------------------------------------------------------------------
+% \triangleangles{angleA}{angleB}{étiquetteC}
+%   Triangle quelconque avec deux angles connus et le troisième cherché.
+% ---------------------------------------------------------------------
+\newcommand{\triangleangles}[4][30mm]{%
+  \begin{tikzpicture}
+    \pgfmathsetmacro{\aa}{#2} \pgfmathsetmacro{\bb}{#3}
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (#1,0);
+    \coordinate (C) at (intersection cs:
+      first line={(A)--($(A)+(\aa:2*#1)$)},
+      second line={(B)--($(B)+(180-\bb:2*#1)$)});
+    \fill[accentclair,opacity=0.6] (A)--(B)--(C)--cycle;
+    \draw[fig] (A)--(B)--(C)--cycle;
+    \pic[draw=accent,angle radius=6mm,
+         "{\footnotesize$#2^\circ$}",angle eccentricity=1.5] {angle=B--A--C};
+    \pic[draw=accent,angle radius=6mm,
+         "{\footnotesize$#3^\circ$}",angle eccentricity=1.5] {angle=C--B--A};
+    \pic[draw=prioritetrois,line width=0.8pt,angle radius=5mm,
+         "{\footnotesize\color{prioritetrois}#4}",angle eccentricity=1.7] {angle=A--C--B};
+    \node[figleg,below left] at (A) {$A$};
+    \node[figleg,below right] at (B) {$B$};
+    \node[figleg,above] at (C) {$C$};
+  \end{tikzpicture}}
+
+% ---------------------------------------------------------------------
+% \droitesparalleles{angle}  — deux parallèles coupées par une sécante,
+%   pour les angles alternes-internes et correspondants (5e).
+% ---------------------------------------------------------------------
+\newcommand{\droitesparalleles}[2][54mm]{%
+  \begin{tikzpicture}
+    \coordinate (G1) at (0,15mm);   \coordinate (D1) at (#1,15mm);
+    \coordinate (G2) at (0,0);      \coordinate (D2) at (#1,0);
+    \coordinate (S1) at (10mm,-8mm);\coordinate (S2) at (#1-10mm,23mm);
+    \draw[figaccent] (G1) -- (D1) node[figleg,right] {$(d_1)$};
+    \draw[figaccent] (G2) -- (D2) node[figleg,right] {$(d_2)$};
+    \draw[fig] (S1) -- (S2) node[figleg,above right] {sécante};
+    \coordinate (P) at (intersection of S1--S2 and G1--D1);
+    \coordinate (Q) at (intersection of S1--S2 and G2--D2);
+    \fill[prioritetrois] (P) circle (0.8mm);
+    \fill[prioritetrois] (Q) circle (0.8mm);
+    \node[figleg,text=prioritetrois,above left=0.2mm]  at (P) {$#2$};
+    \node[figleg,text=prioritetrois,below right=0.2mm] at (Q) {$#2$};
+  \end{tikzpicture}}
+
+% ---------------------------------------------------------------------
+% \tableaupropo{grandeur1}{grandeur2}{v1a/v2a, v1b/v2b, ...}{coefficient}
+%   Tableau de proportionnalité avec la flèche du coefficient.
+%   Une cellule vide se note « ? ».
+% ---------------------------------------------------------------------
+\newcommand{\tableaupropo}[4]{%
+  \begin{tikzpicture}[x=1mm,y=1mm]
+    \pgfmathsetmacro{\ch}{9}      % hauteur de ligne
+    \pgfmathsetmacro{\cl}{20}     % largeur de colonne
+    \pgfmathsetmacro{\ce}{34}     % largeur de la colonne des intitulés
+    % intitulés
+    \node[figval,anchor=west] at (1,\ch*1.5) {#1};
+    \node[figval,anchor=west] at (1,\ch*0.5) {#2};
+    \draw[figaccent] (0,0) rectangle (\ce,\ch*2);
+    \draw[figaccent] (0,\ch) -- (\ce,\ch);
+    % valeurs
+    \foreach \a/\b [count=\i from 0] in {#3}{
+      \pgfmathsetmacro{\xa}{\ce+\i*\cl}
+      \draw[figaccent] (\xa,0) rectangle (\xa+\cl,\ch*2);
+      \draw[figaccent] (\xa,\ch) -- (\xa+\cl,\ch);
+      \node[figval] at (\xa+\cl/2,\ch*1.5) {\a};
+      \node[figval] at (\xa+\cl/2,\ch*0.5) {\b};}
+    % flèche du coefficient
+    \draw[figfort,-{Stealth[length=2mm]}]
+      (\ce+\cl*0.5+2,\ch*1.5-3) to[bend left=45] (\ce+\cl*0.5+2,\ch*0.5+3);
+    \node[text=prioritetrois,anchor=west,
+          font=\sffamily\bfseries\fontsize{7.4}{9}\selectfont]
+      at (\ce+\cl*0.5+6,\ch) {#4};
+  \end{tikzpicture}}
+
+\endinput
