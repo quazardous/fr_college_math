@@ -417,10 +417,20 @@ idx.push('</header>');
 // qu'on parle de ça ? ». Elle remplace la liste tant qu'on tape.
 idx.push('<form class="chercher" role="search" onsubmit="return false">');
 idx.push('<label for="recherche">Chercher une notion</label>');
+idx.push('<div class="chercher-champ">');
 idx.push(
   '<input type="search" id="recherche" autocomplete="off" ' +
     'placeholder="notation scientifique, Thalès, médiane…">'
 );
+// La croix du navigateur ne prévient pas toujours qu'on a vidé le champ : on
+// pose la nôtre, qui a en outre une cible convenable au doigt.
+idx.push(
+  '<button type="button" id="effacer" class="effacer" aria-label="Effacer la recherche" hidden>' +
+    '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">' +
+    '<path d="M1.4 0 8 6.6 14.6 0 16 1.4 9.4 8l6.6 6.6-1.4 1.4L8 9.4 1.4 16 0 14.6 6.6 8 0 1.4Z"/>' +
+    '</svg></button>'
+);
+idx.push('</div>');
 idx.push('</form>');
 idx.push('<div id="resultats" class="sommaire" hidden></div>');
 idx.push('<div id="sommaire">');

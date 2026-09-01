@@ -13,6 +13,12 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* L'attribut « hidden » n'est qu'un display:none de la feuille du navigateur :
+   la moindre règle d'auteur sur « display » le neutralise. C'est arrivé au
+   panneau de résultats, qui porte la classe .sommaire et restait affiché après
+   effacement de la recherche. */
+[hidden] { display: none !important; }
+
 html {
   font-size: var(--base);
   -webkit-text-size-adjust: 100%;
@@ -666,3 +672,28 @@ nav > *:not(.menu),
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
+
+/* Le champ et sa croix. Celle du navigateur est masquée : elle ne prévient pas
+   de façon fiable qu'on a vidé le champ, et sa cible est minuscule au doigt. */
+.chercher-champ { position: relative; }
+.chercher-champ input { padding-right: 3rem; }
+.chercher input::-webkit-search-cancel-button,
+.chercher input::-webkit-search-decoration { -webkit-appearance: none; appearance: none; }
+
+.effacer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--c-encredouce);
+  cursor: pointer;
+}
+.effacer:hover, .effacer:focus-visible { color: var(--c-accent); }
+.effacer svg { fill: currentColor; }

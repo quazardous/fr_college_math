@@ -17,6 +17,7 @@
 
 (() => {
   const champ = document.getElementById('recherche');
+  const effacer = document.getElementById('effacer');
   const sortie = document.getElementById('resultats');
   const sommaire = document.getElementById('sommaire');
   if (!champ || !sortie) return;
@@ -103,6 +104,7 @@
   };
 
   const chercher = () => {
+    if (effacer) effacer.hidden = champ.value === '';
     const mots = plat(champ.value).split(/\s+/).filter((m) => m.length > 1);
     if (!sections.length) charger.then(() => rendre(mots));
     else rendre(mots);
@@ -110,4 +112,14 @@
 
   champ.addEventListener('input', chercher);
   champ.addEventListener('search', chercher);
+
+  // La croix native de <input type="search"> ne prévient pas de façon fiable
+  // qu'on a vidé le champ : la nôtre appelle directement la recherche.
+  if (effacer) {
+    effacer.addEventListener('click', () => {
+      champ.value = '';
+      champ.focus();
+      chercher();
+    });
+  }
 })();
