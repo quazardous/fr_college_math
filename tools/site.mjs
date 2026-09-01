@@ -263,6 +263,14 @@ for (const [dossier, docs] of [
       titre: d.titre,
       numero: /^\d\d-/.test(b) ? b.slice(0, 2) : '',
       meta: `${niveaux(d.niveaux)} · ${enLigne(formaterDuree(d.duree))}`,
+      niv: niveaux(d.niveaux),
+      prio: d.priorite ?? 2,
+      genre: dossier.endsWith('fiches')
+        ? 'fiche'
+        : /-corrige\.md$/.test(d.fichier)
+          ? 'corrige'
+          : 'seance',
+      duree: enLigne(formaterDuree(d.duree)),
       sections: r.sections,
       html: r.html,
     });
@@ -349,6 +357,10 @@ if (ctx.recueil) {
     titre: ctx.recueil.titre,
     numero: '',
     meta: `${niveaux(ctx.recueil.niveaux)} · ${enLigne(formaterDuree(ctx.recueil.duree))} · ${ctx.recueil.nombre} problèmes`,
+    niv: niveaux(ctx.recueil.niveaux),
+    prio: ctx.recueil.priorite ?? 3,
+    genre: 'recueil',
+    duree: enLigne(formaterDuree(ctx.recueil.duree)),
     sections: [],
     html: l.join('\n'),
   });
@@ -516,31 +528,49 @@ const texteNu = (html) =>
     .replace(/\s+/g, ' ')
     .trim();
 
-const index = [];
+// Deux tables plutôt qu'une : les métadonnées d'un document — ses niveaux, sa
+// priorité — ne sont écrites qu'une fois, et non répétées sur chacune de ses
+// sections. L'index reste maigre, ce qui compte pour un site qu'on met en
+// cache sur un téléphone.
+const idxDocs = [];
+const idxSections = [];
+
 for (const d of documents) {
+  const rang = idxDocs.length;
+  idxDocs.push({
+    titre: d.titre,
+    numero: d.numero ?? '',
+    niv: d.niv ?? '',
+    prio: d.prio ?? null,
+    genre: d.genre ?? 'fiche',
+    duree: d.duree ?? '',
+  });
+
   const morceaux = d.html.split(/<h2 id="([^"]+)"[^>]*>/);
   // Ce qui précède le premier h2 : l'en-tête et son accroche, rattachés au
   // document lui-même.
   const chapeau = texteNu(morceaux[0]);
   if (chapeau) {
-    index.push({ url: `${d.base}.html`, doc: d.titre, section: d.titre, texte: chapeau.slice(0, 600) });
+    idxSections.push({ d: rang, url: `${d.base}.html`, section: d.titre, texte: chapeau.slice(0, 600) });
   }
   for (let i = 1; i < morceaux.length; i += 2) {
     const id = morceaux[i];
     const suite = morceaux[i + 1] ?? '';
     const titre = texteNu(suite.split('</h2>')[0]);
     const corps = texteNu(suite.split('</h2>').slice(1).join('</h2>'));
-    index.push({
+    idxSections.push({
+      d: rang,
       url: `${d.base}.html#${id}`,
-      doc: d.titre,
       section: titre || d.titre,
       texte: corps.slice(0, 900),
     });
   }
 }
+
+const index = { docs: idxDocs, sections: idxSections };
 fs.writeFileSync(path.join(sortie, 'recherche.json'), JSON.stringify(index));
 console.log(
-  `recherche : ${index.length} sections indexées ` +
+  `recherche : ${idxSections.length} sections indexées ` +
     `(${(fs.statSync(path.join(sortie, 'recherche.json')).size / 1024).toFixed(0)} Ko)`
 );
 

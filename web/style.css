@@ -646,3 +646,23 @@ nav > *:not(.menu),
   font-size: var(--fs-badgesource);
   color: var(--c-encredouce);
 }
+
+/* Repères d'un résultat de recherche : niveaux et priorité, mêmes signes que
+   dans le cartouche des fiches — on ne réapprend pas une seconde grammaire
+   visuelle pour lire une liste de résultats. */
+.doc-repere {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.35rem;
+}
+.doc-repere .prio {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--pile-titres);
+  font-size: var(--fs-badgesource);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}

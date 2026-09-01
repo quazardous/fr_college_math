@@ -336,8 +336,20 @@ Ce que le site règle, et que le PDF ne peut pas :
 `build/site/recherche.json` indexe le contenu **section par section**, bâti
 depuis le HTML déjà produit : chercher « notation scientifique » doit mener au
 paragraphe qui en parle, pas seulement à la fiche qui le contient quelque
-part. `web/recherche.js` (77 lignes, sans dépendance) filtre cet index sur
-l'accueil, en comparant sans accents — un élève tape « mediane ».
+part. `web/recherche.js` (une centaine de lignes, sans dépendance) filtre cet index
+sur l'accueil, en comparant sans accents — un élève tape « mediane ».
+
+Les résultats sont classés **par nature puis par priorité** : qui cherche une
+notion cherche la leçon qui l'explique, pas la feuille d'exercices qui la
+teste. Les fiches passent donc devant le recueil, puis les séances, et les
+corrigés en dernier ; à nature égale, c'est la priorité qui tranche. Chaque
+résultat porte les mêmes repères que le cartouche d'une fiche — pastilles de
+niveau et jauge de priorité — pour qu'il n'y ait pas deux grammaires visuelles
+à apprendre.
+
+L'index est en deux tables, `docs` et `sections` : les métadonnées d'un
+document ne sont écrites qu'une fois, et non répétées sur chacune de ses
+sections.
 
 Un service worker met les fichiers en cache à la première visite : le site
 se lit sans réseau, et s'installe comme une application. Le nom du cache porte
