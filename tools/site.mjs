@@ -103,7 +103,7 @@ const menuDeroulant = (titre, items) =>
 const echapperAttr = (s) =>
   String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 
-function page({ titre, description, corps, plan = '', menu = '', fil, pdf, accueil = false }) {
+function page({ titre, description, corps, plan = '', menu = '', fil, pdf, accueil = false, scripts = '' }) {
   return `<!doctype html>
 <html lang="fr">
 <head>
@@ -129,6 +129,7 @@ ${pdf ? `<p><a class="impression" href="${pdf}">⬇ Version imprimable (PDF)</a>
 <p>Contenu sous licence <a href="${DEPOT}/blob/main/LICENSE-CONTENU.md">CC BY-SA 4.0</a> ·
 chaîne de production sous licence MIT · <a href="${DEPOT}">sources sur GitHub</a></p>
 </footer>
+${scripts}
 <script>
 // Un lien du menu referme le menu : en écran étroit il couvre toute la page,
 // et le laisser ouvert masquerait justement ce qu'on vient d'atteindre.
@@ -400,6 +401,18 @@ idx.push(
 );
 idx.push('</header>');
 
+// La recherche répond à la question qu'on se pose vraiment : « où est-ce
+// qu'on parle de ça ? ». Elle remplace la liste tant qu'on tape.
+idx.push('<form class="chercher" role="search" onsubmit="return false">');
+idx.push('<label for="recherche">Chercher une notion</label>');
+idx.push(
+  '<input type="search" id="recherche" autocomplete="off" ' +
+    'placeholder="notation scientifique, Thalès, médiane…">'
+);
+idx.push('</form>');
+idx.push('<div id="resultats" class="sommaire" hidden></div>');
+idx.push('<div id="sommaire">');
+
 const nombres = ['aucune', 'une', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf', 'dix'];
 const titrePrio = (n, combien) =>
   ({
@@ -460,12 +473,14 @@ idx.push(
     `en un seul PDF paginé, ou fiche par fiche depuis chaque page.</p>`
 );
 idx.push(`<p><a class="impression" href="${PDF('math-college-fr-complet')}">⬇ Le classeur complet (PDF)</a></p>`);
+idx.push('</div>');
 
 fs.writeFileSync(
   path.join(sortie, 'index.html'),
   page({
     titre: SITE,
     accueil: true,
+    scripts: '<script src="recherche.js"></script>',
     description: `Fiches de révision de mathématiques 6e à 3e : ${ctx.fiches.length} fiches, ${enonces.length} séances chronométrées et un recueil de problèmes.`,
     corps: idx.join('\n'),
   })
@@ -477,7 +492,57 @@ fs.writeFileSync(
 execFileSync('node', [path.join(ici, 'design.mjs'), '--css', path.join(sortie, 'design.css')], {
   stdio: 'pipe',
 });
-fs.copyFileSync(path.join(racine, 'web', 'style.css'), path.join(sortie, 'style.css'));
+for (const f of ['style.css', 'recherche.js']) {
+  fs.copyFileSync(path.join(racine, 'web', f), path.join(sortie, f));
+}
+
+/* ------------------------------------------------------------------ *
+ * L'index de recherche
+ *
+ * Découpé par SECTION et non par page : chercher « notation scientifique »
+ * doit mener au paragraphe qui en parle, pas seulement à la fiche qui le
+ * contient quelque part. On le bâtit depuis le HTML déjà produit — c'est
+ * exactement ce que le lecteur verra, sans qu'un second parcours des sources
+ * puisse en diverger.
+ * ------------------------------------------------------------------ */
+const texteNu = (html) =>
+  html
+    .replace(/<(script|style|math)\b[\s\S]*?<\/\1>/g, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&nbsp;|&#160;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const index = [];
+for (const d of documents) {
+  const morceaux = d.html.split(/<h2 id="([^"]+)"[^>]*>/);
+  // Ce qui précède le premier h2 : l'en-tête et son accroche, rattachés au
+  // document lui-même.
+  const chapeau = texteNu(morceaux[0]);
+  if (chapeau) {
+    index.push({ url: `${d.base}.html`, doc: d.titre, section: d.titre, texte: chapeau.slice(0, 600) });
+  }
+  for (let i = 1; i < morceaux.length; i += 2) {
+    const id = morceaux[i];
+    const suite = morceaux[i + 1] ?? '';
+    const titre = texteNu(suite.split('</h2>')[0]);
+    const corps = texteNu(suite.split('</h2>').slice(1).join('</h2>'));
+    index.push({
+      url: `${d.base}.html#${id}`,
+      doc: d.titre,
+      section: titre || d.titre,
+      texte: corps.slice(0, 900),
+    });
+  }
+}
+fs.writeFileSync(path.join(sortie, 'recherche.json'), JSON.stringify(index));
+console.log(
+  `recherche : ${index.length} sections indexées ` +
+    `(${(fs.statSync(path.join(sortie, 'recherche.json')).size / 1024).toFixed(0)} Ko)`
+);
 
 /* ------------------------------------------------------------------ *
  * La page unique — un seul fichier HTML, à copier sur une clé

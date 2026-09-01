@@ -607,3 +607,42 @@ nav > *:not(.menu),
 @media (max-width: 30rem) {
   nav .fil { display: none; }
 }
+
+/* =====================================================================
+ *  Recherche
+ *
+ *  Sur l'index, elle remplace la liste tant qu'on tape : on cherche une
+ *  notion, pas une fiche, et le résultat pointe la section qui en parle.
+ * ===================================================================== */
+
+.chercher { margin: 1.8rem 0 0.6rem; }
+.chercher label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-family: var(--pile-titres);
+  font-size: var(--fs-etiquette);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-encredouce);
+}
+.chercher input {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--c-trait);
+  font-family: var(--pile-titres);
+  font-size: 1rem;
+  color: var(--c-encre);
+  background: #fff;
+}
+.chercher input:focus {
+  outline: none;
+  border-color: var(--c-accent);
+  box-shadow: 0 0 0 2px var(--c-accentclair);
+}
+.compte, .rien {
+  margin: 0.8rem 0 0.2rem;
+  font-family: var(--pile-titres);
+  font-size: var(--fs-badgesource);
+  color: var(--c-encredouce);
+}

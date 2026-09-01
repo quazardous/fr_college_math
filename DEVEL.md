@@ -333,7 +333,13 @@ Ce que le site règle, et que le PDF ne peut pas :
   `tools/design.mjs --css`. `web/style.css` est la seule feuille écrite à la
   main, et ne contient aucune couleur littérale.
 
-Un service worker met les 120 fichiers en cache à la première visite : le site
+`build/site/recherche.json` indexe le contenu **section par section**, bâti
+depuis le HTML déjà produit : chercher « notation scientifique » doit mener au
+paragraphe qui en parle, pas seulement à la fiche qui le contient quelque
+part. `web/recherche.js` (77 lignes, sans dépendance) filtre cet index sur
+l'accueil, en comparant sans accents — un élève tape « mediane ».
+
+Un service worker met les fichiers en cache à la première visite : le site
 se lit sans réseau, et s'installe comme une application. Le nom du cache porte
 l'empreinte du contenu, si bien qu'une nouvelle version remplace l'ancienne.
 
