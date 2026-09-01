@@ -2,9 +2,9 @@
 titre: Séance de révision 3e
 surtitre: Une heure · 3e
 accroche: >-
-  Six séries chronométrées sur les notions propres à la 3e. Aucune fiche de
-  cours ne les couvre encore : cette séance sert d'abord à repérer ce qui
-  manque, et renvoie aux fiches de 4e dès qu'un appui plus ancien lâche.
+  Six séries chronométrées sur les notions propres à la 3e. Chaque série
+  ratée renvoie à sa fiche — et aux fiches de 4e dès qu'un appui plus ancien
+  lâche.
 niveaux: [3e]
 priorite: 3
 pourquoi: >-

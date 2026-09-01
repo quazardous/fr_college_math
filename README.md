@@ -17,7 +17,7 @@ l'ensemble en un seul document relié, avec un sommaire paginé.
 
 ## Ce qu'il y a dedans
 
-**19 fiches de cours**, une notion par fiche :
+**20 fiches de cours**, une notion par fiche :
 
 | | Fiche | Classes | Durée |
 |---|---|---|---|
@@ -40,6 +40,7 @@ l'ensemble en un seul document relié, avec un sommaire paginé.
 | 17 | Thalès et agrandissement-réduction | 3e | 30 min |
 | 18 | La trigonométrie du triangle rectangle | 3e | 30 min |
 | 19 | Probabilités à deux épreuves | 3e | 25 min |
+| 20 | Exposants négatifs et notation scientifique | 3e | 30 min |
 
 **4 séances chronométrées**, une par classe — six séries d'exercices à faire en
 une heure, sans interruption, avec leur corrigé séparé. Elles ne servent pas à
