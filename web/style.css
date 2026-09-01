@@ -743,3 +743,20 @@ nav > *:not(.menu),
   font-size: var(--fs-soussection);
   color: var(--c-accent);
 }
+
+/* Le lexique se propose à côté du champ de recherche : c'est le moment où on
+   en a besoin, pas une section plus bas qu'on ne lit qu'après avoir renoncé. */
+.chercher-tete {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  margin-bottom: 0.4rem;
+}
+.chercher-tete label { margin-bottom: 0; }
+.chercher-lexique {
+  font-family: var(--pile-titres);
+  font-size: var(--fs-badgesource);
+  color: var(--c-accent);
+  text-decoration: none;
+}
+.chercher-lexique:hover, .chercher-lexique:focus { text-decoration: underline; }

@@ -22,7 +22,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { contexte, ech, niv, base as baseDe } from './sommaire.mjs';
+import { ORDRE_NIVEAUX, contexte, ech, niv, base as baseDe } from './sommaire.mjs';
 
 /** Tri français, insensible à la casse et aux accents. */
 export const compareFr = (a, b) =>
@@ -38,19 +38,29 @@ const listeNotions = (d) =>
 export function lexique(ctx, problemesRecueil = []) {
   const table = new Map();
   const entree = (terme) => {
-    if (!table.has(terme)) table.set(terme, { terme, fiches: [], problemes: [] });
+    if (!table.has(terme)) table.set(terme, { terme, fiches: [], problemes: [], niveaux: [] });
     return table.get(terme);
   };
 
   for (const f of ctx.fiches) {
+    const niveauxFiche = (Array.isArray(f.niveaux) ? f.niveaux : [f.niveaux]).filter(Boolean).map(String);
     for (const n of listeNotions(f)) {
       entree(n).fiches.push({ numero: f.fichier.slice(0, 2), titre: f.titre, base: baseDe(f) });
+      for (const nv of niveauxFiche) {
+        if (!entree(n).niveaux.includes(nv)) entree(n).niveaux.push(nv);
+      }
     }
   }
   for (const [i, p] of problemesRecueil.entries()) {
     for (const n of listeNotions(p)) entree(n).problemes.push(i + 1);
   }
 
+  // Les niveaux d'une entrée sont ceux des fiches qui l'enseignent, remis dans
+  // l'ordre des classes : une notion vue en 6e et reprise en 4e se lit « 6e 4e »,
+  // pas dans l'ordre où les fiches se sont présentées.
+  for (const e of table.values()) {
+    e.niveaux = ORDRE_NIVEAUX.filter((n) => e.niveaux.includes(n));
+  }
   return [...table.values()].sort((a, b) => compareFr(a.terme, b.terme));
 }
 
@@ -91,10 +101,7 @@ if (appeleDirectement) {
   p('\\documentclass{fiche}', '');
   p('\\surtitre{Où est-ce qu\'on parle de ça}');
   p('\\titrefiche{Lexique}');
-  p(
-    "\\accroche{Un mot, et la fiche qui l'explique. Les numéros de la dernière " +
-      "colonne sont ceux des problèmes du recueil, pour s'entraîner ensuite.}"
-  );
+  p("\\accroche{Un mot, la classe où il est au programme, et la fiche qui l'explique. Les numéros en petit renvoient aux problèmes du recueil, pour s'entraîner ensuite.}");
   p(`\\niveaux{${niv(ctx.niveaux)}}`);
   p('\\priorite{2}');
   p("\\pourquoi{Chercher une notion sans savoir d'avance dans quelle fiche regarder.}");
@@ -116,8 +123,9 @@ if (appeleDirectement) {
       p(`\\lexinitiale{${i}}`);
     }
     const ou = e.fiches.map((f) => f.numero).join(', ');
+    const nv = e.niveaux.map((n) => `\\niv{${n[0]}}`).join('');
     const pb = e.problemes.length ? `\\lexpb{${e.problemes.join(', ')}}` : '';
-    p(`\\lexterme{${ech(e.terme)}}{${ou}}{${pb}}`);
+    p(`\\lexterme{${ech(e.terme)}}{${nv}~${ou}}{${pb}}`);
   }
   p('\\end{multicols}');
   p('', '\\end{document}');

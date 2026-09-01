@@ -422,7 +422,12 @@ idx.push('</header>');
 // La recherche répond à la question qu'on se pose vraiment : « où est-ce
 // qu'on parle de ça ? ». Elle remplace la liste tant qu'on tape.
 idx.push('<form class="chercher" role="search" onsubmit="return false">');
+// Le lexique se propose là où l'on cherche : à côté du champ, pas dans une
+// section plus bas qu'on ne lit qu'après avoir renoncé.
+idx.push('<div class="chercher-tete">');
 idx.push('<label for="recherche">Chercher une notion</label>');
+idx.push('<a class="chercher-lexique" href="lexique.html">(lexique)</a>');
+idx.push('</div>');
 idx.push('<div class="chercher-champ">');
 idx.push(
   '<input type="search" id="recherche" autocomplete="off" ' +
@@ -495,13 +500,6 @@ if (enonces.length || ctx.recueil) {
   idx.push('</div>');
 }
 
-idx.push('<h2>Trouver une notion</h2>');
-idx.push(
-  `<p>Le <a href="lexique.html">lexique</a> range les ${entreesLexique.length} notions du ` +
-    'corpus par ordre alphabétique, chacune avec la fiche qui l\'explique. ' +
-    'Il existe aussi en PDF, à garder à côté du classeur.</p>'
-);
-
 idx.push('<h2>Tout imprimer</h2>');
 idx.push(
   `<p>Le classeur entier — ${ctx.fiches.length} fiches, les séances et le recueil — ` +
@@ -544,10 +542,7 @@ for (const f of ['style.css', 'recherche.js']) {
   l.push('<header class="tete">');
   l.push('<p class="surtitre">Où est-ce qu\'on parle de ça</p>');
   l.push('<h1>Lexique</h1>');
-  l.push(
-    `<p class="accroche">${entreesLexique.length} notions, et la fiche qui les explique. ` +
-      'Les numéros en petit renvoient aux problèmes du recueil, pour s\'entraîner ensuite.</p>'
-  );
+  l.push("<p class=\"accroche\">Un mot, la classe où il est au programme, et la fiche qui l'explique. Les numéros en petit renvoient aux problèmes du recueil, pour s'entraîner ensuite.</p>");
   l.push('</header>');
 
   let initiale = '';
@@ -569,7 +564,7 @@ for (const f of ['style.css', 'recherche.js']) {
       : '';
     l.push(
       `<p class="lex-entree"><span class="lex-terme">${enLigne(e.terme)}</span>` +
-        `<span class="lex-ou">${fiches}</span>${pb}</p>`
+        `<span class="lex-ou">${niveaux(e.niveaux)}${fiches}</span>${pb}</p>`
     );
   }
   if (initiale) l.push('</div>');
