@@ -388,6 +388,17 @@ L'index est en deux tables, `docs` et `sections` : les métadonnées d'un
 document ne sont écrites qu'une fois, et non répétées sur chacune de ses
 sections.
 
+Les URL des feuilles de style et du script portent l'**empreinte de leur
+contenu** — `style.css?v=61c9caf5`. Sans elle, un navigateur qui a déjà vu le
+site ressert l'ancienne feuille après un déploiement, et transforme chaque
+retouche en énigme pendant le développement. Le service worker interroge son
+cache avec `ignoreSearch`, faute de quoi ces URL marquées le manqueraient
+toutes et le site cesserait de fonctionner hors ligne.
+
+`recherche.json` n'a pas d'empreinte — il n'est référencé nulle part dans le
+HTML : il est demandé avec `cache: 'no-cache'`, ce qui ne coûte qu'une requête
+conditionnelle et garantit sa fraîcheur.
+
 Un service worker met les fichiers en cache à la première visite : le site
 se lit sans réseau, et s'installe comme une application. Le nom du cache porte
 l'empreinte du contenu, si bien qu'une nouvelle version remplace l'ancienne.

@@ -48,6 +48,32 @@ const ctx = contexte(
   path.join(racine, 'contenu', 'problemes')
 );
 
+/* ------------------------------------------------------------------ *
+ * Feuilles de style et scripts
+ *
+ * Écrits d'abord, pour que leur empreinte entre dans les URL des pages :
+ * « style.css?v=3f2a1b ». Sans elle, un navigateur qui a déjà vu le site
+ * ressert obstinément l'ancienne feuille après un déploiement — et, en
+ * développement, transforme chaque retouche en énigme.
+ * ------------------------------------------------------------------ */
+execFileSync('node', [path.join(ici, 'design.mjs'), '--css', path.join(sortie, 'design.css')], {
+  stdio: 'pipe',
+});
+for (const f of ['style.css', 'recherche.js']) {
+  fs.copyFileSync(path.join(racine, 'web', f), path.join(sortie, f));
+}
+
+const empreintes = {};
+for (const f of ['design.css', 'style.css', 'recherche.js']) {
+  empreintes[f] = crypto
+    .createHash('sha1')
+    .update(fs.readFileSync(path.join(sortie, f)))
+    .digest('hex')
+    .slice(0, 8);
+}
+/** L'URL d'une ressource, marquée de l'empreinte de son contenu. */
+const res = (f) => `${f}?v=${empreintes[f]}`;
+
 // Le lexique sert à deux endroits — sa propre page, et un renvoi depuis
 // l'accueil : il se calcule donc avant l'un comme l'autre.
 const entreesLexique = lexique(ctx, lireProblemes(ctx.recueil?.dossier ?? ''));
@@ -118,8 +144,8 @@ function page({ titre, description, corps, plan = '', menu = '', fil, pdf, accue
 <meta name="description" content="${echapperAttr(description ?? '')}">
 <meta name="theme-color" content="${ACCENT}">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="design.css">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="${res('design.css')}">
+<link rel="stylesheet" href="${res('style.css')}">
 </head>
 <body>
 ${accueil ? '' : `<nav>${menu}<a href="index.html">← Toutes les fiches</a>${fil ? ` <span class="fil">· ${fil}</span>` : ''}</nav>`}
@@ -513,7 +539,7 @@ fs.writeFileSync(
   page({
     titre: SITE,
     accueil: true,
-    scripts: '<script src="recherche.js"></script>',
+    scripts: `<script src="${res('recherche.js')}"></script>`,
     description: `Fiches de révision de mathématiques 6e à 3e : ${ctx.fiches.length} fiches, ${enonces.length} séances chronométrées et un recueil de problèmes.`,
     corps: idx.join('\n'),
   })
@@ -522,12 +548,6 @@ fs.writeFileSync(
 /* ------------------------------------------------------------------ *
  * Feuilles de style et ressources
  * ------------------------------------------------------------------ */
-execFileSync('node', [path.join(ici, 'design.mjs'), '--css', path.join(sortie, 'design.css')], {
-  stdio: 'pipe',
-});
-for (const f of ['style.css', 'recherche.js']) {
-  fs.copyFileSync(path.join(racine, 'web', f), path.join(sortie, f));
-}
 
 /* ------------------------------------------------------------------ *
  * Le lexique — d'un mot vers la leçon
@@ -881,9 +901,15 @@ self.addEventListener('activate', (e) => {
 
 // Le cache d'abord : le contenu ne change qu'entre deux versions, et la
 // lecture doit rester instantanée même sans réseau.
+//
+// « ignoreSearch » parce que les pages demandent « style.css?v=3f2a1b » alors
+// que le cache tient « style.css » : sans lui, chaque ressource marquée
+// manquerait le cache et le site cesserait de fonctionner hors ligne.
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
-  e.respondWith(caches.match(e.request).then((r) => r || fetch(e.request)));
+  e.respondWith(
+    caches.match(e.request, { ignoreSearch: true }).then((r) => r || fetch(e.request))
+  );
 });
 `
 );

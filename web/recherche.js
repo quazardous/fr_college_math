@@ -36,7 +36,11 @@
 
   let docs = [];
   let sections = [];
-  const charger = fetch('recherche.json')
+  // L'index n'a pas d'empreinte dans son URL — il n'est référencé nulle part
+  // dans le HTML. « no-cache » le fait revalider aupres du serveur, ce qui ne
+  // coute qu'une requete conditionnelle ; hors ligne, c'est le service worker
+  // qui repond de toute facon.
+  const charger = fetch('recherche.json', { cache: 'no-cache' })
     .then((r) => r.json())
     .then((d) => {
       docs = d.docs;
