@@ -140,6 +140,11 @@ h1 {
   font-weight: 700;
   white-space: nowrap;
 }
+/* text-indent est hérité et s'applique à tout conteneur de bloc — un
+   inline-block en est un. Dans une liste à retrait pendant, la pastille
+   poussait donc son propre chiffre hors de sa boîte. */
+.niv, .etiquette { text-indent: 0; }
+
 .niv--6 { background: var(--c-accentclair); color: var(--c-accent); }
 .niv--5 { background: var(--c-accentmoyen); color: var(--c-accent); }
 .niv--4 { background: var(--c-accent); color: #fff; }
@@ -233,6 +238,22 @@ code {
   white-space: nowrap;
 }
 
+/* « règle » n'est pas une classe, mais c'est une étiquette : elle doit se
+   détacher du texte comme une pastille de niveau, sans quoi elle se lit comme
+   la suite de la phrase — ou pire, comme la suite d'une formule. */
+.etiquette {
+  display: inline-block;
+  padding: 0.05em 0.4em;
+  border: 1px solid var(--c-trait);
+  font-family: var(--pile-titres);
+  font-size: var(--fs-badgeniveau);
+  font-weight: 700;
+  color: var(--c-encredouce);
+  white-space: nowrap;
+  vertical-align: 0.05em;
+}
+.automatismes .niv, .automatismes .etiquette { margin-left: 0.15em; }
+
 /* ------------------------------------------------------------------ tableaux */
 /* C'est le tableau qui défile, jamais la page. */
 .tableau { overflow-x: auto; margin: 1.1rem 0; -webkit-overflow-scrolling: touch; }
@@ -253,12 +274,35 @@ figure { margin: 1.3rem 0; text-align: center; }
 figure img { max-width: 100%; height: auto; }
 
 /* Une formule longue glisse dans sa boîte plutôt que d'élargir la page. */
-.maths { overflow-x: auto; margin: 1rem 0; padding: 0.2rem 0; text-align: center; }
+/* Fixer overflow-x à « auto » force overflow-y à « auto » lui aussi : une
+   fraction un peu haute se voyait alors flanquée d'un ascenseur vertical, et
+   rognée. On le neutralise, et la marge intérieure évite que les exposants
+   touchent le bord. */
+.maths {
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin: 1rem 0;
+  padding: 0.45rem 0;
+  text-align: center;
+}
 math { font-size: 1.05em; }
-math[display="block"] { display: block; margin: 0.9rem auto; overflow-x: auto; }
+math[display="block"] {
+  display: block;
+  margin: 0.9rem auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.35rem 0;
+}
 /* KaTeX rend une formule centrée dans un span : c'est au style d'en faire un
    bloc, sans quoi elle resterait au fil du texte. */
-.katex-display { display: block; margin: 0.9rem 0; text-align: center; overflow-x: auto; }
+.katex-display {
+  display: block;
+  margin: 0.9rem 0;
+  text-align: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.35rem 0;
+}
 
 /* ------------------------------------------------------------------ vidéos */
 .videos { margin-top: 2.4rem; }
