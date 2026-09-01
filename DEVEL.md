@@ -297,6 +297,12 @@ l'expliquent, les problèmes qui l'exercent — sous trois formes : le PDF
 notions y sont placées **avant** l'extrait de texte, faute de quoi la
 troncature de l'index emporte les dernières.
 
+Le lexique s'affiche en deux colonnes par lettre. Chaque lettre ouvre **et
+ferme** son propre conteneur : les empiler reviendrait à imbriquer dix-neuf
+conteneurs multi-colonnes, ce qui bloque le moteur de rendu du navigateur — et
+le processus reste abîmé d'une page à l'autre, si bien que le site entier
+semble en cause.
+
 L'outil signale les termes qu'aucune fiche n'enseigne : c'est ainsi qu'on
 repère qu'une notion est exercée sans être expliquée nulle part.
 

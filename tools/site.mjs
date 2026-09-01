@@ -554,6 +554,10 @@ for (const f of ['style.css', 'recherche.js']) {
   for (const e of entreesLexique) {
     const i = e.terme[0].normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase();
     if (i !== initiale) {
+      // Fermer avant d'ouvrir : sans cela on empilait dix-neuf conteneurs
+      // multi-colonnes les uns dans les autres, et le moteur de rendu du
+      // navigateur y restait bloqué.
+      if (initiale) l.push('</div>');
       initiale = i;
       l.push(`<h2 id="lex-${i}">${i}</h2><div class="lexique">`);
     }
@@ -568,7 +572,7 @@ for (const f of ['style.css', 'recherche.js']) {
         `<span class="lex-ou">${fiches}</span>${pb}</p>`
     );
   }
-  l.push('</div>');
+  if (initiale) l.push('</div>');
 
   const initiales = [
     ...new Set(
