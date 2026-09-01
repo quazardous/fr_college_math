@@ -269,6 +269,37 @@ mieux vaut un bloc ` ```tikz ` que d'enrichir la bibliothèque. Le bloc brut est
 d'ailleurs **obligatoire** dans ce cas : hors de lui, le précompilateur
 transformerait `->` en flèche et échapperait les `%` des commentaires TikZ.
 
+## Le lexique
+
+Chaque document déclare, dans son en-tête YAML, les **notions** dont il
+traite :
+
+```yaml
+notions:
+  - théorème de Pythagore
+  - hypoténuse
+  - réciproque du théorème de Pythagore
+```
+
+Le vocabulaire est **canonique** : au singulier, en minuscules sauf nom propre,
+et sous la forme où l'on cherche le terme — « notation scientifique », pas
+« écrire en notation scientifique ». Un synonyme est une entrée de plus dans la
+même fiche, pas une syntaxe particulière. Les problèmes du recueil emploient le
+même champ et le même vocabulaire.
+
+Ce champ est tenu **à la main**, et c'est le point : une extraction automatique
+du texte ramasserait tous les mots employés, pas ceux dont la fiche traite. Une
+notion citée en passant n'est pas une notion enseignée.
+
+`tools/lexique.mjs` en tire l'index inversé — un mot, les fiches qui
+l'expliquent, les problèmes qui l'exercent — sous trois formes : le PDF
+`00-lexique`, la page `lexique.html`, et un apport à la recherche du site. Les
+notions y sont placées **avant** l'extrait de texte, faute de quoi la
+troncature de l'index emporte les dernières.
+
+L'outil signale les termes qu'aucune fiche n'enseigne : c'est ainsi qu'on
+repère qu'une notion est exercée sans être expliquée nulle part.
+
 ## Ajouter un problème au recueil
 
 Un fichier `contenu/problemes/NN-nom.md`. Le préfixe numérique fixe l'ordre :

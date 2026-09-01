@@ -12,6 +12,18 @@ pourquoi: >-
 duree: 30 min
 domaine: Nombres et calculs
 
+notions:
+  - calcul littéral
+  - expression littérale
+  - réduire une expression
+  - développer
+  - factoriser
+  - facteur commun
+  - équation
+  - inconnue
+  - solution d'une équation
+  - mise en équation
+
 automatismes:
   colonnes: 2
   items:

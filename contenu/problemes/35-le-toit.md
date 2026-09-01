@@ -3,7 +3,7 @@ titre: Le toit de la véranda
 type: ouvert
 difficulte: 4
 duree: 15 min
-notions: [Pythagore, aires, pourcentages, proportionnalité]
+notions: [théorème de Pythagore, aire, pourcentage, proportionnalité]
 ---
 
 Une véranda a un toit en pente d'un seul pan. Le mur du fond mesure 3,20 m de

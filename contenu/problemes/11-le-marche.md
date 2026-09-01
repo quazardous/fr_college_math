@@ -3,7 +3,7 @@ titre: Le marché du samedi
 type: application
 difficulte: 1
 duree: 5 min
-notions: [décimaux, proportionnalité]
+notions: [nombre décimal, proportionnalité]
 ---
 
 Sur l'étal, les tomates sont à 3,40 € le kilogramme et les courgettes à

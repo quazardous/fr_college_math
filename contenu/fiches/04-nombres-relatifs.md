@@ -11,6 +11,18 @@ pourquoi: >-
 duree: 25 min
 domaine: Nombres et calculs
 
+notions:
+  - nombre relatif
+  - nombre négatif
+  - opposé
+  - valeur absolue
+  - droite graduée
+  - abscisse
+  - addition de relatifs
+  - soustraction de relatifs
+  - règle des signes
+  - multiplication de relatifs
+
 automatismes:
   colonnes: 2
   items:

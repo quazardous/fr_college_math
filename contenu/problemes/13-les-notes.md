@@ -3,7 +3,7 @@ titre: Le bulletin de Sacha
 type: application
 difficulte: 2
 duree: 5 min
-notions: [moyenne, fractions, pourcentages]
+notions: [moyenne, fraction, pourcentage]
 ---
 
 Sacha a obtenu les notes suivantes en mathématiques :

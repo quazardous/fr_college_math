@@ -3,7 +3,7 @@ titre: Le vitrail
 type: application
 difficulte: 2
 duree: 5 min
-notions: [angles, triangle isocèle, lecture de figure]
+notions: [angle, triangle isocèle]
 ---
 
 Voici un motif de vitrail. **Les seules données sont celles codées sur la

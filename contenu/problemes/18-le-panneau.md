@@ -3,7 +3,7 @@ titre: Le panneau de signalisation
 type: application
 difficulte: 2
 duree: 5 min
-notions: [aires, disque, figures composées]
+notions: [aire, disque]
 ---
 
 Un panneau est formé d'un rectangle surmonté d'un demi-disque.

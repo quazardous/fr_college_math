@@ -3,7 +3,7 @@ titre: La terrasse en bois
 type: etapes
 difficulte: 3
 duree: 10 min
-notions: [Pythagore, aires, pourcentages]
+notions: [théorème de Pythagore, aire, pourcentage]
 ---
 
 Une terrasse rectangulaire mesure 6 m sur 4,5 m. Le menuisier vérifie qu'elle

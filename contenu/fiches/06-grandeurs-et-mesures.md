@@ -12,6 +12,23 @@ pourquoi: >-
 duree: 30 min
 domaine: Grandeurs et mesures
 
+notions:
+  - grandeur
+  - longueur
+  - périmètre
+  - aire
+  - volume
+  - conversion d'unités
+  - pi
+  - cercle
+  - disque
+  - prisme droit
+  - cylindre
+  - pyramide
+  - cône
+  - capacité
+  - durée
+
 automatismes:
   colonnes: 2
   items:

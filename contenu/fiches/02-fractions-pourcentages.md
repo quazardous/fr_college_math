@@ -12,6 +12,21 @@ pourquoi: >-
 duree: 30 min
 domaine: Nombres, calcul et résolution de problèmes
 
+notions:
+  - fraction
+  - numérateur
+  - dénominateur
+  - quotient
+  - simplification de fraction
+  - fraction irréductible
+  - comparaison de fractions
+  - addition de fractions
+  - fraction d'une quantité
+  - pourcentage
+  - inverse
+  - division de fractions
+  - nombre rationnel
+
 automatismes:
   colonnes: 2
   items:

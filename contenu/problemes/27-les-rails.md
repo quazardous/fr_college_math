@@ -3,7 +3,7 @@ titre: Les rails du tramway
 type: etapes
 difficulte: 3
 duree: 10 min
-notions: [angles alternes-internes, parallèles, triangle]
+notions: [angles alternes-internes, droites parallèles, triangle]
 ---
 
 Deux rails parallèles sont traversés par une passerelle rectiligne.

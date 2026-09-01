@@ -12,6 +12,14 @@ pourquoi: >-
 duree: 30 min
 domaine: Espace et géométrie
 
+notions:
+  - théorème de Thalès
+  - réciproque du théorème de Thalès
+  - configuration papillon
+  - agrandissement
+  - réduction
+  - rapport d'agrandissement
+
 automatismes:
   colonnes: 2
   items:

@@ -103,6 +103,19 @@ if retenu "00-sommaire"; then
   fi
 fi
 
+# Le lexique inversé : un mot, la fiche qui l'explique. Il dépend des champs
+# « notions: » de toutes les sources.
+if retenu "00-lexique"; then
+  if a_jour "$PDF/00-lexique.pdf" "$FICHES"/*.md "$SEANCES"/*.md \
+       "$PROBLEMES" "$PROBLEMES"/*.md tools/lexique.mjs; then
+    IGNORES=$((IGNORES+1))
+  else
+    echo "→ lexique"
+    node tools/lexique.mjs "$FICHES" "$SEANCES" "$PROBLEMES" $TEX/00-lexique.tex
+    A_FAIRE+=("$TEX/00-lexique.tex")
+  fi
+fi
+
 if [ -d "$PROBLEMES" ] && retenu "recueil"; then
   if a_jour "$PDF/recueil.pdf" "$PROBLEMES" "$PROBLEMES"/*.md &&
      a_jour "$PDF/recueil-corrige.pdf" "$PROBLEMES" "$PROBLEMES"/*.md; then
@@ -184,7 +197,7 @@ if [ -z "$FILTRE" ]; then
     [ -e "$vieux" ] || continue
     base="$(basename "$vieux")"; base="${base%.*}"
     case "$base" in
-      00-sommaire|math-college-fr-complet) [ -d "$FICHES" ] && continue ;;
+      00-sommaire|00-lexique|math-college-fr-complet) [ -d "$FICHES" ] && continue ;;
       recueil|recueil-corrige) [ -d "$PROBLEMES" ] && continue ;;
     esac
     if [ ! -e "$FICHES/$base.md" ] && [ ! -e "$SEANCES/$base.md" ] &&

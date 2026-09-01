@@ -3,7 +3,7 @@ titre: La station Concordia
 type: ouvert
 difficulte: 5
 duree: 15 min
-notions: [relatifs, proportionnalité, volumes, pourcentages]
+notions: [nombre relatif, proportionnalité, volume, pourcentage]
 ---
 
 La station scientifique Concordia, en Antarctique, héberge 13 personnes pendant

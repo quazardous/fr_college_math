@@ -11,6 +11,20 @@ pourquoi: >-
 duree: 30 min
 domaine: Espace et géométrie
 
+notions:
+  - repère
+  - coordonnées
+  - abscisse
+  - ordonnée
+  - symétrie centrale
+  - centre de symétrie
+  - angles alternes-internes
+  - angles correspondants
+  - droites parallèles
+  - parallélogramme
+  - perspective cavalière
+  - patron
+
 automatismes:
   colonnes: 2
   items:

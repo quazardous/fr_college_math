@@ -12,6 +12,25 @@ pourquoi: >-
 duree: 25 min
 domaine: Espace et géométrie
 
+notions:
+  - milieu
+  - distance
+  - cercle
+  - disque
+  - rayon
+  - diamètre
+  - médiatrice
+  - angle
+  - bissectrice
+  - triangle
+  - somme des angles d'un triangle
+  - triangle isocèle
+  - triangle équilatéral
+  - inégalité triangulaire
+  - cercle circonscrit
+  - symétrie axiale
+  - axe de symétrie
+
 automatismes:
   colonnes: 2
   items:

@@ -12,6 +12,23 @@ pourquoi: >-
 duree: 25 min
 domaine: Nombres, calcul et résolution de problèmes
 
+notions:
+  - nombre décimal
+  - partie décimale
+  - arrondi
+  - encadrement
+  - ordre de grandeur
+  - division euclidienne
+  - quotient
+  - reste
+  - multiple
+  - diviseur
+  - critère de divisibilité
+  - priorités opératoires
+  - distributivité
+  - carré
+  - cube
+
 automatismes:
   colonnes: 2
   items:

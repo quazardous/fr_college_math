@@ -3,7 +3,7 @@ titre: L'abonnement de la salle
 type: application
 difficulte: 2
 duree: 5 min
-notions: [fonctions affines, comparaison, tableau]
+notions: [fonction affine]
 ---
 
 Une salle d'escalade propose deux formules.

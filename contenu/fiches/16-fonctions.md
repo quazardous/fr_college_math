@@ -11,6 +11,17 @@ pourquoi: >-
 duree: 35 min
 domaine: Fonctions
 
+notions:
+  - fonction
+  - image
+  - antécédent
+  - fonction linéaire
+  - fonction affine
+  - coefficient directeur
+  - ordonnée à l'origine
+  - représentation graphique
+  - lecture graphique
+
 automatismes:
   colonnes: 2
   items:

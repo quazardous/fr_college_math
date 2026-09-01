@@ -12,6 +12,20 @@ pourquoi: >-
 duree: 25 min
 domaine: Organisation et gestion de données et probabilités
 
+notions:
+  - effectif
+  - fréquence
+  - moyenne
+  - moyenne pondérée
+  - médiane
+  - étendue
+  - diagramme
+  - probabilité
+  - événement
+  - équiprobabilité
+  - événement contraire
+  - expérience à deux épreuves
+
 automatismes:
   colonnes: 2
   items:

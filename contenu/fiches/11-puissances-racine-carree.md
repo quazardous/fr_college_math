@@ -12,6 +12,13 @@ pourquoi: >-
 duree: 30 min
 domaine: Nombres et calculs
 
+notions:
+  - puissance
+  - exposant
+  - puissance de 10
+  - racine carrée
+  - carré parfait
+
 automatismes:
   colonnes: 2
   items:

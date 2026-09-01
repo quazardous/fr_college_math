@@ -697,3 +697,49 @@ nav > *:not(.menu),
 }
 .effacer:hover, .effacer:focus-visible { color: var(--c-accent); }
 .effacer svg { fill: currentColor; }
+
+/* =====================================================================
+ *  Lexique
+ *
+ *  Un terme, la fiche qui l'explique en bout de ligne — la disposition d'un
+ *  index de livre, parce que c'est celle qu'on parcourt le plus vite des yeux.
+ * ===================================================================== */
+
+.lexique { margin-bottom: 1.4rem; }
+@media (min-width: 42rem) {
+  .lexique { columns: 2; column-gap: 2.6rem; }
+}
+
+.lex-entree {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 0 0 0.55rem;
+  break-inside: avoid;
+}
+.lex-terme { flex: 1 1 auto; }
+.lex-ou { display: inline-flex; gap: 0.35rem; }
+.lex-fiche {
+  font-family: var(--pile-titres);
+  font-size: var(--fs-badgesource);
+  font-weight: 700;
+  color: var(--c-accent);
+  text-decoration: none;
+}
+.lex-fiche:hover, .lex-fiche:focus { text-decoration: underline; }
+.lex-pb {
+  flex-basis: 100%;
+  font-family: var(--pile-titres);
+  font-size: var(--fs-badgesource);
+}
+.lex-pb a { color: var(--c-encredouce); text-decoration: none; }
+.lex-pb a:hover, .lex-pb a:focus { color: var(--c-accent); }
+
+/* Les initiales rythment la liste sans peser comme des titres de section. */
+.lexique + h2, h2[id^="lex-"] {
+  margin-top: 1.8rem;
+  border-bottom-width: 1px;
+  font-size: var(--fs-soussection);
+  color: var(--c-accent);
+}

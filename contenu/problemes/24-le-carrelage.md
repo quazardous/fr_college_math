@@ -3,7 +3,7 @@ titre: Le carrelage de la cuisine
 type: etapes
 difficulte: 3
 duree: 10 min
-notions: [aires, conversions, pourcentages]
+notions: [aire, conversion d'unités, pourcentage]
 ---
 
 La cuisine mesure 4,20 m sur 3,50 m. On la carrelle avec des carreaux carrés

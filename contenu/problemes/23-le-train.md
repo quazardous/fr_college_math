@@ -3,7 +3,7 @@ titre: Le train de nuit
 type: etapes
 difficulte: 3
 duree: 10 min
-notions: [durées, vitesse, proportionnalité]
+notions: [durée, vitesse moyenne, proportionnalité]
 ---
 
 Un train de nuit quitte Paris à 21 h 40 et arrive à Nice le lendemain à 9 h 10.

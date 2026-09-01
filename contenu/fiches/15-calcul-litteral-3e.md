@@ -11,6 +11,15 @@ pourquoi: Développer et factoriser conditionnent tout le calcul du lycée.
 duree: 35 min
 domaine: Nombres et calculs
 
+notions:
+  - double distributivité
+  - identité remarquable
+  - développer
+  - factoriser
+  - différence de deux carrés
+  - équation produit
+  - mise en équation
+
 automatismes:
   colonnes: 2
   items:

@@ -3,7 +3,7 @@ titre: Le glacier qui recule
 type: ouvert
 difficulte: 5
 duree: 15 min
-notions: [pourcentages, coefficient multiplicateur, volumes, puissances]
+notions: [pourcentage, coefficient multiplicateur, volume, puissance]
 ---
 
 En 2000, un glacier alpin occupait un volume de $4{,}8\times 10^{8}$ mètres

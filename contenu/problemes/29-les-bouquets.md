@@ -3,7 +3,7 @@ titre: Les bouquets du fleuriste
 type: etapes
 difficulte: 3
 duree: 10 min
-notions: [PGCD, nombres premiers, divisibilité]
+notions: [PGCD, nombre premier, critère de divisibilité]
 ---
 
 Un fleuriste a reçu 126 roses et 210 tulipes. Il veut composer des bouquets

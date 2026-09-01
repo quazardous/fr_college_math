@@ -248,6 +248,29 @@
    officiels, librement réutilisables.\par}
   \clearpage}
 
+% ---------------------------------------------------------------- lexique
+% Une entrée tient sur une ligne : le terme, les fiches qui l'enseignent, et
+% les problèmes qui l'exercent. Le tout en deux colonnes de page.
+\newcommand{\lexinitiale}[1]{%
+  \par\vspace{2.2mm}%
+  {\sffamily\fsSection\bfseries\color{accent}#1}%
+  \par\vspace{0.4mm}%
+  {\color{traitfin}\rule{\linewidth}{0.5pt}}\par\vspace{1.2mm}}
+
+% \lexterme{terme}{fiches}{problèmes}
+% Le numéro de fiche se pose en bout de ligne, comme dans l'index d'un livre :
+% en le mettant dans sa propre boîte, il décrochait d'une ligne dès que la
+% taille de police différait.
+\newcommand{\lexterme}[3]{%
+  \par\noindent\raggedright
+  {\fsEncartCorps #1}\nobreak\hfill\nobreak
+  {\sffamily\fsBadgeSource\color{accent}\bfseries #2}%
+  \ifx\relax#3\relax\else\par\nobreak\vspace{-0.4mm}#3\fi
+  \par\vspace{1.2mm}}
+
+\newcommand{\lexpb}[1]{%
+  {\sffamily\fsBadgeSource\color{encredouce}problèmes #1}}
+
 % ---------------------------------------------------------------- titres
 \titleformat{\section}
   {\needspace{4\baselineskip}\sffamily\fsSection\bfseries\color{encre}}

@@ -12,6 +12,17 @@ pourquoi: >-
 duree: 15 min
 domaine: Pensée informatique
 
+notions:
+  - algorithme
+  - programme de calcul
+  - instruction
+  - séquence
+  - boucle
+  - variable
+  - instruction conditionnelle
+  - test
+  - Scratch
+
 liens:
   - url: https://scratch.mit.edu
     titre: Scratch — programmer par blocs

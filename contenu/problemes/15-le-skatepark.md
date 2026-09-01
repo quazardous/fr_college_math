@@ -3,7 +3,7 @@ titre: La rampe du skatepark
 type: application
 difficulte: 2
 duree: 5 min
-notions: [Pythagore, aires]
+notions: [théorème de Pythagore, aire]
 ---
 
 Une rampe de skatepark a la forme d'un triangle rectangle. Sa base au sol

@@ -3,7 +3,7 @@ titre: Le laboratoire d'analyses
 type: etapes
 difficulte: 3
 duree: 10 min
-notions: [puissances, fractions, proportionnalité]
+notions: [puissance, fraction, proportionnalité]
 ---
 
 Un échantillon de sang contient environ $5\times 10^{6}$ globules rouges par

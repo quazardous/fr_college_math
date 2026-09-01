@@ -3,7 +3,7 @@ titre: Une semaine en Laponie
 type: application
 difficulte: 2
 duree: 5 min
-notions: [nombres relatifs, moyenne]
+notions: [nombre relatif, moyenne]
 ---
 
 Voici les températures relevées à midi pendant cinq jours :

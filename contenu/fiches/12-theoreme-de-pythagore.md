@@ -12,6 +12,14 @@ pourquoi: >-
 duree: 30 min
 domaine: Espace et géométrie
 
+notions:
+  - théorème de Pythagore
+  - hypoténuse
+  - triangle rectangle
+  - réciproque du théorème de Pythagore
+  - contraposée
+  - cercle circonscrit
+
 automatismes:
   colonnes: 2
   items:

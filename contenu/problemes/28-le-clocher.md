@@ -3,7 +3,7 @@ titre: La hauteur du clocher
 type: etapes
 difficulte: 3
 duree: 10 min
-notions: [trigonométrie, arrondi, schéma]
+notions: [trigonométrie, arrondi]
 ---
 
 Un géomètre veut mesurer la hauteur d'un clocher sans y monter. Il se place à

@@ -3,7 +3,7 @@ titre: Le jardin japonais
 type: ouvert
 difficulte: 5
 duree: 15 min
-notions: [aires, disque, Pythagore, pourcentages]
+notions: [aire, disque, théorème de Pythagore, pourcentage]
 ---
 
 Un jardin carré de 12 m de côté contient un bassin circulaire tangent aux

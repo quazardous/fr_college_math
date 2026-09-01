@@ -3,7 +3,7 @@ titre: L'échelle du pompier
 type: ouvert
 difficulte: 4
 duree: 15 min
-notions: [Pythagore, proportionnalité, sécurité]
+notions: [théorème de Pythagore, proportionnalité]
 ---
 
 Une échelle de 13 m est posée contre un mur. Le pied de l'échelle est à 5 m

@@ -3,7 +3,7 @@ titre: Le jardin de Madame Roy
 type: etapes
 difficulte: 3
 duree: 10 min
-notions: [aires, périmètre, proportionnalité]
+notions: [aire, périmètre, proportionnalité]
 ---
 
 Madame Roy possède un terrain rectangulaire de 18 m sur 12 m. Elle réserve

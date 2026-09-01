@@ -3,7 +3,7 @@ titre: La course de relais
 type: ouvert
 difficulte: 4
 duree: 15 min
-notions: [durées, vitesse, moyenne, proportionnalité]
+notions: [durée, vitesse moyenne, moyenne, proportionnalité]
 ---
 
 Quatre coureurs se relaient sur un parcours de 24 km, chacun courant un quart

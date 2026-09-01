@@ -11,6 +11,16 @@ pourquoi: Seul outil du collège qui fasse le lien entre longueurs et angles.
 duree: 30 min
 domaine: Espace et géométrie
 
+notions:
+  - trigonométrie
+  - cosinus
+  - sinus
+  - tangente
+  - côté adjacent
+  - côté opposé
+  - hypoténuse
+  - triangle rectangle
+
 automatismes:
   colonnes: 2
   items:

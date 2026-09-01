@@ -12,6 +12,14 @@ pourquoi: >-
 duree: 25 min
 domaine: Nombres et calculs
 
+notions:
+  - diviseur
+  - nombre premier
+  - décomposition en facteurs premiers
+  - PGCD
+  - PPCM
+  - fraction irréductible
+
 automatismes:
   colonnes: 2
   items:

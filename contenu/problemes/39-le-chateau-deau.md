@@ -3,7 +3,7 @@ titre: Le château d'eau
 type: ouvert
 difficulte: 5
 duree: 15 min
-notions: [volumes, agrandissement, conversions, proportionnalité]
+notions: [volume, agrandissement, conversion d'unités, proportionnalité]
 ---
 
 Le château d'eau d'une commune est une cuve cylindrique de 6 m de diamètre et

@@ -26,6 +26,7 @@ import { fileURLToPath } from 'node:url';
 import { ORDRE_NIVEAUX, contexte, base as baseDe } from './sommaire.mjs';
 import { formaterDuree } from './duree.mjs';
 import { recolter, produire } from './figures.mjs';
+import { lexique, lireProblemes, compareFr } from './lexique.mjs';
 import { versHtml, enLigne, niveaux } from './fiche2html.mjs';
 import * as yaml from 'js-yaml';
 import crypto from 'node:crypto';
@@ -46,6 +47,10 @@ const ctx = contexte(
   path.join(racine, 'contenu', 'seances'),
   path.join(racine, 'contenu', 'problemes')
 );
+
+// Le lexique sert à deux endroits — sa propre page, et un renvoi depuis
+// l'accueil : il se calcule donc avant l'un comme l'autre.
+const entreesLexique = lexique(ctx, lireProblemes(ctx.recueil?.dossier ?? ''));
 
 /* ------------------------------------------------------------------ *
  * Le gabarit d'une page
@@ -265,6 +270,7 @@ for (const [dossier, docs] of [
       meta: `${niveaux(d.niveaux)} · ${enLigne(formaterDuree(d.duree))}`,
       niv: niveaux(d.niveaux),
       prio: d.priorite ?? 2,
+      notions: d.notions ?? [],
       genre: dossier.endsWith('fiches')
         ? 'fiche'
         : /-corrige\.md$/.test(d.fichier)
@@ -489,6 +495,13 @@ if (enonces.length || ctx.recueil) {
   idx.push('</div>');
 }
 
+idx.push('<h2>Trouver une notion</h2>');
+idx.push(
+  `<p>Le <a href="lexique.html">lexique</a> range les ${entreesLexique.length} notions du ` +
+    'corpus par ordre alphabétique, chacune avec la fiche qui l\'explique. ' +
+    'Il existe aussi en PDF, à garder à côté du classeur.</p>'
+);
+
 idx.push('<h2>Tout imprimer</h2>');
 idx.push(
   `<p>Le classeur entier — ${ctx.fiches.length} fiches, les séances et le recueil — ` +
@@ -516,6 +529,66 @@ execFileSync('node', [path.join(ici, 'design.mjs'), '--css', path.join(sortie, '
 });
 for (const f of ['style.css', 'recherche.js']) {
   fs.copyFileSync(path.join(racine, 'web', f), path.join(sortie, f));
+}
+
+/* ------------------------------------------------------------------ *
+ * Le lexique — d'un mot vers la leçon
+ *
+ * Le sommaire répond à « par où commencer ? », la recherche à « où est-ce
+ * qu'on parle de ça ? » quand on sait taper. Le lexique répond à la même
+ * question en se parcourant des yeux, et c'est le seul des trois qui existe
+ * aussi sur le papier.
+ * ------------------------------------------------------------------ */
+{
+  const l = [];
+  l.push('<header class="tete">');
+  l.push('<p class="surtitre">Où est-ce qu\'on parle de ça</p>');
+  l.push('<h1>Lexique</h1>');
+  l.push(
+    `<p class="accroche">${entreesLexique.length} notions, et la fiche qui les explique. ` +
+      'Les numéros en petit renvoient aux problèmes du recueil, pour s\'entraîner ensuite.</p>'
+  );
+  l.push('</header>');
+
+  let initiale = '';
+  for (const e of entreesLexique) {
+    const i = e.terme[0].normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase();
+    if (i !== initiale) {
+      initiale = i;
+      l.push(`<h2 id="lex-${i}">${i}</h2><div class="lexique">`);
+    }
+    const fiches = e.fiches
+      .map((f) => `<a class="lex-fiche" href="${f.base}.html">${f.numero}</a>`)
+      .join(' ');
+    const pb = e.problemes.length
+      ? `<span class="lex-pb"><a href="recueil.html">problèmes ${e.problemes.join(', ')}</a></span>`
+      : '';
+    l.push(
+      `<p class="lex-entree"><span class="lex-terme">${enLigne(e.terme)}</span>` +
+        `<span class="lex-ou">${fiches}</span>${pb}</p>`
+    );
+  }
+  l.push('</div>');
+
+  const initiales = [
+    ...new Set(
+      entreesLexique.map((e) => e.terme[0].normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase())
+    ),
+  ].sort(compareFr);
+
+  fs.writeFileSync(
+    path.join(sortie, 'lexique.html'),
+    page({
+      titre: 'Lexique',
+      description: `Les ${entreesLexique.length} notions du corpus et la fiche qui les explique.`,
+      corps: l.join('\n'),
+      plan: barreLaterale('Alphabet', initiales.map((i) => ({ id: `lex-${i}`, texte: i }))),
+      menu: menuDeroulant('Alphabet', initiales.map((i) => ({ id: `lex-${i}`, texte: i }))),
+      fil: `${entreesLexique.length} notions`,
+      pdf: PDF('00-lexique'),
+    })
+  );
+  console.log(`lexique : ${entreesLexique.length} notions`);
 }
 
 /* ------------------------------------------------------------------ *
@@ -559,9 +632,18 @@ for (const d of documents) {
   const morceaux = d.html.split(/<h2 id="([^"]+)"[^>]*>/);
   // Ce qui précède le premier h2 : l'en-tête et son accroche, rattachés au
   // document lui-même.
-  const chapeau = texteNu(morceaux[0]);
+  // Les notions déclarées rejoignent le texte indexé : « PGCD » doit trouver
+  // sa fiche même si le sigle n'y apparaît que deux fois. Elles passent DEVANT
+  // le chapeau, et non derrière : la troncature qui suit emportait les
+  // dernières, et « équation produit » tombait juste au-delà.
+  const chapeau = [
+    (d.notions ?? []).join(', '),
+    texteNu(morceaux[0]).slice(0, 600),
+  ]
+    .filter(Boolean)
+    .join(' — ');
   if (chapeau) {
-    idxSections.push({ d: rang, url: `${d.base}.html`, section: d.titre, texte: chapeau.slice(0, 600) });
+    idxSections.push({ d: rang, url: `${d.base}.html`, section: d.titre, texte: chapeau });
   }
   for (let i = 1; i < morceaux.length; i += 2) {
     const id = morceaux[i];

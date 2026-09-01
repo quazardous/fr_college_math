@@ -3,7 +3,7 @@ titre: La serre du potager
 type: ouvert
 difficulte: 5
 duree: 15 min
-notions: [prisme droit, aires, volumes, pourcentages]
+notions: [prisme droit, aire, volume, pourcentage]
 ---
 
 Un maraîcher construit une serre en forme de prisme droit. Sa base est un

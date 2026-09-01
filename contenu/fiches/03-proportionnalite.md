@@ -12,6 +12,21 @@ pourquoi: >-
 duree: 35 min
 domaine: Proportionnalité, fonctions
 
+notions:
+  - proportionnalité
+  - coefficient de proportionnalité
+  - tableau de proportionnalité
+  - retour à l'unité
+  - linéarité
+  - quatrième proportionnelle
+  - produit en croix
+  - pourcentage
+  - échelle
+  - vitesse moyenne
+  - ratio
+  - grandeur quotient
+  - coefficient multiplicateur
+
 automatismes:
   colonnes: 2
   items:

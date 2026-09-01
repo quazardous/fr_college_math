@@ -3,7 +3,7 @@ titre: Le refuge de montagne
 type: ouvert
 difficulte: 4
 duree: 15 min
-notions: [proportionnalité, volumes, durées]
+notions: [proportionnalité, volume, durée]
 ---
 
 Le refuge du Grand Pic accueille 24 randonneurs pour une nuit. Il n'est

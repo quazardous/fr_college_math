@@ -11,6 +11,17 @@ pourquoi: Peu de contenu, mais un raisonnement qui se retrouve tel quel en secon
 duree: 25 min
 domaine: Données et probabilités
 
+notions:
+  - probabilité
+  - événement
+  - événement contraire
+  - expérience à deux épreuves
+  - arbre de probabilité
+  - tableau à double entrée
+  - tirage avec remise
+  - tirage sans remise
+  - équiprobabilité
+
 automatismes:
   colonnes: 2
   items:

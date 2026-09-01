@@ -12,6 +12,14 @@ pourquoi: >-
 duree: 25 min
 domaine: Espace et géométrie
 
+notions:
+  - translation
+  - théorème des milieux
+  - droite des milieux
+  - pyramide
+  - cône
+  - volume
+
 automatismes:
   colonnes: 2
   items:

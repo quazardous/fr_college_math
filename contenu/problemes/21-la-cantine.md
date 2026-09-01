@@ -3,7 +3,7 @@ titre: La cantine du collège
 type: etapes
 difficulte: 3
 duree: 10 min
-notions: [fractions, pourcentages, proportionnalité]
+notions: [fraction, pourcentage, proportionnalité]
 ---
 
 Le collège Jean-Moulin compte 640 élèves. Les trois huitièmes sont demi-pensionnaires.
